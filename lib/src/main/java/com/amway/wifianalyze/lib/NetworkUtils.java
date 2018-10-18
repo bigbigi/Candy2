@@ -1,0 +1,88 @@
+package com.amway.wifianalyze.lib;
+
+import android.content.Context;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
+import android.util.Log;
+
+import org.apache.commons.net.telnet.TelnetClient;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+/**
+ * Created by big on 2018/10/18.
+ */
+
+public class NetworkUtils {
+
+    public static String getIpAndDns(String url) {
+        try {
+            ///Found NSLookup from http://www.coderanch.com/t/328875/java/java/nslookup-Java
+            ///More on inet addresses from http://download.java.net/jdk7/archive/b123/docs/api/java/net/InetAddress.html
+
+            InetAddress ipAddresses[] = InetAddress.getAllByName(url);
+            StringBuffer strbuf = new StringBuffer("");
+
+            for (int i = 0; i < ipAddresses.length; i++) {
+                strbuf.append(ipAddresses[i].getHostAddress() + ";");
+            }
+            return strbuf.toString();
+
+        } catch (UnknownHostException e) {
+            Log.e("bigbig", "UnknownHostException:" + e);
+            return null;
+        }
+
+    }
+
+    public static void checkSocket() {
+        try {
+            DatagramSocket socket = new DatagramSocket(80);
+            InetAddress serverAddress = InetAddress.getByName("www.baidu.com");
+            String str = "hello";
+            byte data[] = str.getBytes();
+            DatagramPacket packages = new DatagramPacket(data, data.length, serverAddress, 80);
+            socket.send(packages);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean telnet(String ip, int port) {
+        boolean isConnected = false;
+        TelnetClient client = new TelnetClient();
+        try {
+            Log.e("TelnetConnection", "ip:" + ip + ",--port:" + port);
+            client.connect(ip, port);
+            isConnected = client.isConnected();
+            Log.e("TelnetConnection", "isConnected:" + isConnected);
+            if (isConnected) {
+                client.disconnect();
+            }
+        } catch (SocketException ex) {
+            Log.e("TelnetConnection", "error:" + ex);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isConnected;
+    }
+
+    public static String getWifiSetting(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
+        if (dhcpInfo.leaseDuration == 0) {//静态IP配置方式
+            return "StaticIP";
+        } else {                         //动态IP配置方式
+            return "DHCP";
+        }
+    }
+}

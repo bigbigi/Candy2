@@ -34,12 +34,15 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private final static int BUSY_CHANNEL = 3;
     private final static int LOW_LEVEL = -80;
     private static final String DEFAULT_SSID = "91vst-wifi";
+    private static final String DEFAULT_PWD = "91vst.com";
     private HashMap<Integer, Integer> mChannelBusyMap = new HashMap<Integer, Integer>();
     private MyWifiBrocastReceiver mWifiReceiver;
     private WifiManager mWm;
     private WifiInfo mWifiInfo;
 
     private int mReScanTimes = 0;
+    private boolean mRefreshScanList = false;
+    private boolean mCheckConnected = false;
 
 
     public WifiPresenterImpl(WifiContract.WifiView view) {
@@ -79,6 +82,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             mWm.setWifiEnabled(true);
         } else {
             mWm.startScan();
+            mRefreshScanList = true;
             Log.e(TAG, "开始扫描");
         }
     }
@@ -86,7 +90,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private void connect(ScanResult scanResult) {//91vst.com
         mFailScanResult = scanResult;
         int type = scanResult.capabilities.contains("WEP") ? WifiConnector.WIFI_TYPE_WEP : WifiConnector.WIFI_TYPE_WPA;
-        boolean connect = WifiConnector.connect(mWm, scanResult.SSID.replaceAll("\"", ""), "111", type);
+        boolean connect = WifiConnector.connect(mWm, scanResult.SSID.replaceAll("\"", ""), DEFAULT_PWD, type);
         if (!connect) {
             mView.onFailReason(ERROR_PWD);
         } else {
@@ -94,10 +98,13 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         }
     }
 
+
     private void onConnected() {
         Log.d(TAG, "NETWORK-->" + "----Connected--------");
         WifiInfo info = mWm.getConnectionInfo();
-        if (info != null && info.getSSID() != null && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""))) {
+        if (!mCheckConnected && info != null && info.getSSID() != null
+                && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""))) {
+            mCheckConnected = true;
             mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
             mView.onConnected();
         }
@@ -161,10 +168,12 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive:" + intent.getAction());
-            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
+            if (mRefreshScanList && WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
+                mCheckConnected = false;
                 mWifiInfo = mWm.getConnectionInfo();
                 List<ScanResult> list = mWm.getScanResults();
                 if (list != null && !list.isEmpty()) {
+                    mRefreshScanList = false;
                     mReScanTimes = 0;
                     rangeList(list);
                     mView.onScanResult(list, mWifiInfo);

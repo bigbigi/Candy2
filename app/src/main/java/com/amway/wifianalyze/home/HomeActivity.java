@@ -9,6 +9,7 @@ import android.util.Log;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseActivity;
 import com.amway.wifianalyze.lib.NetworkUtils;
+import com.amway.wifianalyze.utils.PermissionUtil;
 
 public class HomeActivity extends BaseActivity {
 
@@ -17,6 +18,7 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         go2Launcher();
+        new PermissionUtil().init(this);
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -61,4 +63,5 @@ public class HomeActivity extends BaseActivity {
         }
         transaction.commit();
     }
+
 }

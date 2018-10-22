@@ -350,7 +350,8 @@ public final class ScreenParameter {
     private static Typeface sTypeFace;
 
     public static Typeface getTypeFace(Context ctx) {
-        if (sTypeFace == null) {
+        return null;
+       /* if (sTypeFace == null) {
             synchronized (ScreenParameter.class) {
                 if (sTypeFace == null) {
                     try {
@@ -361,7 +362,7 @@ public final class ScreenParameter {
                 }
             }
         }
-        return sTypeFace;
+        return sTypeFace;*/
     }
 
     public static double getScreenDimension(Context ctx) {

@@ -4,6 +4,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +38,15 @@ public class HomeFrag extends BaseFragment implements WifiContract.WifiView {
         return content;
     }
 
+    private RecyclerView mRecyclerView;
+    private TestAdapter mAdapter;
+
     public void init(View content) {
+        mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdapter = new TestAdapter();
+        mRecyclerView.setAdapter(mAdapter);
+
         mWifiPresenter.init(getContext());
         mWifiPresenter.scanWifi();
     }
@@ -57,16 +67,58 @@ public class HomeFrag extends BaseFragment implements WifiContract.WifiView {
     @Override
     public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
         Log.d("big", "onScanResult," + "list:" + list + ",current:" + currentWifi);
+        mAdapter.getData().add("扫描成功");
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onWifiUnable() {
         Log.d("big", "onWifiUnable");
-
+        mAdapter.getData().add("wifi未打开，正在打开wifi...");
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onWifiAvailable() {
         Log.d("big", "onWifiAvailable");
+        mAdapter.getData().add("已打开wifi，开始扫描...");
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
+    }
+
+    @Override
+    public void onFoundSSID(boolean found) {
+        String message = found ? "正在连接" : "未找到目标wifi";
+        mAdapter.getData().add(message);
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
+    }
+
+    @Override
+    public void onConnected() {
+        mAdapter.getData().add("wifi连接成功");
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
+    }
+
+    @Override
+    public void onConnectFailed() {
+        mAdapter.getData().add("wifi连接失败，正在分析原因...");
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
+    }
+
+    @Override
+    public void onFailReason(int code) {
+        String message = null;
+        switch (code) {
+            case 1:
+                message = "密码错误";
+                break;
+            case 2:
+                message = "信道拥堵";
+                break;
+            case 3:
+                message = "信号差";
+                break;
+        }
+        mAdapter.getData().add(message);
+        mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 }

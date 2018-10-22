@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.home;
 
+import android.app.Activity;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.os.Bundle;
@@ -12,7 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.home.AuthContract.AuthPresenter;
+
 
 import java.util.List;
 
@@ -21,7 +25,9 @@ import java.util.List;
  * Created by big on 2018/10/17.
  */
 
-public class HomeFrag extends BaseFragment implements WifiContract.WifiView {
+public class HomeFrag extends BaseFragment implements
+        WifiContract.WifiView,
+        AuthContract.AuthView {
     public static final String TAG = "HomeFrag";
 
     public static HomeFrag newInstance(Bundle bundle) {
@@ -58,10 +64,15 @@ public class HomeFrag extends BaseFragment implements WifiContract.WifiView {
     }
 
     private WifiContract.WifiPresenter mWifiPresenter;
+    private AuthContract.AuthPresenter mAuthPresenter;
 
     @Override
-    public void setPresenter(WifiContract.WifiPresenter presenter) {
-        mWifiPresenter = presenter;
+    public void setPresenter(BaseContract.BasePresenter presenter) {
+        if (presenter instanceof WifiContract.WifiPresenter) {
+            mWifiPresenter = (WifiContract.WifiPresenter) presenter;
+        } else if (presenter instanceof AuthContract.AuthPresenter) {
+            mAuthPresenter = (AuthContract.AuthPresenter) presenter;
+        }
     }
 
     @Override
@@ -96,6 +107,7 @@ public class HomeFrag extends BaseFragment implements WifiContract.WifiView {
     public void onConnected() {
         mAdapter.getData().add("wifi连接成功");
         mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAuthPresenter.startCheck(getContext());
     }
 
     @Override
@@ -121,4 +133,76 @@ public class HomeFrag extends BaseFragment implements WifiContract.WifiView {
         mAdapter.getData().add(message);
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
+
+
+    @Override
+    public void onError(int code) {
+        final String message;
+        switch (code) {
+            case AuthPresenter.INFO_STATIC_IP:
+                message = "静态IP";
+                break;
+            case AuthPresenter.INFO_SERVER:
+                message = "服务器ping不通";
+                break;
+            case AuthPresenter.INFO_SERVER_PORT:
+                message = "服务器端口被占用";
+                break;
+            case AuthPresenter.INFO_INTERNET:
+                message = "Internet专线不通";
+                break;
+            case AuthPresenter.INFO_DNS:
+                message = "DNS错误";
+                break;
+            default:
+                message = null;
+                break;
+        }
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.getData().add(message);
+                    mAdapter.notifyItemInserted(mAdapter.getData().size());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onInfo(int code, int loss, int delay) {
+        final String message;
+        switch (code) {
+            case AuthPresenter.INFO_STATIC_IP:
+                message = "静态IP ----Ok";
+                break;
+            case AuthPresenter.INFO_SERVER:
+                message = "服务器ping不通 ----Ok,丢包：" + loss + ",延迟:" + delay;
+                break;
+            case AuthPresenter.INFO_SERVER_PORT:
+                message = "服务器端口被占用 ----Ok";
+                break;
+            case AuthPresenter.INFO_INTERNET:
+                message = "Internet专线不通 ----Ok,丢包：" + loss + ",延迟:" + delay;
+                break;
+            case AuthPresenter.INFO_DNS:
+                message = "DNS错误  ----Ok";
+                break;
+            default:
+                message = null;
+                break;
+        }
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.getData().add(message);
+                    mAdapter.notifyItemInserted(mAdapter.getData().size());
+                }
+            });
+        }
+    }
+
 }

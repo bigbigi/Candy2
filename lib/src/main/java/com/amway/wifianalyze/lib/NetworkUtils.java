@@ -85,4 +85,10 @@ public class NetworkUtils {
             return "DHCP";
         }
     }
+
+    public static boolean isStaticIp(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
+        return dhcpInfo.leaseDuration == 0;
+    }
 }

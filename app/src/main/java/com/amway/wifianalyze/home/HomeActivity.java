@@ -25,13 +25,13 @@ public class HomeActivity extends BaseActivity {
                 go2Home();
             }
         }, 5000);
-        new Thread() {
+       /* new Thread() {
             @Override
             public void run() {
                 boolean connect = NetworkUtils.telnet("www.baidu.com", 23);
                 Log.d("big", "connect:" + connect);
             }
-        }.start();
+        }.start();*/
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
     }
 
@@ -57,6 +57,7 @@ public class HomeActivity extends BaseActivity {
         if (fragment == null) {
             fragment = HomeFrag.newInstance(null);
             new WifiPresenterImpl((HomeFrag) fragment);
+            new AuthPresenterImpl((HomeFrag) fragment);
             transaction.add(R.id.container, fragment, HomeFrag.TAG);
         } else {
             transaction.show(fragment);

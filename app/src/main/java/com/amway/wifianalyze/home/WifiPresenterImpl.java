@@ -102,7 +102,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private void onConnected() {
         Log.d(TAG, "NETWORK-->" + "----Connected--------");
         WifiInfo info = mWm.getConnectionInfo();
-        if (!mCheckConnected && info != null && info.getSSID() != null
+        if (!mCheckConnected && !mRefreshScanList && info != null && info.getSSID() != null
                 && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""))) {
             mCheckConnected = true;
             mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
@@ -116,8 +116,8 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             Log.e(TAG, "level:" + mFailScanResult.level + ",channelNum:" + mChannelBusyMap.get(mFailScanResult.frequency));
             boolean lowLevel = mFailScanResult.level < LOW_LEVEL;//信号差
             boolean busyChannel = mChannelBusyMap.get(mFailScanResult.frequency) > BUSY_CHANNEL;//信道拥堵
-            if (!lowLevel && !busyChannel) {//密码错误
-                mView.onFailReason(ERROR_PWD);
+            if (!lowLevel && !busyChannel) {//其他问题
+                mView.onFailReason(ERROR_ELSE);
             } else {
                 if (lowLevel) {
                     mView.onFailReason(ERROR_LOW_LEVEL);
@@ -196,7 +196,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                         }
 
                     } else {
-                        mView.onConnected();
+                        onConnected();
                     }
                 } else if (mReScanTimes < MAX_SCAN_TIMES) {
                     mReScanTimes++;

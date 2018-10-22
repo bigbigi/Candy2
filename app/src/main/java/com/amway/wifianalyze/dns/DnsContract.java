@@ -23,7 +23,7 @@ public interface DnsContract extends BaseContract {
 
     }
 
-    interface DnsView extends BaseView<DnsPresenter> {
+    interface DnsView extends BaseView{
 
     }
 }

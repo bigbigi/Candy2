@@ -47,5 +47,7 @@ public interface AuthContract extends BaseContract {
         public abstract void checkInternet();
 
         public abstract boolean checkDns();
+
+        public abstract void skipBrowser();
     }
 }

@@ -9,7 +9,7 @@
     android:orientation="horizontal">
 
     <com.autofit.widget.RelativeLayout
-        android:id="@+id/tab_home"
+        android:id="@+id/tab_detect"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -35,7 +35,7 @@
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.RelativeLayout
-        android:id="@+id/tab_live"
+        android:id="@+id/tab_speed"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">
@@ -61,7 +61,7 @@
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.RelativeLayout
-        android:id="@+id/tab_category"
+        android:id="@+id/tab_feedback"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1">

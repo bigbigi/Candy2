@@ -15,9 +15,14 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="90px"/>
+        android:layout_marginBottom="90px" />
 
     <include
         android:id="@+id/tab_layout"
         layout="@layout/ly_home_tab" />
+
+    <FrameLayout
+        android:id="@+id/launcher_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </merge>

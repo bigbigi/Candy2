@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="90px"
+    android:layout_gravity="bottom"
+    android:background="#ffffff"
+    android:orientation="horizontal">
+
+    <com.autofit.widget.RelativeLayout
+        android:id="@+id/tab_home"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.autofit.widget.ImageView
+            android:id="@+id/tab_img"
+            android:layout_width="35px"
+            android:layout_height="39px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="14px"
+            android:src="@drawable/ic_tab_home_sel" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="63px"
+            android:gravity="center"
+            android:text="@string/tab_detect"
+            android:textColor="@color/cl_home_tab"
+            android:textSize="18px" />
+
+    </com.autofit.widget.RelativeLayout>
+
+    <com.autofit.widget.RelativeLayout
+        android:id="@+id/tab_live"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.autofit.widget.ImageView
+            android:id="@+id/tab_img_live"
+            android:layout_width="48px"
+            android:layout_height="36px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="17px"
+            android:src="@drawable/ic_tab_live_sel" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="63px"
+            android:gravity="center"
+            android:text="@string/tab_speed"
+            android:textColor="@color/cl_home_tab"
+            android:textSize="18px" />
+
+    </com.autofit.widget.RelativeLayout>
+
+    <com.autofit.widget.RelativeLayout
+        android:id="@+id/tab_category"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.autofit.widget.ImageView
+            android:id="@+id/tab_img_category"
+            android:layout_width="39px"
+            android:layout_height="29px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19px"
+            android:src="@drawable/ic_tab_category_sel" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="63px"
+            android:gravity="center"
+            android:text="@string/tab_feedback"
+            android:textColor="@color/cl_home_tab"
+            android:textSize="18px" />
+
+    </com.autofit.widget.RelativeLayout>
+
+
+</com.autofit.widget.LinearLayout>
+

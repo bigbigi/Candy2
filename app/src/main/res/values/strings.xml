@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WifiAnalyze</string>
+
+    <string name="tab_detect">故障检测</string>
+    <string name="tab_speed">网络检测</string>
+    <string name="tab_feedback">问题反馈</string>
+
+
 </resources>

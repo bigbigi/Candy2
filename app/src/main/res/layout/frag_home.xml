@@ -5,12 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.autofit.widget.View
+        android:layout_width="220px"
+        android:layout_height="115px"
+        android:layout_marginLeft="18px"
+        android:layout_marginTop="48px"
+        android:background="#5eff0000" />
+
+    <com.autofit.widget.View
+        android:id="@+id/detect_radar"
+        android:layout_width="261px"
+        android:layout_height="261px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="167px"
+        android:background="#5eff0000" />
 
     <com.autofit.widget.RecyclerView
         android:id="@+id/wifiRecycler"
-        android:layout_width="match_parent"
+        android:layout_width="696px"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20px"
-        android:layout_marginRight="20px"
-        android:background="#5e00ff00" />
+        android:layout_marginTop="492px"
+        android:layout_marginLeft="27px"
+        android:layout_marginRight="27px"
+        android:background="#5eff0000" />
 </FrameLayout>

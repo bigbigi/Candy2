@@ -16,6 +16,7 @@ import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.home.AuthContract.AuthPresenter;
+import com.amway.wifianalyze.home.DetectResult.Status;
 
 
 import java.util.List;
@@ -45,12 +46,12 @@ public class HomeFrag extends BaseFragment implements
     }
 
     private RecyclerView mRecyclerView;
-    private TestAdapter mAdapter;
+    private DetectAdapter mAdapter;
 
     public void init(View content) {
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mAdapter = new TestAdapter();
+        mAdapter = new DetectAdapter(getContext());
         mRecyclerView.setAdapter(mAdapter);
 
         mWifiPresenter.init(getContext());
@@ -78,41 +79,41 @@ public class HomeFrag extends BaseFragment implements
     @Override
     public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
         Log.d("big", "onScanResult," + "list:" + list + ",current:" + currentWifi);
-        mAdapter.getData().add("扫描成功");
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "扫描成功"));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onWifiUnable() {
         Log.d("big", "onWifiUnable");
-        mAdapter.getData().add("wifi未打开，正在打开wifi...");
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi未打开，正在打开wifi..."));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onWifiAvailable() {
         Log.d("big", "onWifiAvailable");
-        mAdapter.getData().add("已打开wifi，开始扫描...");
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "已打开wifi，开始扫描..."));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onFoundSSID(boolean found) {
         String message = found ? "正在连接" : "未找到目标wifi";
-        mAdapter.getData().add(message);
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onConnected() {
-        mAdapter.getData().add("wifi连接成功");
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi连接成功"));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
         mAuthPresenter.startCheck(getContext());
     }
 
     @Override
     public void onConnectFailed() {
-        mAdapter.getData().add("wifi连接失败，正在分析原因...");
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi连接失败，正在分析原因..."));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
@@ -130,7 +131,7 @@ public class HomeFrag extends BaseFragment implements
                 message = "信号差";
                 break;
         }
-        mAdapter.getData().add(message);
+        mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
@@ -163,7 +164,7 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.getData().add(message);
+                    mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
                     mAdapter.notifyItemInserted(mAdapter.getData().size());
                 }
             });
@@ -198,7 +199,7 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.getData().add(message);
+                    mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
                     mAdapter.notifyItemInserted(mAdapter.getData().size());
                 }
             });

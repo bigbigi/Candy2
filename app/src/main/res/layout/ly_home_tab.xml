@@ -46,7 +46,7 @@
             android:layout_height="36px"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="17px"
-            android:src="@drawable/ic_tab_live_sel" />
+            android:src="@drawable/ic_tab_speed_sel" />
 
         <com.autofit.widget.TextView
             android:layout_width="wrap_content"
@@ -72,7 +72,7 @@
             android:layout_height="29px"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="19px"
-            android:src="@drawable/ic_tab_category_sel" />
+            android:src="@drawable/ic_tab_feedback_sel" />
 
         <com.autofit.widget.TextView
             android:layout_width="wrap_content"

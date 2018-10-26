@@ -5,5 +5,7 @@
     <string name="tab_speed">网络检测</string>
     <string name="tab_feedback">问题反馈</string>
 
+    <string name="detect_result_ok">正常</string>
+    <string name="detect_result_error">故障</string>
 
 </resources>

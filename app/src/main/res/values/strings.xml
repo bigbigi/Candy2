@@ -5,7 +5,14 @@
     <string name="tab_speed">网络检测</string>
     <string name="tab_feedback">问题反馈</string>
 
+    <!--测速-->
     <string name="detect_result_ok">正常</string>
     <string name="detect_result_error">故障</string>
+
+    <!--问题反馈-->
+    <string name="feedback_hint">请描述您遇到的问题</string>
+    <string name="feedback_add_picture">添加图片</string>
+    <string name="feedback_submint">提交</string>
+
 
 </resources>

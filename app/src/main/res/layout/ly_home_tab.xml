@@ -69,7 +69,7 @@
         <com.autofit.widget.ImageView
             android:id="@+id/tab_img_category"
             android:layout_width="39px"
-            android:layout_height="29px"
+            android:layout_height="40px"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="19px"
             android:src="@drawable/ic_tab_feedback_sel" />

@@ -21,6 +21,13 @@
         android:id="@+id/tab_layout"
         layout="@layout/ly_home_tab" />
 
+    <com.autofit.widget.View
+        android:layout_width="match_parent"
+        android:layout_height="227px"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="90px"
+        android:background="@drawable/bg" />
+
     <FrameLayout
         android:id="@+id/launcher_container"
         android:layout_width="match_parent"

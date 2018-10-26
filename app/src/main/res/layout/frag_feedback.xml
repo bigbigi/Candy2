@@ -3,8 +3,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#5e00ff00">
+    android:layout_height="match_parent">
 
+    <com.autofit.widget.View
+        android:layout_width="229px"
+        android:layout_height="120px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="18px"
+        android:layout_marginTop="66px"
+        android:background="@drawable/ic_logo" />
 
+    <com.autofit.widget.TextView
+        android:id="@+id/feedback_content"
+        android:layout_width="696px"
+        android:layout_height="330px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="221px"
+        android:paddingTop="10px"
+        android:paddingLeft="5px"
+        android:background="@drawable/bg_detect"
+        android:hint="@string/feedback_hint"
+        android:textColorHint="#2b2b2b"
+        android:textSize="30px" />
+
+    <com.autofit.widget.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="26px"
+        android:layout_marginTop="605px"
+        android:text="@string/feedback_add_picture"
+        android:textColor="#aaaaaa"
+        android:textSize="24px" />
+
+    <com.autofit.widget.ImageView
+        android:id="@+id/feedback_picture"
+        android:layout_width="126px"
+        android:layout_height="125px"
+        android:layout_marginLeft="27px"
+        android:layout_marginTop="648px"
+        android:background="@drawable/bg_detect" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/feedback_submit"
+        android:layout_width="696px"
+        android:layout_height="66px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="886px"
+        android:background="@drawable/bg_submint"
+        android:gravity="center"
+        android:text="@string/feedback_submint"
+        android:textColor="#fff"
+        android:textSize="36px" />
 </FrameLayout>

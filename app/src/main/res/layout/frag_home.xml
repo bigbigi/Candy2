@@ -35,12 +35,6 @@
         android:layout_marginTop="262px"
         android:background="@drawable/ic_gz_tb1" />
 
-    <com.autofit.widget.View
-        android:layout_width="match_parent"
-        android:layout_height="227px"
-        android:layout_gravity="bottom"
-        android:background="@drawable/bg" />
-
     <com.autofit.widget.RecyclerView
         android:id="@+id/wifiRecycler"
         android:layout_width="696px"

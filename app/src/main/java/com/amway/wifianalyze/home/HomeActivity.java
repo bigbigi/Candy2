@@ -29,7 +29,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             public void run() {
                 hideLauncher();
             }
-        }, 5000);
+        }, 2000);
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
     }
 

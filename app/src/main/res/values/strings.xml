@@ -13,6 +13,9 @@
 
     <!--测速-->
     <string name="speed_loading">正在测试网速...</string>
+    <string name="speed_IP">IP地址</string>
+    <string name="speed_MAC">MAC地址</string>
+    <string name="speed_subnet">子网掩码</string>
 
     <!--问题反馈-->
     <string name="feedback_hint">请描述您遇到的问题</string>

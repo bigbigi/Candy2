@@ -47,5 +47,7 @@ public interface WifiContract extends BaseContract {
         public abstract void release(Context context);
 
         public abstract void scanWifi();
+
+        public abstract boolean isConnected();
     }
 }

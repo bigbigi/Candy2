@@ -10,6 +10,7 @@
         android:layout_width="32px"
         android:layout_height="23px"
         android:layout_gravity="center_vertical"
+        android:layout_marginLeft="25px"
         android:background="@drawable/ic_wifi1" />
 
     <com.autofit.widget.TextView

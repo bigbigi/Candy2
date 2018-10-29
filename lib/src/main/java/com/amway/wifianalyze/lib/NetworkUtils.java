@@ -8,6 +8,8 @@ import android.util.Log;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -98,5 +100,35 @@ public class NetworkUtils {
 
     public static boolean is5GHz(int freq) {
         return freq > 4900 && freq < 5900;
+    }
+
+    public static String intToIp(int i) {
+        return (i & 0xFF) + "." +
+                ((i >> 8) & 0xFF) + "." +
+                ((i >> 16) & 0xFF) + "." +
+                (i >> 24 & 0xFF);
+    }
+
+    public static String getWlanMac() {
+        String mac = "";
+
+        try {
+            String temp = "";
+            Process pro = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address");
+            InputStreamReader ir = new InputStreamReader(pro.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+
+            while (null != temp) {
+                temp = input.readLine();
+                if (temp != null) {
+                    mac = temp.trim();
+                    break;
+                }
+            }
+        } catch (Throwable var5) {
+            var5.printStackTrace();
+        }
+
+        return mac;
     }
 }

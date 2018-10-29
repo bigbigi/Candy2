@@ -68,6 +68,16 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        Log.e(TAG, "onHiddenChanged:" + hidden);
+        if (!hidden && mWifiPresenter != null && !mWifiPresenter.isConnected()) {
+            mAdapter.getData().clear();
+            mAdapter.notifyDataSetChanged();
+            mWifiPresenter.scanWifi();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         mWifiPresenter.release(getContext());
@@ -126,6 +136,7 @@ public class HomeFrag extends BaseFragment implements
             mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
         }
     }
+
 
     @Override
     public void onConnectFailed() {

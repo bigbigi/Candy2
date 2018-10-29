@@ -83,12 +83,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             showFragment(mDetectFragment);
         } else if (v.getId() == R.id.tab_speed) {
             if (mSpeedFragment == null) {
-                mSpeedFragment = new SpeedFrag();
+                mSpeedFragment = SpeedFrag.newInstance(null);
+                new WifiPresenterImpl((SpeedFrag) mSpeedFragment);
             }
             showFragment(mSpeedFragment);
         } else if (v.getId() == R.id.tab_feedback) {
             if (mFeedbackFragment == null) {
-                mFeedbackFragment = new FeedbackFrag();
+                mFeedbackFragment = FeedbackFrag.newInstance(null);
             }
             showFragment(mFeedbackFragment);
         }

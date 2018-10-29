@@ -111,6 +111,12 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
 
     }
 
+    public boolean isConnected() {
+        WifiInfo info = mWm.getConnectionInfo();
+        return info != null && info.getSSID() != null
+                && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""));
+    }
+
     private void findFailReason() {
         if (mFailScanResult != null) {
             Log.e(TAG, "level:" + mFailScanResult.level + ",channelNum:" + mChannelBusyMap.get(mFailScanResult.frequency));
@@ -208,6 +214,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
                     mView.onWifiAvailable();
+                    scanWifi();
                 }
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);

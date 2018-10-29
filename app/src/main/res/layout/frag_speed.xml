@@ -55,14 +55,22 @@
             android:textSize="18px" />
     </com.autofit.widget.RelativeLayout>
 
-
-    <com.autofit.widget.RecyclerView
-        android:id="@+id/speed_Recycler"
+    <com.autofit.widget.LinearLayout
         android:layout_width="696px"
         android:layout_height="432px"
         android:layout_marginLeft="27px"
         android:layout_marginRight="27px"
         android:layout_marginTop="487px"
-        android:background="@drawable/bg_detect" />
+        android:background="@drawable/bg_detect"
+        android:orientation="vertical">
+
+        <include layout="@layout/ly_wifi" />
+
+        <com.autofit.widget.RecyclerView
+            android:id="@+id/speed_Recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+    </com.autofit.widget.LinearLayout>
 
 </FrameLayout>

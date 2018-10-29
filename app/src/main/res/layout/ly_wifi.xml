@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="109px"
+    android:orientation="horizontal">
+
+    <com.autofit.widget.View
+        android:layout_width="32px"
+        android:layout_height="23px"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/ic_wifi1" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/wifi_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="17px"
+        android:textColor="#e70241"
+        android:textSize="24px" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/wifi_frequence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="54px"
+        android:textColor="#e70241"
+        android:textSize="24px" />
+</com.autofit.widget.LinearLayout>
+

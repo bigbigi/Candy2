@@ -106,7 +106,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                 && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""))) {
             mCheckConnected = true;
             mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
-            mView.onConnected();
+            mView.onConnected(mWm.getConnectionInfo());
         }
 
     }

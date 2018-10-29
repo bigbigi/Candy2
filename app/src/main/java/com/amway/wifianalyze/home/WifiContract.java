@@ -25,7 +25,7 @@ public interface WifiContract extends BaseContract {
 
         void onFoundSSID(boolean found);
 
-        void onConnected();
+        void onConnected(WifiInfo wifiInfo);
 
         void onConnectFailed();
 

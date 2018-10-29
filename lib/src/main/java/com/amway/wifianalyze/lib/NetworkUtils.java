@@ -91,4 +91,12 @@ public class NetworkUtils {
         DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
         return dhcpInfo.leaseDuration == 0;
     }
+
+    public static boolean is24GHz(int freq) {
+        return freq > 2400 && freq < 2500;
+    }
+
+    public static boolean is5GHz(int freq) {
+        return freq > 4900 && freq < 5900;
+    }
 }

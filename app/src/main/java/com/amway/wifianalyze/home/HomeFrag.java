@@ -3,6 +3,7 @@ package com.amway.wifianalyze.home;
 import android.app.Activity;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,8 @@ import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.home.AuthContract.AuthPresenter;
 import com.amway.wifianalyze.home.DetectResult.Status;
+import com.amway.wifianalyze.lib.NetworkUtils;
+import com.autofit.widget.TextView;
 
 
 import java.util.List;
@@ -47,12 +50,18 @@ public class HomeFrag extends BaseFragment implements
 
     private RecyclerView mRecyclerView;
     private DetectAdapter mAdapter;
+    private TextView mWifiName;
+    private TextView mWifiFrequence;
 
     public void init(View content) {
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new DetectAdapter(getContext());
         mRecyclerView.setAdapter(mAdapter);
+        mWifiName = (TextView) content.findViewById(R.id.wifi_name);
+        mWifiFrequence = (TextView) content.findViewById(R.id.wifi_frequence);
+        mWifiName.setText("");
+        mWifiFrequence.setText("");
 
         mWifiPresenter.init(getContext());
         mWifiPresenter.scanWifi();
@@ -78,21 +87,21 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
-        Log.d("big", "onScanResult," + "list:" + list + ",current:" + currentWifi);
+        Log.d(TAG, "onScanResult," + "list:" + list + ",current:" + currentWifi);
         mAdapter.getData().add(new DetectResult(Status.SUCCESS, "扫描成功"));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onWifiUnable() {
-        Log.d("big", "onWifiUnable");
+        Log.d(TAG, "onWifiUnable");
         mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi未打开，正在打开wifi..."));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
 
     @Override
     public void onWifiAvailable() {
-        Log.d("big", "onWifiAvailable");
+        Log.d(TAG, "onWifiAvailable");
         mAdapter.getData().add(new DetectResult(Status.SUCCESS, "已打开wifi，开始扫描..."));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
     }
@@ -105,10 +114,17 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
-    public void onConnected() {
+    public void onConnected(WifiInfo wifiInfo) {
         mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi连接成功"));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
         mAuthPresenter.startCheck(getContext());
+        if (wifiInfo.getSSID() != null) {
+            mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
+            mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
+        }
     }
 
     @Override

@@ -5,9 +5,14 @@
     <string name="tab_speed">网络检测</string>
     <string name="tab_feedback">问题反馈</string>
 
-    <!--测速-->
+    <!--检测-->
     <string name="detect_result_ok">正常</string>
     <string name="detect_result_error">故障</string>
+    <string name="detect_24G">2.4G</string>
+    <string name="detect_5G">5G</string>
+
+    <!--测速-->
+    <string name="speed_loading">正在测试网速...</string>
 
     <!--问题反馈-->
     <string name="feedback_hint">请描述您遇到的问题</string>

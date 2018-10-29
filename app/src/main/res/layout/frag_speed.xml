@@ -20,6 +20,15 @@
         android:layout_marginTop="167px"
         android:background="@drawable/ic_gz_tb2" />
 
+    <com.autofit.widget.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="449px"
+        android:text="@string/speed_loading"
+        android:textColor="#3a3a3a"
+        android:textSize="18px" />
+
     <com.autofit.widget.RelativeLayout
         android:layout_width="261px"
         android:layout_height="261px"

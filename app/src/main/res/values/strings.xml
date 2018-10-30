@@ -16,6 +16,7 @@
     <string name="speed_IP">IP地址</string>
     <string name="speed_MAC">MAC地址</string>
     <string name="speed_subnet">子网掩码</string>
+    <string name="speed_bandwidth">相当于%sM带宽</string>
 
     <!--问题反馈-->
     <string name="feedback_hint">请描述您遇到的问题</string>

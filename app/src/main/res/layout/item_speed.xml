@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.autofit.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="109px"
-    android:background="#5eff0000">
-
-    <com.autofit.widget.View
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:background="#fff" />
+    android:layout_height="109px">
 
     <com.autofit.widget.TextView
         android:id="@+id/item_text"

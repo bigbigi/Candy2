@@ -12,47 +12,45 @@
         android:layout_marginTop="48px"
         android:background="@drawable/ic_logo" />
 
-    <com.autofit.widget.View
-        android:id="@+id/detect_radar"
-        android:layout_width="261px"
-        android:layout_height="261px"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="167px"
-        android:background="@drawable/ic_gz_tb2" />
-
     <com.autofit.widget.TextView
+        android:id="@+id/speed_result_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="449px"
-        android:text="@string/speed_loading"
-        android:textColor="#3a3a3a"
-        android:textSize="18px" />
+        android:layout_marginTop="253px"
+        android:text="4.44KB/S"
+        android:textColor="#e70241"
+        android:textSize="73px" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/speed_result_bandwidth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="345px"
+        android:text="@string/speed_bandwidth"
+        android:textColor="#01305f"
+        android:textSize="24px" />
+
 
     <com.autofit.widget.RelativeLayout
-        android:layout_width="261px"
-        android:layout_height="261px"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="167px"
-        android:gravity="center_vertical">
-
-        <com.autofit.widget.TextView
-            android:id="@+id/speed_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="500"
-            android:textColor="#e70241"
-            android:textSize="36px" />
+        android:layout_width="696px"
+        android:layout_height="275px"
+        android:layout_marginLeft="27px"
+        android:layout_marginRight="27px"
+        android:layout_marginTop="487px"
+        android:background="@drawable/bg_detect">
 
         <com.autofit.widget.TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/speed_value"
             android:layout_centerHorizontal="true"
-            android:text="KB/S"
-            android:textColor="#e70241"
-            android:textSize="18px" />
+            android:layout_marginTop="55px"
+            android:text="详单与"
+            android:textColor="#002d66"
+            android:textSize="30px" />
+
+
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.LinearLayout
@@ -60,7 +58,7 @@
         android:layout_height="432px"
         android:layout_marginLeft="27px"
         android:layout_marginRight="27px"
-        android:layout_marginTop="487px"
+        android:layout_marginTop="782px"
         android:background="@drawable/bg_detect"
         android:orientation="vertical">
 
@@ -73,8 +71,4 @@
 
     </com.autofit.widget.LinearLayout>
 
-    <!--<FrameLayout-->
-        <!--android:id="@+id/container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
 </FrameLayout>

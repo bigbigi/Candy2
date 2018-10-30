@@ -3,6 +3,7 @@ package com.amway.wifianalyze.home;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +14,10 @@ import com.amway.wifianalyze.base.BaseActivity;
 import com.amway.wifianalyze.feedback.FeedbackFrag;
 import com.amway.wifianalyze.lib.NetworkUtils;
 import com.amway.wifianalyze.speed.SpeedFrag;
+import com.amway.wifianalyze.speed.SpeedPresenterImpl;
 import com.amway.wifianalyze.utils.PermissionUtil;
+
+import java.util.List;
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
@@ -34,7 +38,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private ViewGroup mTabLayout;
-    private Fragment mCurrentFragment;
     private Fragment mDetectFragment;
     private Fragment mSpeedFragment;
     private Fragment mFeedbackFragment;
@@ -80,36 +83,47 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 new WifiPresenterImpl((HomeFrag) mDetectFragment);
                 new AuthPresenterImpl((HomeFrag) mDetectFragment);
             }
-            showFragment(mDetectFragment);
+            showFragment(mDetectFragment, HomeFrag.TAG);
         } else if (v.getId() == R.id.tab_speed) {
             if (mSpeedFragment == null) {
                 mSpeedFragment = SpeedFrag.newInstance(null);
                 new WifiPresenterImpl((SpeedFrag) mSpeedFragment);
+                new SpeedPresenterImpl((SpeedFrag) mSpeedFragment).init(getSupportFragmentManager());
             }
-            showFragment(mSpeedFragment);
+            showFragment(mSpeedFragment, SpeedFrag.TAG);
         } else if (v.getId() == R.id.tab_feedback) {
             if (mFeedbackFragment == null) {
                 mFeedbackFragment = FeedbackFrag.newInstance(null);
             }
-            showFragment(mFeedbackFragment);
+            showFragment(mFeedbackFragment, FeedbackFrag.TAG);
         }
     }
 
-    private void showFragment(Fragment fragment) {
-        if (mCurrentFragment == fragment)
+    private void showFragment(Fragment fragment, String tag) {
+        Fragment currentFragment = getVisibleFragment();
+        Log.e("big", "currentFragment:" + currentFragment);
+        if (currentFragment == fragment)
             return;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (mCurrentFragment != null) {
-            transaction.hide(mCurrentFragment);
-            mCurrentFragment.setUserVisibleHint(false);
+        if (currentFragment != null) {
+            transaction.hide(currentFragment);
+            currentFragment.setUserVisibleHint(false);
         }
         if (!fragment.isAdded()) {
-
-            transaction.add(R.id.container, fragment).commit();
+            transaction.add(R.id.container, fragment, tag).commit();
         } else {
             transaction.show(fragment).commit();
         }
-        mCurrentFragment = fragment;
-        mCurrentFragment.setUserVisibleHint(true);
+        fragment.setUserVisibleHint(true);
+    }
+
+    public Fragment getVisibleFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible())
+                return fragment;
+        }
+        return null;
     }
 }

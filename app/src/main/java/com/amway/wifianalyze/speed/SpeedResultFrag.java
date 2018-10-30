@@ -1,40 +1,35 @@
 package com.amway.wifianalyze.speed;
 
 import android.content.Context;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
-import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
-import com.amway.wifianalyze.home.WifiContract;
 import com.amway.wifianalyze.lib.NetworkUtils;
 import com.autofit.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created by big on 2018/10/25.
  */
 
-public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
-        , SpeedContract.SpeedView {
-    public static final String TAG = "SpeedFrag";
+public class SpeedResultFrag extends BaseFragment {
+    public static final String TAG = "SpeedResultFrag";
 
-    public static SpeedFrag newInstance(Bundle args) {
-        SpeedFrag fragment = new SpeedFrag();
+    public static SpeedResultFrag newInstance(Bundle args) {
+        SpeedResultFrag fragment = new SpeedResultFrag();
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,7 +37,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View content = inflater.inflate(R.layout.frag_speed, container, false);
+        View content = inflater.inflate(R.layout.frag_speed_result, container, false);
         init(content);
         return content;
     }
@@ -61,97 +56,28 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mWifiFrequence = (TextView) content.findViewById(R.id.wifi_frequence);
         mWifiName.setText("");
         mWifiFrequence.setText("");
-
-        mWifiPresenter.init(getContext());
-        start();
+        initData();
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            start();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mWifiPresenter.release(getContext());
-    }
-
-    private void start() {
-        if (mWifiPresenter.isConnected()) {
-            WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            onConnected(wifiManager.getConnectionInfo());
-        } else {
-            mWifiPresenter.scanWifi();
-        }
-    }
-
-    private WifiContract.WifiPresenter mWifiPresenter;
-    private SpeedContract.SpeedPresenter mSpeedPresenter;
-
-    @Override
-    public void setPresenter(BaseContract.BasePresenter presenter) {
-        if (presenter instanceof WifiContract.WifiPresenter) {
-            mWifiPresenter = (WifiContract.WifiPresenter) presenter;
-        } else if (presenter instanceof SpeedContract.SpeedPresenter) {
-            mSpeedPresenter = (SpeedContract.SpeedPresenter) presenter;
-        }
-    }
-
-    @Override
-    public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
-
-    }
-
-    @Override
-    public void onWifiUnable() {
-
-    }
-
-    @Override
-    public void onWifiAvailable() {
-
-    }
-
-    @Override
-    public void onFoundSSID(boolean found) {
-
-    }
-
-    @Override
-    public void onConnected(WifiInfo wifiInfo) {
+    private void initData() {
+        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo.getSSID() != null) {
             mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
         }
-        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         List<SpeedResult> list = new ArrayList();
         list.add(new SpeedResult(getString(R.string.speed_IP), NetworkUtils.intToIp(wifiInfo.getIpAddress())));
         list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getWlanMac()));
         list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
         mAdapter.setData(list);
-
-        mSpeedPresenter.getSpeed();
     }
 
     @Override
-    public void onConnectFailed() {
-
+    public void onDestroy() {
+        super.onDestroy();
     }
 
-    @Override
-    public void onFailReason(int code) {
-
-    }
-
-
-    @Override
-    public void updateSpeed(String speed) {
-
-    }
 }

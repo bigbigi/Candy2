@@ -1,5 +1,7 @@
 package com.amway.wifianalyze.speed;
 
+import android.support.v4.app.FragmentManager;
+
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BasePresenterImpl;
 
@@ -9,7 +11,7 @@ import com.amway.wifianalyze.base.BasePresenterImpl;
 
 public interface SpeedContract extends BaseContract {
     interface SpeedView extends BaseView {
-        void onInfo();
+        void updateSpeed(String speed);
     }
 
     abstract class SpeedPresenter extends BasePresenterImpl<SpeedView> {
@@ -17,7 +19,7 @@ public interface SpeedContract extends BaseContract {
             super(view);
         }
 
-        public abstract void getInfo();
+        public abstract void init(FragmentManager fragmentManager);
 
         public abstract void getSpeed();
     }

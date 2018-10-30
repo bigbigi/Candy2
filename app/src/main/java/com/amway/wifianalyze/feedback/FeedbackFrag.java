@@ -14,6 +14,8 @@ import com.amway.wifianalyze.base.BaseFragment;
  */
 
 public class FeedbackFrag extends BaseFragment {
+    public static final String TAG = "FeedbackFrag";
+
     public static FeedbackFrag newInstance(Bundle args) {
         FeedbackFrag fragment = new FeedbackFrag();
         fragment.setArguments(args);

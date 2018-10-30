@@ -97,6 +97,10 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private void connect(ScanResult scanResult) {//91vst.com
         mFailScanResult = scanResult;
         int type = scanResult.capabilities.contains("WEP") ? WifiConnector.WIFI_TYPE_WEP : WifiConnector.WIFI_TYPE_WPA;
+        if (TextUtils.isEmpty(DEFAULT_PWD)) {
+            type = WifiConnector.WIFI_TYPE_NOPASS;
+        }
+        Log.e(TAG, "TYPE:" + type);
         boolean connect = WifiConnector.connect(mWm, scanResult.SSID.replaceAll("\"", ""), DEFAULT_PWD, type);
         if (!connect) {
             mView.onFailReason(ERROR_PWD);

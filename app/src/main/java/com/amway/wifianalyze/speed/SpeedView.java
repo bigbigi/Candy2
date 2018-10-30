@@ -27,8 +27,11 @@ public class SpeedView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        mPaint.setColor(0xffff0000);
+        int x = 0;
         RectF rect = new RectF(0, 0, radius, radius);
         canvas.drawOval(rect, mPaint);
-//        canvas.drawLine();
+        x += radius * 2;
+        canvas.drawLine(x, radius, x + 20, radius, mPaint);
     }
 }

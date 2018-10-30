@@ -39,8 +39,7 @@
         android:id="@+id/wifiRecycler"
         android:layout_width="696px"
         android:layout_height="match_parent"
-        android:layout_marginLeft="27px"
-        android:layout_marginRight="27px"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="492px"
         android:background="@drawable/bg_detect"
         android:paddingTop="109px" />

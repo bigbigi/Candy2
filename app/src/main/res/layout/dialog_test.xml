@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="600px"
+    android:layout_height="400px"
+    android:orientation="vertical">
+
+    <com.autofit.widget.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10px"
+        android:text="仅用于调试"
+        android:textSize="30px" />
+
+    <com.autofit.widget.EditText
+        android:id="@+id/test_name"
+        android:layout_width="match_parent"
+        android:layout_height="70px"
+        android:layout_marginTop="20px"
+        android:background="#fff"
+        android:hint="请输入要调试的WIFI帐号"
+        android:paddingLeft="10px"
+        android:paddingRight="10px"
+        android:singleLine="true"
+        android:textColor="#000"
+        android:textSize="25px" />
+
+    <com.autofit.widget.EditText
+        android:id="@+id/test_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="70px"
+        android:layout_marginTop="20px"
+        android:background="#fff"
+        android:hint="请输入要调试的WIFI密码"
+        android:paddingLeft="10px"
+        android:paddingRight="10px"
+        android:singleLine="true"
+        android:textColor="#000"
+        android:textSize="25px" />
+
+    <com.autofit.widget.Button
+        android:id="@+id/test_start"
+        android:layout_width="200px"
+        android:layout_height="50px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50px"
+        android:background="@drawable/bg_submint"
+        android:gravity="center"
+        android:text="开始"
+        android:textColor="#fff"
+        android:textSize="30px" />
+
+</com.autofit.widget.LinearLayout>
+

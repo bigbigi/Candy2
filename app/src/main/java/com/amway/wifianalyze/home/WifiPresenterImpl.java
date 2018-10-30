@@ -33,8 +33,8 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private final static int CONNECT_TIMEOUT = 30000;
     private final static int BUSY_CHANNEL = 3;
     private final static int LOW_LEVEL = -80;
-    private static final String DEFAULT_SSID = "91vst-wifi";
-    private static final String DEFAULT_PWD = "91vst.com";
+    private static String DEFAULT_SSID = "91vst-wifi";
+    private static String DEFAULT_PWD = "91vst.com";
     private HashMap<Integer, Integer> mChannelBusyMap = new HashMap<Integer, Integer>();
     private MyWifiBrocastReceiver mWifiReceiver;
     private WifiManager mWm;
@@ -59,6 +59,12 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         context.registerReceiver(mWifiReceiver, filter);
 
+    }
+
+    public void setTestData(String name, String pwd) {
+        Log.e(TAG, "name:" + name + ",pwd:" + pwd);
+        DEFAULT_SSID = name;
+        DEFAULT_PWD = pwd;
     }
 
     private static final int MSG_CONNECT_TIMEOUT = 1;

@@ -63,8 +63,13 @@ public class HomeFrag extends BaseFragment implements
         mWifiName.setText("");
         mWifiFrequence.setText("");
 
-        mWifiPresenter.init(getContext());
-        mWifiPresenter.scanWifi();
+//        mWifiPresenter.init(getContext());
+//        mWifiPresenter.scanWifi();
+
+        //todo test
+        TestDialog dialog = new TestDialog(getContext());
+        dialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
+        dialog.show();
     }
 
     @Override

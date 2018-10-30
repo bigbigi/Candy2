@@ -41,7 +41,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private WifiInfo mWifiInfo;
 
     private int mReScanTimes = 0;
-    private boolean mRefreshScanList = false;
+    private boolean mRefreshScanList = true;
     private boolean mCheckConnected = false;
 
 
@@ -51,14 +51,15 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
 
     @Override
     public void init(Context context) {
-        mWm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        mWifiReceiver = new MyWifiBrocastReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        context.registerReceiver(mWifiReceiver, filter);
-
+        if (mWm == null) {
+            mWm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            mWifiReceiver = new MyWifiBrocastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            context.registerReceiver(mWifiReceiver, filter);
+        }
     }
 
     public void setTestData(String name, String pwd) {
@@ -217,11 +218,11 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                     mView.onFoundSSID(false);
                 }
 
-            } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
-                if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
+            } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {//todo
+                /*if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
                     mView.onWifiAvailable();
                     scanWifi();
-                }
+                }*/
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 if (parcelableExtra != null) {

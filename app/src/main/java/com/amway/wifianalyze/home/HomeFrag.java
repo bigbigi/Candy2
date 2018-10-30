@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
@@ -52,6 +53,7 @@ public class HomeFrag extends BaseFragment implements
     private DetectAdapter mAdapter;
     private TextView mWifiName;
     private TextView mWifiFrequence;
+    private TestDialog mDialog;
 
     public void init(View content) {
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
@@ -63,13 +65,20 @@ public class HomeFrag extends BaseFragment implements
         mWifiName.setText("");
         mWifiFrequence.setText("");
 
-//        mWifiPresenter.init(getContext());
+        mWifiPresenter.init(getContext());
 //        mWifiPresenter.scanWifi();
 
         //todo test
-        TestDialog dialog = new TestDialog(getContext());
-        dialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
-        dialog.show();
+        mDialog = new TestDialog(getContext());
+        mDialog.setOnStartListener(new TestDialog.OnStartListener() {
+            @Override
+            public void onStart() {
+                mAdapter.getData().clear();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
+        mDialog.show();
     }
 
     @Override
@@ -126,6 +135,10 @@ public class HomeFrag extends BaseFragment implements
         String message = found ? "正在连接" : "未找到目标wifi";
         mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
         mAdapter.notifyItemInserted(mAdapter.getData().size());
+        if (!found) {
+            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+            mDialog.show();
+        }
     }
 
     @Override

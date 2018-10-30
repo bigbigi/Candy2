@@ -42,7 +42,9 @@
         android:layout_height="125px"
         android:layout_marginLeft="27px"
         android:layout_marginTop="648px"
-        android:background="@drawable/bg_detect" />
+        android:background="@drawable/bg_detect"
+        android:padding="40px"
+        android:src="@drawable/ic_jia" />
 
     <com.autofit.widget.Button
         android:id="@+id/feedback_submit"

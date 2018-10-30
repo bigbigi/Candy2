@@ -20,6 +20,15 @@ public class TestDialog extends Dialog {
 
     private EditText mName;
     private EditText mPwd;
+    private OnStartListener mOnStartListener;
+
+    public void setOnStartListener(OnStartListener listener) {
+        mOnStartListener = listener;
+    }
+
+    interface OnStartListener {
+        void onStart();
+    }
 
     private void init() {
         setContentView(R.layout.dialog_test);
@@ -28,6 +37,10 @@ public class TestDialog extends Dialog {
         findViewById(R.id.test_start).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mOnStartListener != null) {
+                    mOnStartListener.onStart();
+                }
+                start();
                 dismiss();
             }
         });
@@ -36,7 +49,6 @@ public class TestDialog extends Dialog {
     @Override
     public void dismiss() {
         super.dismiss();
-        start();
     }
 
     private void start() {

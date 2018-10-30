@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WifiAnalyze</string>
+    <string name="app_name">WIFI自检工具</string>
 
     <string name="tab_detect">故障检测</string>
     <string name="tab_speed">网络检测</string>
@@ -17,6 +17,7 @@
     <string name="speed_MAC">MAC地址</string>
     <string name="speed_subnet">子网掩码</string>
     <string name="speed_bandwidth">相当于%sM带宽</string>
+    <string name="speed_level1">网络很快，您可以观看超清视频</string>
 
     <!--问题反馈-->
     <string name="feedback_hint">请描述您遇到的问题</string>

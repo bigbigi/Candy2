@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="55px"
-            android:text="详单与"
+            android:text="@string/speed_level1"
             android:textColor="#002d66"
             android:textSize="30px" />
 

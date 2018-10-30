@@ -49,7 +49,9 @@
             android:textColor="#002d66"
             android:textSize="30px" />
 
-
+        <com.amway.wifianalyze.speed.SpeedView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.LinearLayout

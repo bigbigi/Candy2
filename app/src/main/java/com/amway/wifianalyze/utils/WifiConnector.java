@@ -59,10 +59,9 @@ public class WifiConnector {
         config.allowedProtocols.clear();
         config.SSID = "\"" + SSID + "\"";
         if (type == WIFI_TYPE_NOPASS) { // WIFICIPHER_NOPASS
-            config.wepKeys[0] = "";
+//            config.wepKeys[0] = "";
+//            config.wepTxKeyIndex = 0;
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-            config.wepTxKeyIndex = 0;
-
         } else if (type == WIFI_TYPE_WEP) { // WIFICIPHER_WEP
             config.hiddenSSID = true;
             config.wepKeys[0] = "\"" + password + "\"";

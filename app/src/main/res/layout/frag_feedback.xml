@@ -13,16 +13,17 @@
         android:layout_marginTop="66px"
         android:background="@drawable/ic_logo" />
 
-    <com.autofit.widget.TextView
+    <com.autofit.widget.EditText
         android:id="@+id/feedback_content"
         android:layout_width="696px"
         android:layout_height="330px"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="221px"
-        android:paddingTop="10px"
-        android:paddingLeft="5px"
         android:background="@drawable/bg_detect"
+        android:gravity="top|left"
         android:hint="@string/feedback_hint"
+        android:paddingLeft="5px"
+        android:paddingTop="10px"
         android:textColorHint="#2b2b2b"
         android:textSize="30px" />
 
@@ -43,7 +44,7 @@
         android:layout_marginTop="648px"
         android:background="@drawable/bg_detect" />
 
-    <com.autofit.widget.TextView
+    <com.autofit.widget.Button
         android:id="@+id/feedback_submit"
         android:layout_width="696px"
         android:layout_height="66px"

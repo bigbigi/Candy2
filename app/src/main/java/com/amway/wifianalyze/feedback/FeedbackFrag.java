@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseFragment;
@@ -13,7 +14,7 @@ import com.amway.wifianalyze.base.BaseFragment;
  * Created by big on 2018/10/25.
  */
 
-public class FeedbackFrag extends BaseFragment {
+public class FeedbackFrag extends BaseFragment implements View.OnClickListener {
     public static final String TAG = "FeedbackFrag";
 
     public static FeedbackFrag newInstance(Bundle args) {
@@ -31,6 +32,12 @@ public class FeedbackFrag extends BaseFragment {
     }
 
     public void init(View content) {
+        content.findViewById(R.id.feedback_submit).setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
 
     }
 }

@@ -12,6 +12,8 @@ import com.amway.wifianalyze.base.BasePresenterImpl;
 public interface SpeedContract extends BaseContract {
     interface SpeedView extends BaseView {
         void updateSpeed(String speed);
+
+        boolean isShow();
     }
 
     abstract class SpeedPresenter extends BasePresenterImpl<SpeedView> {

@@ -29,6 +29,6 @@ public class SpeedView extends View {
         super.onDraw(canvas);
         RectF rect = new RectF(0, 0, radius, radius);
         canvas.drawOval(rect, mPaint);
-        canvas.drawLine();
+//        canvas.drawLine();
     }
 }

@@ -154,4 +154,9 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     public void updateSpeed(String speed) {
 
     }
+
+    @Override
+    public boolean isShow() {
+        return isVisible();
+    }
 }

@@ -40,19 +40,21 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                        transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
+                        if(mView.isShow()){
+                            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                            transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
 
-                        Fragment resultFrag = mFragmentManager.findFragmentByTag(SpeedResultFrag.TAG);
-                        if (resultFrag == null) {
-                            resultFrag = SpeedResultFrag.newInstance(null);
+                            Fragment resultFrag = mFragmentManager.findFragmentByTag(SpeedResultFrag.TAG);
+                            if (resultFrag == null) {
+                                resultFrag = SpeedResultFrag.newInstance(null);
+                            }
+                            if (!resultFrag.isAdded()) {
+                                transaction.add(R.id.container, resultFrag, SpeedResultFrag.TAG);
+                            } else {
+                                transaction.show(resultFrag);
+                            }
+                            transaction.commitAllowingStateLoss();
                         }
-                        if (!resultFrag.isAdded()) {
-                            transaction.add(R.id.container, resultFrag, SpeedResultFrag.TAG);
-                        } else {
-                            transaction.show(resultFrag);
-                        }
-                        transaction.commitAllowingStateLoss();
                     }
                 });
 

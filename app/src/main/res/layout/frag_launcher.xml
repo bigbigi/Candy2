@@ -6,5 +6,12 @@
     android:layout_height="match_parent"
     android:background="#ff0000">
 
+    <com.autofit.widget.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="这是启动图界面"
+        android:textColor="#fff"
+        android:textSize="30px" />
 
 </FrameLayout>

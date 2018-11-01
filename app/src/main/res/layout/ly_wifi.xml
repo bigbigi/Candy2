@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="109px"
-    android:orientation="horizontal">
+    android:layout_height="109px">
 
     <com.autofit.widget.View
         android:layout_width="32px"
@@ -19,6 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="17px"
+        android:maxLines="1"
+        android:maxWidth="300px"
         android:textColor="#e70241"
         android:textSize="24px" />
 

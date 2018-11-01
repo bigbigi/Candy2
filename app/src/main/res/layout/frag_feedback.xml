@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.autofit.widget.FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingLeft="26px"
+    android:paddingRight="26px">
 
     <com.autofit.widget.View
         android:layout_width="229px"
         android:layout_height="120px"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="18px"
         android:layout_marginTop="66px"
         android:background="@drawable/ic_logo" />
 
     <com.autofit.widget.EditText
         android:id="@+id/feedback_content"
-        android:layout_width="696px"
+        android:layout_width="match_parent"
         android:layout_height="330px"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="221px"
@@ -30,7 +31,6 @@
     <com.autofit.widget.TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="26px"
         android:layout_marginTop="605px"
         android:text="@string/feedback_add_picture"
         android:textColor="#aaaaaa"
@@ -40,7 +40,7 @@
         android:id="@+id/feedback_picture"
         android:layout_width="126px"
         android:layout_height="125px"
-        android:layout_marginLeft="27px"
+        android:layout_marginLeft="1px"
         android:layout_marginTop="648px"
         android:background="@drawable/bg_detect"
         android:padding="40px"
@@ -57,4 +57,4 @@
         android:text="@string/feedback_submint"
         android:textColor="#fff"
         android:textSize="36px" />
-</FrameLayout>
+</com.autofit.widget.FrameLayout>

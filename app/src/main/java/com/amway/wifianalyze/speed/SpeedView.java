@@ -3,6 +3,7 @@ package com.amway.wifianalyze.speed;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 
@@ -37,6 +38,8 @@ public class SpeedView extends View {
     }
 
 
+    private Rect mBounds = new Rect();
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -46,7 +49,8 @@ public class SpeedView extends View {
             mPaint.setColor(i == level ? COLOR_RED : COLOR_BLUE);
             RectF rect = new RectF(x, height - radius, x + 2 * radius, height + radius);
             canvas.drawOval(rect, mPaint);
-            canvas.drawText(tags[i], x - margingX, height + margingY, mPaint);
+            mPaint.getTextBounds(tags[i], 0, tags[i].length(), mBounds);
+            canvas.drawText(tags[i], x + radius - mBounds.width() / 2, height + margingY, mPaint);
             if (i < 3) {
                 mPaint.setColor(i < level ? COLOR_RED : COLOR_LINE);
                 x += radius * 2;

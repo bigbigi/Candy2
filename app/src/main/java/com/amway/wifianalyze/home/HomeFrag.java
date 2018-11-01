@@ -66,10 +66,10 @@ public class HomeFrag extends BaseFragment implements
         mWifiFrequence.setText("");
 
         mWifiPresenter.init(getContext());
-//        mWifiPresenter.scanWifi();
+        mWifiPresenter.scanWifi();
 
         //todo test
-        mDialog = new TestDialog(getContext());
+        /*mDialog = new TestDialog(getContext());
         mDialog.setOnStartListener(new TestDialog.OnStartListener() {
             @Override
             public void onStart() {
@@ -78,7 +78,7 @@ public class HomeFrag extends BaseFragment implements
             }
         });
         mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
-        mDialog.show();
+        mDialog.show();*/
     }
 
     @Override
@@ -137,7 +137,7 @@ public class HomeFrag extends BaseFragment implements
         mAdapter.notifyItemInserted(mAdapter.getData().size());
         if (!found) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-            mDialog.show();
+//            mDialog.show();
         }
     }
 

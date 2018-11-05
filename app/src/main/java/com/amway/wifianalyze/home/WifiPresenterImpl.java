@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
+import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.utils.WifiConnector;
 
 import java.util.HashMap;
@@ -43,6 +44,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private int mReScanTimes = 0;
     private boolean mRefreshScanList = true;
     private boolean mCheckConnected = false;
+    private boolean mWifiOff;
 
 
     public WifiPresenterImpl(WifiContract.WifiView view) {
@@ -75,19 +77,21 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_CONNECT_TIMEOUT:
-                    mView.onConnectFailed();
                     findFailReason();
                     break;
             }
         }
     };
 
+
     @Override
     public void scanWifi() {
         if (mWm.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
-            mView.onWifiUnable();
+            mWifiOff = true;
+            mView.onChecking(Code.INFO_OPEN_WIFI);
             mWm.setWifiEnabled(true);
         } else {
+            mView.onChecking(Code.INFO_SCAN_WIFI);
             mWm.startScan();
             mRefreshScanList = true;
             Log.e(TAG, "开始扫描");
@@ -95,6 +99,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     }
 
     private void connect(ScanResult scanResult) {//91vst.com
+        mView.onChecking(Code.INFO_CONNECTING);
         mFailScanResult = scanResult;
         int type = scanResult.capabilities.contains("WEP") ? WifiConnector.WIFI_TYPE_WEP : WifiConnector.WIFI_TYPE_WPA;
         if (TextUtils.isEmpty(DEFAULT_PWD)) {
@@ -103,18 +108,24 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         Log.e(TAG, "TYPE:" + type);
         boolean connect = WifiConnector.connect(mWm, scanResult.SSID.replaceAll("\"", ""), DEFAULT_PWD, type);
         if (!connect) {
-            mView.onFailReason(ERROR_PWD);
+            mView.onError(Code.INFO_CONNECTING, ERROR_PWD);
         } else {
             mHandler.sendEmptyMessageDelayed(MSG_CONNECT_TIMEOUT, CONNECT_TIMEOUT);
         }
     }
 
+    private void onInfo(int code) {
+        mView.onInfo(code, -1, -1);
+    }
 
     private void onConnected() {
         Log.d(TAG, "NETWORK-->" + "----Connected--------");
         WifiInfo info = mWm.getConnectionInfo();
         if (!mCheckConnected && !mRefreshScanList && info != null && info.getSSID() != null
                 && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""))) {
+            onInfo(Code.INFO_CONNECTING);
+            mView.onChecking(Code.INFO_CONNECTED);
+            onInfo(Code.INFO_CONNECTED);
             mCheckConnected = true;
             mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
             mView.onConnected(mWm.getConnectionInfo());
@@ -134,13 +145,13 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             boolean lowLevel = mFailScanResult.level < LOW_LEVEL;//信号差
             boolean busyChannel = mChannelBusyMap.get(mFailScanResult.frequency) > BUSY_CHANNEL;//信道拥堵
             if (!lowLevel && !busyChannel) {//其他问题
-                mView.onFailReason(ERROR_ELSE);
+                mView.onError(Code.INFO_CONNECTING, ERROR_ELSE);
             } else {
                 if (lowLevel) {
-                    mView.onFailReason(ERROR_LOW_LEVEL);
+                    mView.onError(Code.INFO_CONNECTING, ERROR_LOW_LEVEL);
                 }
                 if (busyChannel) {
-                    mView.onFailReason(ERROR_BUSY_CHANNEL);
+                    mView.onError(Code.INFO_CONNECTING, ERROR_BUSY_CHANNEL);
                 }
             }
         }
@@ -193,7 +204,6 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                     mRefreshScanList = false;
                     mReScanTimes = 0;
                     rangeList(list);
-                    mView.onScanResult(list, mWifiInfo);
                     if (mWifiInfo == null || mWifiInfo.getSSID() == null
                             || !DEFAULT_SSID.equals(mWifiInfo.getSSID().replaceAll("\"", ""))) {
                         Iterator<ScanResult> iterator = list.iterator();
@@ -206,27 +216,29 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                             }
                         }
                         if (dstResult == null) {
-                            mView.onFoundSSID(false);
+                            mView.onError(Code.INFO_SCAN_WIFI, -1);
                         } else {
-                            mView.onFoundSSID(true);
+                            onInfo(Code.INFO_SCAN_WIFI);
                             connect(dstResult);
                         }
 
                     } else {
+                        onInfo(Code.INFO_SCAN_WIFI);
                         onConnected();
                     }
                 } else if (mReScanTimes < MAX_SCAN_TIMES) {
                     mReScanTimes++;
                     scanWifi();
                 } else {
-                    mView.onFoundSSID(false);
+                    mView.onError(Code.INFO_SCAN_WIFI, -1);
                 }
 
             } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {//todo
-                /*if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED) {
-                    mView.onWifiAvailable();
+                if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED && mWifiOff) {
+                    mWifiOff = false;
+                    onInfo(Code.INFO_OPEN_WIFI);
                     scanWifi();
-                }*/
+                }
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
                 if (parcelableExtra != null) {

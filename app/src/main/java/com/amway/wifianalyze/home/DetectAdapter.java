@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amway.wifianalyze.R;
@@ -32,16 +33,31 @@ public class DetectAdapter extends BaseAdapter<DetectResult, DetectAdapter.TextH
     public void onBindViewHolder(TextHolder holder, int position) {
         DetectResult result = mList.get(position);
         holder.text.setText(result.getContent());
-        switch (result.getStatus()) {
+        changeStutus(holder, result.getStatus());
+        if (result.getStatus() == DetectResult.Status.LOADING) {
+            holder.loading.setVisibility(View.VISIBLE);
+            holder.icon.setVisibility(View.INVISIBLE);
+            holder.result.setVisibility(View.INVISIBLE);
+        } else {
+            holder.loading.setVisibility(View.INVISIBLE);
+            holder.icon.setVisibility(View.VISIBLE);
+            holder.result.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void changeStutus(TextHolder holder, DetectResult.Status status) {
+        switch (status) {
             case SUCCESS:
                 holder.result.setText(mContext.getString(R.string.detect_result_ok));
                 holder.result.setSelected(false);
+                holder.icon.setImageResource(R.drawable.ic_gz_zc);
                 break;
             case WARN:
                 break;
             case ERROR:
                 holder.result.setText(mContext.getString(R.string.detect_result_error));
                 holder.result.setSelected(true);
+                holder.icon.setImageResource(R.drawable.ic_gz_gz);
                 break;
         }
     }
@@ -54,30 +70,23 @@ public class DetectAdapter extends BaseAdapter<DetectResult, DetectAdapter.TextH
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void hideLoading() {
-        TextHolder holder = (TextHolder) mRecycler.findViewHolderForAdapterPosition(0);
-        if (holder != null) {
-            holder.loading.setVisibility(View.INVISIBLE);
-            holder.icon.setVisibility(View.VISIBLE);
-        }
-    }
-
     public void insert() {
-        hideLoading();
+        mRecycler.scrollToPosition(0);
         notifyItemInserted(0);
     }
+
 
     class TextHolder extends RecyclerView.ViewHolder {
         public TextView text;
         public TextView result;
-        public View icon;
+        public ImageView icon;
         public View loading;
 
         public TextHolder(View itemView) {
             super(itemView);
             text = (TextView) itemView.findViewById(R.id.item_text);
             result = (TextView) itemView.findViewById(R.id.item_result);
-            icon = itemView.findViewById(R.id.item_icon);
+            icon = (ImageView) itemView.findViewById(R.id.item_icon);
             loading = itemView.findViewById(R.id.item_loading);
         }
     }

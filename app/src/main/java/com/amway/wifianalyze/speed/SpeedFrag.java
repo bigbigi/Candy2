@@ -1,16 +1,13 @@
 package com.amway.wifianalyze.speed;
 
 import android.content.Context;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,25 +98,6 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         }
     }
 
-    @Override
-    public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
-
-    }
-
-    @Override
-    public void onWifiUnable() {
-
-    }
-
-    @Override
-    public void onWifiAvailable() {
-
-    }
-
-    @Override
-    public void onFoundSSID(boolean found) {
-
-    }
 
     @Override
     public void onConnected(WifiInfo wifiInfo) {
@@ -135,17 +113,23 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getWlanMac()));
         list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
         mAdapter.setData(list);
-
         mSpeedPresenter.getSpeed();
     }
 
+
     @Override
-    public void onConnectFailed() {
+    public void onChecking(int code) {
 
     }
 
     @Override
-    public void onFailReason(int code) {
+    public void onInfo(int code, int loss, int delay) {
+
+    }
+
+
+    @Override
+    public void onError(int code, int reason) {
 
     }
 

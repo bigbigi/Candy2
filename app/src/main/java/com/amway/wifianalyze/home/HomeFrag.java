@@ -2,7 +2,6 @@ package com.amway.wifianalyze.home;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,18 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
-import com.amway.wifianalyze.home.AuthContract.AuthPresenter;
+import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.home.DetectResult.Status;
 import com.amway.wifianalyze.lib.NetworkUtils;
 import com.autofit.widget.TextView;
-
-
-import java.util.List;
 
 
 /**
@@ -117,6 +112,12 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
+    private void checkEnd(int code) {
+        if (code == Code.INFO_SKIP) {
+            stopAni();
+        }
+    }
+
 
     private WifiContract.WifiPresenter mWifiPresenter;
     private AuthContract.AuthPresenter mAuthPresenter;
@@ -131,41 +132,7 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
-    public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
-        Log.d(TAG, "onScanResult," + "list:" + list + ",current:" + currentWifi);
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "扫描成功"));
-        mAdapter.insert();
-    }
-
-    @Override
-    public void onWifiUnable() {
-        Log.d(TAG, "onWifiUnable");
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "wifi未打开，正在打开wifi..."));
-        mAdapter.insert();
-    }
-
-    @Override
-    public void onWifiAvailable() {
-        Log.d(TAG, "onWifiAvailable");
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "已打开wifi，开始扫描..."));
-        mAdapter.insert();
-    }
-
-    @Override
-    public void onFoundSSID(boolean found) {
-        String message = found ? "正在连接" : "未找到目标wifi";
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
-        mAdapter.insert();
-        if (!found) {
-            Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-//            mDialog.show();
-        }
-    }
-
-    @Override
     public void onConnected(WifiInfo wifiInfo) {
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "wifi连接成功"));
-        mAdapter.insert();
         mAuthPresenter.startCheck(getContext());
         if (wifiInfo.getSSID() != null) {
             mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
@@ -178,59 +145,14 @@ public class HomeFrag extends BaseFragment implements
 
 
     @Override
-    public void onConnectFailed() {
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "wifi连接失败，正在分析原因..."));
-        mAdapter.insert();
-    }
-
-    @Override
-    public void onFailReason(int code) {
-        String message = null;
-        switch (code) {
-            case 1:
-                message = "密码错误";
-                break;
-            case 2:
-                message = "信道拥堵";
-                break;
-            case 3:
-                message = "信号差";
-                break;
-        }
-        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
-        mAdapter.insert();
-    }
-
-
-    @Override
-    public void onError(int code) {
-        final String message;
-        switch (code) {
-            case AuthPresenter.INFO_STATIC_IP:
-                message = "静态IP";
-                break;
-            case AuthPresenter.INFO_SERVER:
-                message = "服务器ping不通";
-                break;
-            case AuthPresenter.INFO_SERVER_PORT:
-                message = "服务器端口被占用";
-                break;
-            case AuthPresenter.INFO_INTERNET:
-                message = "Internet专线不通";
-                break;
-            case AuthPresenter.INFO_DNS:
-                message = "DNS错误";
-                break;
-            default:
-                message = null;
-                break;
-        }
+    public void onChecking(final int code) {
+        final String message = Code.getMessage(code, -1, -1);
         Activity activity = getActivity();
         if (activity != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
+                    mAdapter.getData().add(0, new DetectResult(Status.LOADING, code, message));
                     mAdapter.insert();
                 }
             });
@@ -239,38 +161,51 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onInfo(final int code, int loss, int delay) {
-        final String message;
-        switch (code) {
-            case AuthPresenter.INFO_STATIC_IP:
-                message = "静态IP ----Ok";
-                break;
-            case AuthPresenter.INFO_SERVER:
-                message = "服务器ping不通 ----Ok,丢包：" + loss + ",延迟:" + delay;
-                break;
-            case AuthPresenter.INFO_SERVER_PORT:
-                message = "服务器端口被占用 ----Ok";
-                break;
-            case AuthPresenter.INFO_INTERNET:
-                message = "Internet专线不通 ----Ok,丢包：" + loss + ",延迟:" + delay;
-                break;
-            case AuthPresenter.INFO_DNS:
-                message = "DNS错误  ----Ok";
-                break;
-            default:
-                message = null;
-                break;
-        }
+        final String message = Code.getMessage(code, loss, delay);
         Activity activity = getActivity();
         if (activity != null) {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (code == AuthPresenter.INFO_DNS) {
-                        stopAni();
-                        mAdapter.hideLoading();
+                    checkEnd(code);
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        DetectResult result = mAdapter.getData().get(i);
+                        if (result.getCode() == code) {
+                            result.setContent(message);
+                            result.setStatus(Status.SUCCESS);
+                            mAdapter.notifyItemChanged(i);
+                            break;
+                        }
                     }
-                    mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
-                    mAdapter.insert();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onError(final int code, final int reason) {
+        Log.e(TAG, "onError:" + code + ",reason:" + reason);
+        final String message = Code.getErrorMessage(code, reason);
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    checkEnd(code);
+                    if (reason < 0) {
+                        for (int i = 0; i < mAdapter.getData().size(); i++) {
+                            DetectResult result = mAdapter.getData().get(i);
+                            if (result.getCode() == code) {
+                                result.setStatus(Status.ERROR);
+                                result.setContent(message);
+                                mAdapter.notifyItemChanged(i);
+                                break;
+                            }
+                        }
+                    } else {
+                        mAdapter.getData().add(0, new DetectResult(Status.ERROR, code, message));
+                        mAdapter.insert();
+                    }
                 }
             });
         }

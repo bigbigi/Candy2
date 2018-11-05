@@ -5,14 +5,15 @@ package com.amway.wifianalyze.home;
  */
 
 public class DetectResult {
-    public enum Status {SUCCESS, WARN, ERROR}
+    public enum Status {LOADING, SUCCESS, WARN, ERROR}
 
     private Status status;
     private String content;
-    private boolean loading=true;
+    private int code;
 
-    public DetectResult(Status status, String content) {
+    public DetectResult(Status status, int code, String content) {
         this.status = status;
+        this.code = code;
         this.content = content;
     }
 
@@ -20,15 +21,23 @@ public class DetectResult {
         return status;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public String getContent() {
         return content;
     }
 
-    public boolean isLoading() {
-        return loading;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public void setLoading(boolean loading) {
-        this.loading = loading;
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

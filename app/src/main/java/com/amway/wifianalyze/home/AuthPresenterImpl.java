@@ -1,12 +1,12 @@
 package com.amway.wifianalyze.home;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.NetworkUtils;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
@@ -44,37 +44,45 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
 
     @Override
     public boolean checkDhcp() {
+        mView.onChecking(Code.INFO_STATIC_IP);
         boolean staticIp = NetworkUtils.isStaticIp(mContext);
         if (staticIp) {
-            mView.onError(INFO_STATIC_IP);
+            mView.onError(Code.INFO_STATIC_IP, -1);
+        } else {
+            mView.onInfo(Code.INFO_STATIC_IP, 0, 0);
         }
         return !staticIp;
     }
 
     @Override
     public boolean checkPort() {
+        mView.onChecking(Code.INFO_SERVER_PORT);
         return NetworkUtils.telnet(SERVER_URL, 80);
     }
 
 
     @Override
     public void checkServer() {
-        mTraceroute.executeTraceroute(SERVER_URL, INFO_SERVER);
+        mView.onChecking(Code.INFO_SERVER);
+        mTraceroute.executeTraceroute(SERVER_URL, Code.INFO_SERVER);
     }
 
 
     @Override
     public void checkInternet() {
-        mTraceroute.executeTraceroute(INTERNET, INFO_INTERNET);
+        mView.onChecking(Code.INFO_INTERNET);
+        mTraceroute.executeTraceroute(INTERNET, Code.INFO_INTERNET);
     }
 
     @Override
     public boolean checkDns() {
+        mView.onChecking(Code.INFO_DNS);
         return !TextUtils.isEmpty(NetworkUtils.getIpAndDns(SERVER_URL));
     }
 
     @Override
     public void skipBrowser() {
+        mView.onChecking(Code.INFO_SKIP);
         Response response = HttpHelper.getInstance(mContext).getResponse(AUTO_SERVER);
         if (response != null) {
             Log.d(TAG, "skipBrowser:" + response.code());
@@ -84,7 +92,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 Uri content_url = Uri.parse("http://www.baidu.com");
                 intent.setData(content_url);
                 mContext.startActivity(intent);
+                mView.onError(Code.INFO_SKIP, -1);
+            } else {
+                mView.onInfo(Code.INFO_SKIP, 0, 0);
             }
+        } else {
+            mView.onError(Code.INFO_SKIP, -1);
         }
     }
 
@@ -93,30 +106,30 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void onResult(int what, int loss, int delay) {
         Log.e("big", "onResult:" + what);
         mView.onInfo(what, loss, delay);
-        if (what == INFO_SERVER) {
+        if (what == Code.INFO_SERVER) {
             if (checkPort()) {
-                mView.onInfo(INFO_SERVER_PORT, 0, 0);
+                mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
                 checkInternet();
             } else {
-                mView.onError(INFO_SERVER_PORT);
+                mView.onError(Code.INFO_SERVER_PORT, -1);
             }
-        } else if (what == INFO_INTERNET) {
+        } else if (what == Code.INFO_INTERNET) {
             if (checkDns()) {
-                mView.onInfo(INFO_DNS, 0, 0);
+                mView.onInfo(Code.INFO_DNS, 0, 0);
                 skipBrowser();
             } else {
-                mView.onError(INFO_DNS);
+                mView.onError(Code.INFO_DNS, -1);
             }
         }
     }
 
     @Override
     public void onTimeout(int what) {
-        mView.onError(what);
+        mView.onError(what, -1);
     }
 
     @Override
     public void onException(int what) {
-        mView.onError(what);
+        mView.onError(what, -1);
     }
 }

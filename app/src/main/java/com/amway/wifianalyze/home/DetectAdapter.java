@@ -46,15 +46,39 @@ public class DetectAdapter extends BaseAdapter<DetectResult, DetectAdapter.TextH
         }
     }
 
+    private RecyclerView mRecycler;
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        mRecycler = recyclerView;
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public void hideLoading() {
+        TextHolder holder = (TextHolder) mRecycler.findViewHolderForAdapterPosition(0);
+        if (holder != null) {
+            holder.loading.setVisibility(View.INVISIBLE);
+            holder.icon.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void insert() {
+        hideLoading();
+        notifyItemInserted(0);
+    }
 
     class TextHolder extends RecyclerView.ViewHolder {
         public TextView text;
         public TextView result;
+        public View icon;
+        public View loading;
 
         public TextHolder(View itemView) {
             super(itemView);
             text = (TextView) itemView.findViewById(R.id.item_text);
             result = (TextView) itemView.findViewById(R.id.item_result);
+            icon = itemView.findViewById(R.id.item_icon);
+            loading = itemView.findViewById(R.id.item_loading);
         }
     }
 }

@@ -9,6 +9,7 @@ public class DetectResult {
 
     private Status status;
     private String content;
+    private boolean loading=true;
 
     public DetectResult(Status status, String content) {
         this.status = status;
@@ -21,5 +22,13 @@ public class DetectResult {
 
     public String getContent() {
         return content;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
     }
 }

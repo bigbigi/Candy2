@@ -14,7 +14,6 @@
         android:textColor="#2b2b2b"
         android:textSize="30px" />
 
-
     <com.autofit.widget.ImageView
         android:id="@+id/item_icon"
         android:layout_width="28px"
@@ -24,7 +23,17 @@
         android:layout_marginRight="88px"
         android:gravity="center_vertical"
         android:src="@drawable/ic_gz_zc"
-        android:textSize="30px" />
+        android:textSize="30px"
+        android:visibility="invisible" />
+
+    <com.autofit.widget.ProgressBar
+        android:id="@+id/item_loading"
+        android:layout_width="28px"
+        android:layout_height="28px"
+        android:layout_alignLeft="@id/item_icon"
+        android:layout_centerVertical="true"
+        android:indeterminateDrawable="@drawable/ani_loading"
+        android:indeterminateDuration="1000" />
 
 
     <com.autofit.widget.TextView

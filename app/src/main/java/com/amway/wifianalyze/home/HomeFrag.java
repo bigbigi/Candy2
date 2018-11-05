@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.home;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -54,8 +55,10 @@ public class HomeFrag extends BaseFragment implements
     private TextView mWifiName;
     private TextView mWifiFrequence;
     private TestDialog mDialog;
+    private View mRadar;
 
     public void init(View content) {
+        mRadar = content.findViewById(R.id.detect_radar);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new DetectAdapter(getContext());
@@ -67,6 +70,7 @@ public class HomeFrag extends BaseFragment implements
 
         mWifiPresenter.init(getContext());
         mWifiPresenter.scanWifi();
+        startAni();
 
         //todo test
         /*mDialog = new TestDialog(getContext());
@@ -97,6 +101,23 @@ public class HomeFrag extends BaseFragment implements
         mWifiPresenter.release(getContext());
     }
 
+    private ObjectAnimator mAni;
+
+    private void startAni() {
+        stopAni();
+        mAni = ObjectAnimator.ofFloat(mRadar, "rotation", 360);
+        mAni.setRepeatCount(ObjectAnimator.INFINITE);
+        mAni.start();
+    }
+
+    private void stopAni() {
+        if (mAni != null) {
+            mRadar.setRotation(0);
+            mAni.cancel();
+        }
+    }
+
+
     private WifiContract.WifiPresenter mWifiPresenter;
     private AuthContract.AuthPresenter mAuthPresenter;
 
@@ -112,29 +133,29 @@ public class HomeFrag extends BaseFragment implements
     @Override
     public void onScanResult(List<ScanResult> list, WifiInfo currentWifi) {
         Log.d(TAG, "onScanResult," + "list:" + list + ",current:" + currentWifi);
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "扫描成功"));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "扫描成功"));
+        mAdapter.insert();
     }
 
     @Override
     public void onWifiUnable() {
         Log.d(TAG, "onWifiUnable");
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi未打开，正在打开wifi..."));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "wifi未打开，正在打开wifi..."));
+        mAdapter.insert();
     }
 
     @Override
     public void onWifiAvailable() {
         Log.d(TAG, "onWifiAvailable");
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "已打开wifi，开始扫描..."));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "已打开wifi，开始扫描..."));
+        mAdapter.insert();
     }
 
     @Override
     public void onFoundSSID(boolean found) {
         String message = found ? "正在连接" : "未找到目标wifi";
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
+        mAdapter.insert();
         if (!found) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 //            mDialog.show();
@@ -143,8 +164,8 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onConnected(WifiInfo wifiInfo) {
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi连接成功"));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "wifi连接成功"));
+        mAdapter.insert();
         mAuthPresenter.startCheck(getContext());
         if (wifiInfo.getSSID() != null) {
             mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
@@ -158,8 +179,8 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onConnectFailed() {
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, "wifi连接失败，正在分析原因..."));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, "wifi连接失败，正在分析原因..."));
+        mAdapter.insert();
     }
 
     @Override
@@ -176,8 +197,8 @@ public class HomeFrag extends BaseFragment implements
                 message = "信号差";
                 break;
         }
-        mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
-        mAdapter.notifyItemInserted(mAdapter.getData().size());
+        mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
+        mAdapter.insert();
     }
 
 
@@ -209,15 +230,15 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
-                    mAdapter.notifyItemInserted(mAdapter.getData().size());
+                    mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
+                    mAdapter.insert();
                 }
             });
         }
     }
 
     @Override
-    public void onInfo(int code, int loss, int delay) {
+    public void onInfo(final int code, int loss, int delay) {
         final String message;
         switch (code) {
             case AuthPresenter.INFO_STATIC_IP:
@@ -244,8 +265,12 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.getData().add(new DetectResult(Status.SUCCESS, message));
-                    mAdapter.notifyItemInserted(mAdapter.getData().size());
+                    if (code == AuthPresenter.INFO_DNS) {
+                        stopAni();
+                        mAdapter.hideLoading();
+                    }
+                    mAdapter.getData().add(0, new DetectResult(Status.SUCCESS, message));
+                    mAdapter.insert();
                 }
             });
         }

@@ -2,7 +2,11 @@ package com.amway.wifianalyze.lib;
 
 import android.content.Context;
 import android.net.DhcpInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.commons.net.telnet.TelnetClient;
@@ -21,8 +25,9 @@ import java.net.UnknownHostException;
  */
 
 public class NetworkUtils {
+    private final static String TAG = "NetworkUtils";
 
-    public static String getIpAndDns(String url) {
+    public static String getIp(String url) {
         try {
             ///Found NSLookup from http://www.coderanch.com/t/328875/java/java/nslookup-Java
             ///More on inet addresses from http://download.java.net/jdk7/archive/b123/docs/api/java/net/InetAddress.html
@@ -36,10 +41,14 @@ public class NetworkUtils {
             return strbuf.toString();
 
         } catch (UnknownHostException e) {
-            Log.e("bigbig", "UnknownHostException:" + e);
+            Log.e("TAG", "UnknownHostException:" + e);
             return null;
         }
 
+    }
+
+    public static boolean checkDnsWithIp(String url, String dns) {
+        return TextUtils.equals(dns, getIp(url));
     }
 
     public static void checkSocket() {
@@ -109,7 +118,30 @@ public class NetworkUtils {
                 (i >> 24 & 0xFF);
     }
 
+    public static String getMac(Context context) {
+        Log.e(TAG, "VERSION:" + Build.VERSION.SDK_INT);
+        String mac = getWifiInfoMac(context);
+        if (TextUtils.isEmpty(mac)) {
+            mac = getWlanMac();
+        }
+        return mac;
+    }
+
+    /**
+     * 根据wifi信息获取本地mac
+     *
+     * @param context
+     * @return
+     */
+    public static String getWifiInfoMac(Context context) {
+        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo winfo = wifi.getConnectionInfo();
+        String mac = winfo.getMacAddress();
+        return mac;
+    }
+
     public static String getWlanMac() {
+
         String mac = "";
 
         try {
@@ -130,5 +162,17 @@ public class NetworkUtils {
         }
 
         return mac;
+    }
+
+    public static String getPhoneNumber(Context context) {
+        String phoneNum = PreferenceUtil.getString(context, PreferenceUtil.PHONE_NUM);
+        if (TextUtils.isEmpty(phoneNum)) {
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            phoneNum = telephonyManager.getLine1Number();
+            if (!TextUtils.isEmpty(phoneNum)) {
+                PreferenceUtil.putString(context, PreferenceUtil.PHONE_NUM, phoneNum);
+            }
+        }
+        return phoneNum;
     }
 }

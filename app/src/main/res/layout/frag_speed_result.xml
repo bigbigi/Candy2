@@ -38,6 +38,8 @@
         android:layout_height="275px"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="487px"
+        android:paddingLeft="50px"
+        android:paddingRight="50px"
         android:background="@drawable/bg_detect">
 
         <com.autofit.widget.TextView
@@ -50,13 +52,14 @@
             android:textSize="30px" />
 
         <com.amway.wifianalyze.speed.SpeedView
+            android:layout_marginTop="45px"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.LinearLayout
         android:layout_width="696px"
-        android:layout_height="432px"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="782px"
         android:background="@drawable/bg_detect"

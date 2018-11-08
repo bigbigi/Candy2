@@ -5,8 +5,8 @@ package com.amway.wifianalyze.base;
  */
 
 public class Code {
-    public static final int FLAG_ERROR = 0x000000ff;
-    public static final int FLAG_INFO = 0x0000ff00;
+    public static final int FLAG_ERROR = 0x0000ff00;
+    public static final int FLAG_INFO = 0x000000ff;
 
     public static final int INFO_OPEN_WIFI = 0x00000001;//正在打开WIFI
     public static final int INFO_SCAN_WIFI = 0x00000002;//扫描WIFI...
@@ -24,6 +24,7 @@ public class Code {
     public static final int INFO_WEIXIN = 0x00000018;//微信无法认证
     public static final int INFO_CARD = 0x00000019;//卡号无法认证
     public static final int INFO_SMS = 0x0000001a;//短信无法认证
+
 
     public static String getMessage(int code, int loss, int delay) {
         String message;
@@ -73,20 +74,33 @@ public class Code {
         return message;
     }
 
+    //错误
+    public static final int ERR_NO_WIFI = 0x0000ff01;//未找到目标wifi
+    public static final int ERROR_PWD = 0x0000ff02;//密码错误
+    public static final int ERROR_BUSY_CHANNEL = 0x0000ff03;//信道拥堵
+    public static final int ERROR_LOW_LEVEL = 0x0000ff04;//信号差
+    public static final int ERROR_ELSE = 0x0000ff05;//其他问题，AP人数过多等，找客服
+
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
             return getMessage(code, -1, -1);
         }
         String message = null;
         switch (reason) {
-            case 1:
+            case ERR_NO_WIFI:
+                message = "未找到目标wifi";
+                break;
+            case ERROR_PWD:
                 message = "密码错误";
                 break;
-            case 2:
+            case ERROR_BUSY_CHANNEL:
                 message = "信道拥堵";
                 break;
-            case 3:
+            case ERROR_LOW_LEVEL:
                 message = "信号差";
+                break;
+            case ERROR_ELSE:
+                message = "AP人数过多等，找客服";
                 break;
         }
         return message;

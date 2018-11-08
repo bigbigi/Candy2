@@ -26,4 +26,5 @@ public class FeedbackContract implements BaseContract {
 
         public abstract void addPicture();
     }
+
 }

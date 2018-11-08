@@ -77,7 +77,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public boolean checkDns() {
         mView.onChecking(Code.INFO_DNS);
-        return !TextUtils.isEmpty(NetworkUtils.getIpAndDns(SERVER_URL));
+        return !TextUtils.isEmpty(NetworkUtils.getIp(SERVER_URL));
     }
 
     @Override

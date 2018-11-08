@@ -70,7 +70,7 @@ public class SpeedResultFrag extends BaseFragment {
         }
         List<SpeedResult> list = new ArrayList();
         list.add(new SpeedResult(getString(R.string.speed_IP), NetworkUtils.intToIp(wifiInfo.getIpAddress())));
-        list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getWlanMac()));
+        list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getMac(getContext())));
         list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
         mAdapter.setData(list);
     }

@@ -36,6 +36,8 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private final static int LOW_LEVEL = -80;
     private static String DEFAULT_SSID = "91vst-wifi";
     private static String DEFAULT_PWD = "91vst.com";
+    //    private static String DEFAULT_SSID = "big";
+//    private static String DEFAULT_PWD = "";
     private HashMap<Integer, Integer> mChannelBusyMap = new HashMap<Integer, Integer>();
     private MyWifiBrocastReceiver mWifiReceiver;
     private WifiManager mWm;
@@ -108,7 +110,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         Log.e(TAG, "TYPE:" + type);
         boolean connect = WifiConnector.connect(mWm, scanResult.SSID.replaceAll("\"", ""), DEFAULT_PWD, type);
         if (!connect) {
-            mView.onError(Code.INFO_CONNECTING, ERROR_PWD);
+            mView.onError(Code.INFO_CONNECTING, Code.ERROR_PWD);
         } else {
             mHandler.sendEmptyMessageDelayed(MSG_CONNECT_TIMEOUT, CONNECT_TIMEOUT);
         }
@@ -145,13 +147,13 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             boolean lowLevel = mFailScanResult.level < LOW_LEVEL;//信号差
             boolean busyChannel = mChannelBusyMap.get(mFailScanResult.frequency) > BUSY_CHANNEL;//信道拥堵
             if (!lowLevel && !busyChannel) {//其他问题
-                mView.onError(Code.INFO_CONNECTING, ERROR_ELSE);
+                mView.onError(Code.INFO_CONNECTING, Code.ERROR_ELSE);
             } else {
                 if (lowLevel) {
-                    mView.onError(Code.INFO_CONNECTING, ERROR_LOW_LEVEL);
+                    mView.onError(Code.INFO_CONNECTING, Code.ERROR_LOW_LEVEL);
                 }
                 if (busyChannel) {
-                    mView.onError(Code.INFO_CONNECTING, ERROR_BUSY_CHANNEL);
+                    mView.onError(Code.INFO_CONNECTING, Code.ERROR_BUSY_CHANNEL);
                 }
             }
         }
@@ -216,7 +218,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                             }
                         }
                         if (dstResult == null) {
-                            mView.onError(Code.INFO_SCAN_WIFI, -1);
+                            mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                         } else {
                             onInfo(Code.INFO_SCAN_WIFI);
                             connect(dstResult);
@@ -230,7 +232,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                     mReScanTimes++;
                     scanWifi();
                 } else {
-                    mView.onError(Code.INFO_SCAN_WIFI, -1);
+                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                 }
 
             } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {//todo

@@ -58,7 +58,6 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mWifiFrequence = (TextView) content.findViewById(R.id.wifi_frequence);
         mWifiName.setText("");
         mWifiFrequence.setText("");
-
         mWifiPresenter.init(getContext());
         start();
     }
@@ -110,7 +109,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         List<SpeedResult> list = new ArrayList();
         list.add(new SpeedResult(getString(R.string.speed_IP), NetworkUtils.intToIp(wifiInfo.getIpAddress())));
-        list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getWlanMac()));
+        list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getMac(getContext())));
         list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
         mAdapter.setData(list);
         mSpeedPresenter.getSpeed();

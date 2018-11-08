@@ -15,6 +15,7 @@ public class PermissionUtil {
     public void init(Activity activity) {
         checkPermissions(activity, PER_STORAGE, PERMISSIONS_STORAGE, RESULT_STORAGE);
         checkPermissions(activity, PER_WIFI, PERMISSIONS_WIFI, RESULT_WIFI);
+        checkPermissions(activity, PER_PHONE, PERMISSIONS_PHONE, RESULT_PHONE);
     }
 
     //读写权限
@@ -29,6 +30,12 @@ public class PermissionUtil {
     private static final String PER_WIFI = Manifest.permission.ACCESS_FINE_LOCATION;
     private static String[] PERMISSIONS_WIFI = {Manifest.permission.ACCESS_FINE_LOCATION
             , Manifest.permission.ACCESS_COARSE_LOCATION};
+
+    //电话号码
+    private static final int RESULT_PHONE = 3;
+    private static final String PER_PHONE = "android.permission.READ_PHONE_NUMBERS";
+    private static String[] PERMISSIONS_PHONE = {"android.permission.READ_PHONE_NUMBERS"};
+
 
     private void checkPermissions(Activity context, String permission, String[] permissions, int resultCode) {
 

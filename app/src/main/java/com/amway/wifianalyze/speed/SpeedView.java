@@ -31,7 +31,7 @@ public class SpeedView extends View {
     public SpeedView(Context context, AttributeSet attrs) {
         super(context, attrs);
         radius = ScreenParameter.getFitWidth(this, radius);
-        lineLength = ScreenParameter.getFitWidth(this, lineLength);
+//        lineLength = ScreenParameter.getFitWidth(this, lineLength);
         margingX = ScreenParameter.getFitWidth(this, margingX);
         margingY = ScreenParameter.getFitHeight(this, margingY);
         mPaint.setTextSize(ScreenParameter.getFitSize(this, textSize));
@@ -44,6 +44,7 @@ public class SpeedView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int height = getHeight() / 2;
+        lineLength = (getWidth() - radius * 2 * 4 - margingX * 2) / 3;
         int x = margingX;
         for (int i = 0; i < 4; i++) {
             mPaint.setColor(i == level ? COLOR_RED : COLOR_BLUE);

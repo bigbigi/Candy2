@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
@@ -101,7 +102,9 @@ public class HomeFrag extends BaseFragment implements
     private void startAni() {
         stopAni();
         mAni = ObjectAnimator.ofFloat(mRadar, "rotation", 360);
+        mAni.setInterpolator(new LinearInterpolator());
         mAni.setRepeatCount(ObjectAnimator.INFINITE);
+        mAni.setDuration(1200);
         mAni.start();
     }
 
@@ -192,17 +195,15 @@ public class HomeFrag extends BaseFragment implements
                 @Override
                 public void run() {
                     checkEnd(code);
-                    if (reason < 0) {
-                        for (int i = 0; i < mAdapter.getData().size(); i++) {
-                            DetectResult result = mAdapter.getData().get(i);
-                            if (result.getCode() == code) {
-                                result.setStatus(Status.ERROR);
-                                result.setContent(message);
-                                mAdapter.notifyItemChanged(i);
-                                break;
-                            }
+                    for (int i = 0; i < mAdapter.getData().size(); i++) {
+                        DetectResult result = mAdapter.getData().get(i);
+                        if (result.getCode() == code) {
+                            result.setStatus(Status.ERROR);
+                            mAdapter.notifyItemChanged(i);
+                            break;
                         }
-                    } else {
+                    }
+                    if (reason > 0) {
                         mAdapter.getData().add(0, new DetectResult(Status.ERROR, code, message));
                         mAdapter.insert();
                     }

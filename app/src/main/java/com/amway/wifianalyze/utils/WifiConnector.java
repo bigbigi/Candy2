@@ -28,6 +28,7 @@ public class WifiConnector {
                 wm.saveConfiguration();
             }
             ret = connectWifiByReflectMethod(wm, configuration.networkId) != null;
+            Log.e(TAG, "networkId :" + configuration.networkId);
         } else {
             ret = connectByCofiguration(wm, createWifiConfiguration(ssid, pwd, type));
         }

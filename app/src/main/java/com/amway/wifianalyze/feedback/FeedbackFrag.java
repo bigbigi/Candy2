@@ -2,6 +2,7 @@ package com.amway.wifianalyze.feedback;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.lib.NetworkUtils;
+import com.amway.wifianalyze.utils.HttpHelper;
 
 /**
  * Created by big on 2018/10/25.
@@ -38,6 +41,11 @@ public class FeedbackFrag extends BaseFragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
+        String phoneNum = NetworkUtils.getPhoneNumber(getContext());
+        if (TextUtils.isEmpty(phoneNum)) {//Dialog
 
+        } else {//
+            HttpHelper.getInstance(getContext()).post("", "");
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -119,6 +120,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private void onInfo(int code) {
         mView.onInfo(code, -1, -1);
     }
+
 
     private void onConnected() {
         Log.d(TAG, "NETWORK-->" + "----Connected--------");

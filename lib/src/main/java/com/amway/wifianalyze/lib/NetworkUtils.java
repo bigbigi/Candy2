@@ -12,6 +12,7 @@ import android.util.Log;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.net.DatagramPacket;
@@ -120,9 +121,9 @@ public class NetworkUtils {
 
     public static String getMac(Context context) {
         Log.e(TAG, "VERSION:" + Build.VERSION.SDK_INT);
-        String mac = getWifiInfoMac(context);
+        String mac = getWlanMac();
         if (TextUtils.isEmpty(mac)) {
-            mac = getWlanMac();
+            mac = getWifiInfoMac(context);
         }
         return mac;
     }
@@ -174,5 +175,37 @@ public class NetworkUtils {
             }
         }
         return phoneNum;
+    }
+
+   /* public static String getDns(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
+        return intToIp(dhcpInfo.dns1);
+    }*/
+
+    public static String getDns1(Context context) {
+        return getProp("getprop net.dns1");
+    }
+
+    public static String getProp(String prop) {
+        String dns = "";
+        try {
+            Process localProcess = Runtime.getRuntime().exec(prop);
+            InputStream is = localProcess.getInputStream();
+            byte buf[] = new byte[1024 * 4];
+            int len = -1;
+            StringBuffer sb = new StringBuffer();
+            while ((len = is.read(buf, 0, buf.length)) != -1) {
+                sb.append(new String(buf, 0, len));
+            }
+            is.close();
+            localProcess.destroy();
+            dns = sb.toString().trim();
+            Log.d("big", "dns-->" + sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return dns;
+
     }
 }

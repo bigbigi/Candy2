@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_img"
+    android:layout_width="126px"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:background="@drawable/bg_detect"/>
+
+

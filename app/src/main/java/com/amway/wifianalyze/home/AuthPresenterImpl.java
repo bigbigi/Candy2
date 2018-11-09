@@ -88,6 +88,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             Log.d(TAG, "skipBrowser:" + response.code());
             if (response.code() != 204) {
                 Intent intent = new Intent();
+                intent.setPackage("com.android.browser");
                 intent.setAction("android.intent.action.VIEW");
                 Uri content_url = Uri.parse("http://www.baidu.com");
                 intent.setData(content_url);
@@ -125,11 +126,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
 
     @Override
     public void onTimeout(int what) {
+        Log.e(TAG, "onTimeout:" + what);
         mView.onError(what, -1);
     }
 
     @Override
     public void onException(int what) {
+        Log.e(TAG, "onException:" + what);
         mView.onError(what, -1);
     }
 }

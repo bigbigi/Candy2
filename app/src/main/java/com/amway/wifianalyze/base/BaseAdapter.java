@@ -27,4 +27,5 @@ public abstract class BaseAdapter<INFO, VH extends RecyclerView.ViewHolder> exte
     public int getItemCount() {
         return mList.size();
     }
+
 }

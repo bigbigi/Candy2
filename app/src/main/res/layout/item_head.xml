@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="126px"
+    android:layout_height="125px"
+    android:background="@drawable/bg_detect"
+    android:padding="40px"
+    android:src="@drawable/ic_jia" />
+
+

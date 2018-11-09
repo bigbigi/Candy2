@@ -36,15 +36,12 @@
         android:textColor="#aaaaaa"
         android:textSize="24px" />
 
-    <com.autofit.widget.ImageView
-        android:id="@+id/feedback_picture"
-        android:layout_width="126px"
+    <com.autofit.widget.RecyclerView
+        android:id="@+id/feedback_recycler"
+        android:layout_width="match_parent"
         android:layout_height="125px"
         android:layout_marginLeft="1px"
-        android:layout_marginTop="648px"
-        android:background="@drawable/bg_detect"
-        android:padding="40px"
-        android:src="@drawable/ic_jia" />
+        android:layout_marginTop="648px"/>
 
     <com.autofit.widget.Button
         android:id="@+id/feedback_submit"

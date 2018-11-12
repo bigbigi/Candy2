@@ -1,4 +1,4 @@
-package com.amway.wifianalyze.lib;
+package com.amway.wifianalyze.lib.util;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;

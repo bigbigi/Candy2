@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseFragment;
-import com.amway.wifianalyze.lib.NetworkUtils;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.autofit.widget.TextView;
 
 import java.util.ArrayList;

@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseFragment;
-import com.amway.wifianalyze.lib.NetworkUtils;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.listener.OnItemClickListener;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.autofit.widget.RecyclerView;

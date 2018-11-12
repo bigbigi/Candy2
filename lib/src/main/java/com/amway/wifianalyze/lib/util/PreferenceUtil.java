@@ -1,4 +1,4 @@
-package com.amway.wifianalyze.lib;
+package com.amway.wifianalyze.lib.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

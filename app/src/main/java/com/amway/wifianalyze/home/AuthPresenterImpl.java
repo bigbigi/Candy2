@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.amway.wifianalyze.base.Code;
-import com.amway.wifianalyze.lib.NetworkUtils;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
 

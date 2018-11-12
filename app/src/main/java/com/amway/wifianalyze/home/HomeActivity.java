@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseActivity;
 import com.amway.wifianalyze.feedback.FeedbackFrag;
-import com.amway.wifianalyze.lib.NetworkUtils;
+import com.amway.wifianalyze.lib.util.DevicesUtils;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.speed.SpeedFrag;
 import com.amway.wifianalyze.speed.SpeedPresenterImpl;
 import com.amway.wifianalyze.utils.PermissionUtil;
@@ -35,6 +36,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             }
         }, 2000);
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
+        Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this));
     }
 
     private ViewGroup mTabLayout;

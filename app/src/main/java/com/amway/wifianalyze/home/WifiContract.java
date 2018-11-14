@@ -28,8 +28,6 @@ public interface WifiContract extends BaseContract {
 
     abstract class WifiPresenter extends BasePresenterImpl<WifiView> {
 
-
-
         public WifiPresenter(WifiView view) {
             super(view);
         }

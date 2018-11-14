@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseActivity;
+import com.amway.wifianalyze.feedback.FeedbackContract;
 import com.amway.wifianalyze.feedback.FeedbackFrag;
+import com.amway.wifianalyze.feedback.FeedbackPresenterImpl;
 import com.amway.wifianalyze.lib.util.DevicesUtils;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.speed.SpeedFrag;
@@ -96,6 +98,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         } else if (v.getId() == R.id.tab_feedback) {
             if (mFeedbackFragment == null) {
                 mFeedbackFragment = FeedbackFrag.newInstance(null);
+                new FeedbackPresenterImpl((FeedbackFrag) mFeedbackFragment);
             }
             showFragment(mFeedbackFragment, FeedbackFrag.TAG);
         }

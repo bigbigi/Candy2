@@ -12,11 +12,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.listener.OnItemClickListener;
@@ -28,8 +31,11 @@ import com.autofit.widget.ScreenParameter;
  * Created by big on 2018/10/25.
  */
 
-public class FeedbackFrag extends BaseFragment implements View.OnClickListener,
-        OnItemClickListener<String> {
+public class FeedbackFrag extends BaseFragment implements FeedbackContract.FeedbackView,
+        View.OnClickListener,
+        OnItemClickListener<String>,
+        View.OnLongClickListener,
+        View.OnTouchListener {
     public static final String TAG = "FeedbackFrag";
 
     public static FeedbackFrag newInstance(Bundle args) {
@@ -48,9 +54,19 @@ public class FeedbackFrag extends BaseFragment implements View.OnClickListener,
 
     private RecyclerView mRecycler;
     private PictureAdapter mAdapter;
+    private TextView mVoiceText;
+    private FeedbackContract.FeedbackPresenter mPresenter;
+    private View mTimeLayout;
+    private TextView mVoiceTime;
 
     public void init(View content) {
         content.findViewById(R.id.feedback_submit).setOnClickListener(this);
+        content.findViewById(R.id.feedback_voice_retry).setOnClickListener(this);
+        mVoiceText = (TextView) content.findViewById(R.id.feedback_voice);
+        mTimeLayout = content.findViewById(R.id.feedback_voice_time_layout);
+        mVoiceTime = (TextView) content.findViewById(R.id.feedback_voice_time);
+        mVoiceText.setOnLongClickListener(this);
+        mVoiceText.setOnTouchListener(this);
         mRecycler = (RecyclerView) content.findViewById(R.id.feedback_recycler);
         mRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         mAdapter = new PictureAdapter(getContext());
@@ -68,14 +84,25 @@ public class FeedbackFrag extends BaseFragment implements View.OnClickListener,
     }
 
     @Override
-    public void onClick(View v) {
-        Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
-        String phoneNum = NetworkUtils.getPhoneNumber(getContext());
-        if (TextUtils.isEmpty(phoneNum)) {//Dialog
-        } else {//
-            HttpHelper.getInstance(getContext()).post("", "");
-        }
+    public void setPresenter(BaseContract.BasePresenter presenter) {
+        mPresenter = (FeedbackContract.FeedbackPresenter) presenter;
+    }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.feedback_submit) {
+            Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
+            String phoneNum = NetworkUtils.getPhoneNumber(getContext());
+            Log.d(TAG, "phoneNum:" + phoneNum);
+            if (TextUtils.isEmpty(phoneNum)) {//Dialog
+            } else {//
+//                HttpHelper.getInstance(getContext()).post("", "");
+//            mPresenter.submit(mAdapter.getData());
+            }
+        } else if (v.getId() == R.id.feedback_voice_retry) {
+            mVoiceText.setEnabled(true);
+            mVoiceText.setText(R.string.feedback_voice);
+        }
     }
 
     @Override
@@ -87,6 +114,38 @@ public class FeedbackFrag extends BaseFragment implements View.OnClickListener,
             mAdapter.notifyItemRemoved(position);
         }
     }
+
+    @Override
+    public boolean onLongClick(View v) {
+        Log.d(TAG, "onLongClick");
+        if (v.getId() == R.id.feedback_voice && !v.isSelected()) {
+            mPresenter.startRecord();
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v.getId() == R.id.feedback_voice && event.getAction() == MotionEvent.ACTION_UP) {
+            mPresenter.stopRecord();
+        }
+        return false;
+    }
+
+    @Override
+    public void onRecordStart() {
+        mVoiceText.setText(R.string.feedback_voice_pressed);
+        mTimeLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onRecordStop() {
+        mVoiceText.setText(mVoiceTime.getText());
+        mVoiceText.setEnabled(false);
+        mTimeLayout.setVisibility(View.GONE);
+    }
+
 
     private static final int REQUESTCODE_ALBUM = 2;
 
@@ -120,5 +179,8 @@ public class FeedbackFrag extends BaseFragment implements View.OnClickListener,
         }
     }
 
-
+    @Override
+    public void updateTime(String s) {
+        mVoiceTime.setText(s);
+    }
 }

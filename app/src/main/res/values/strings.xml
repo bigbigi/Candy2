@@ -22,6 +22,11 @@
     <!--问题反馈-->
     <string name="feedback_hint">请描述您遇到的问题</string>
     <string name="feedback_add_picture">添加图片</string>
+    <string name="feedback_add_voice">语音反馈</string>
+    <string name="feedback_voice">按住 说话</string>
+    <string name="feedback_voice_pressed">松开 结束</string>
+    <string name="feedback_voice_retry">重新录音</string>
+    <string name="feedback_voice_time">%ss</string>
     <string name="feedback_submint">提交</string>
 
 

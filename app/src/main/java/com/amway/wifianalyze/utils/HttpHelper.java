@@ -67,30 +67,32 @@ public class HttpHelper {
         return null;
     }
 
-    public void enqueue(String url, Callback callback) {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        mClient.newCall(request).enqueue(callback);
+    public Response post(String url, String content) {
+        try {
+            return post(url, new TextRequestBody(compress(content)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public void post(String url, String content) {
+    public Response post(String url, RequestBody requestBody) {
+        Response response = null;
         try {
-            final ByteArrayOutputStream stream = compress(content);
-            TextRequestBody requestBody = new TextRequestBody(stream);
             Request request = new Request.Builder()
                     .url(url)
                     .post(requestBody)
                     .build();
-
-            Response response = mClient.newCall(request).execute();
-            Log.i(TAG, "response1:" + response.isSuccessful() + "," + response.toString());
+            response = mClient.newCall(request).execute();
+            Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString());
+            return response;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return response;
     }
 
-    private ByteArrayOutputStream compress(String str) throws IOException {
+    public ByteArrayOutputStream compress(String str) throws IOException {
         if (str == null || str.length() == 0) {
             return null;
         }

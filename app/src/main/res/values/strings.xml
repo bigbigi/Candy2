@@ -12,12 +12,16 @@
     <string name="detect_5G">5G</string>
 
     <!--测速-->
-    <string name="speed_loading">正在测试网速...</string>
+    <string name="speed_downloading">正在测试下载速度...</string>
+    <string name="speed_uploading">正在测试上传速度...</string>
     <string name="speed_IP">IP地址</string>
     <string name="speed_MAC">MAC地址</string>
     <string name="speed_subnet">子网掩码</string>
     <string name="speed_bandwidth">相当于%dM带宽</string>
     <string name="speed_level1">网络很快，您可以观看超清视频</string>
+    <string name="speed_download">下载速度</string>
+    <string name="speed_upload">上传速度</string>
+    <string name="speed_prepared">-MB</string>
 
     <!--问题反馈-->
     <string name="feedback_hint">请描述您遇到的问题</string>

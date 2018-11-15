@@ -12,47 +12,85 @@
         android:layout_marginTop="48px"
         android:background="@drawable/ic_logo" />
 
-    <com.autofit.widget.TextView
-        android:id="@+id/speed_result_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.autofit.widget.RelativeLayout
+        android:layout_width="696px"
+        android:layout_height="230px"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="253px"
-        android:textColor="#e70241"
-        android:textSize="73px" />
+        android:layout_marginTop="212px"
+        android:background="@drawable/bg_detect"
+        android:gravity="center_vertical">
 
-    <com.autofit.widget.TextView
-        android:id="@+id/speed_result_bandwidth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="345px"
-        android:textColor="#01305f"
-        android:textSize="24px" />
+        <com.autofit.widget.TextView
+            android:id="@+id/speed_download"
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_prepared"
+            android:textColor="#e70241"
+            android:textSize="42px" />
 
+        <com.autofit.widget.TextView
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/speed_download"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_download"
+            android:textColor="#757575"
+            android:textSize="24px" />
+
+        <com.autofit.widget.TextView
+            android:id="@+id/speed_upload"
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_prepared"
+            android:textColor="#e70241"
+            android:textSize="42px" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/speed_upload"
+            android:layout_below="@id/speed_upload"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_upload"
+            android:textColor="#757575"
+            android:textSize="24px" />
+
+    </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.RelativeLayout
         android:layout_width="696px"
         android:layout_height="275px"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="487px"
+        android:background="@drawable/bg_detect"
         android:paddingLeft="50px"
-        android:paddingRight="50px"
-        android:background="@drawable/bg_detect">
+        android:paddingRight="50px">
+
+        <com.autofit.widget.TextView
+            android:id="@+id/speed_result_bandwidth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="43px"
+            android:textColor="#01305f"
+            android:textSize="24px" />
 
         <com.autofit.widget.TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="55px"
+            android:layout_marginTop="85px"
             android:text="@string/speed_level1"
             android:textColor="#002d66"
             android:textSize="30px" />
 
         <com.amway.wifianalyze.speed.SpeedView
-            android:layout_marginTop="45px"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="55px" />
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.LinearLayout

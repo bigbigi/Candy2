@@ -1,6 +1,5 @@
 package com.amway.wifianalyze.speed;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -51,9 +50,15 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     private TextView mWifiName;
     private TextView mWifiFrequence;
     private TextView mSpeedValue;
+    private TextView mDownloadValue;
+    private TextView mUploadValue;
+    private TextView mState;
 
     public void init(View content) {
         mSpeedValue = (TextView) content.findViewById(R.id.speed_value);
+        mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
+        mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
+        mState = (TextView) content.findViewById(R.id.speed_state);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new SpeedAdapter(getContext());
@@ -138,11 +143,19 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
 
 
     @Override
-    public void updateSpeed(final String speed) {
+    public void updateSpeed(final float speed, final boolean download) {
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mSpeedValue.setText(speed);
+                mSpeedValue.setText(String.valueOf(speed));
+                if (download) {
+                    mState.setText(R.string.speed_downloading);
+                    mUploadValue.setText(R.string.speed_prepared);
+                    mDownloadValue.setText(NetworkUtils.getSpeed(speed));
+                } else {
+                    mUploadValue.setText(NetworkUtils.getSpeed(speed));
+                    mState.setText(R.string.speed_uploading);
+                }
             }
         });
 

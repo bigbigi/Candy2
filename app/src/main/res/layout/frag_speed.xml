@@ -22,13 +22,62 @@
         android:indeterminateDuration="1200" />
 
     <com.autofit.widget.TextView
+        android:id="@+id/speed_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="449px"
-        android:text="@string/speed_loading"
+        android:text="@string/speed_downloading"
         android:textColor="#3a3a3a"
         android:textSize="18px" />
+
+    <com.autofit.widget.RelativeLayout
+        android:layout_width="696px"
+        android:layout_height="230px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="520px"
+        android:background="@drawable/bg_detect"
+        android:gravity="center_vertical">
+
+        <com.autofit.widget.TextView
+            android:id="@+id/speed_download"
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_prepared"
+            android:textColor="#e70241"
+            android:textSize="42px" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/speed_download"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_download"
+            android:textColor="#757575"
+            android:textSize="24px" />
+
+        <com.autofit.widget.TextView
+            android:id="@+id/speed_upload"
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_prepared"
+            android:textColor="#e70241"
+            android:textSize="42px" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="348px"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/speed_upload"
+            android:layout_below="@id/speed_upload"
+            android:gravity="center_horizontal"
+            android:text="@string/speed_upload"
+            android:textColor="#757575"
+            android:textSize="24px" />
+
+    </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.RelativeLayout
         android:layout_width="261px"
@@ -42,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="500"
+            android:text="0"
             android:textColor="#e70241"
             android:textSize="36px" />
 
@@ -60,7 +109,7 @@
         android:layout_width="696px"
         android:layout_height="432px"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="487px"
+        android:layout_marginTop="771px"
         android:background="@drawable/bg_detect"
         android:orientation="vertical">
 

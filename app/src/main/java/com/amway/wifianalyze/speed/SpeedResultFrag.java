@@ -27,7 +27,8 @@ import java.util.List;
 
 public class SpeedResultFrag extends BaseFragment {
     public static final String TAG = "SpeedResultFrag";
-    private float mSpeed;
+    private float mDownloadSpeed;
+    private float mUploadSpeed;
 
     public static SpeedResultFrag newInstance(Bundle args) {
         SpeedResultFrag fragment = new SpeedResultFrag();
@@ -39,7 +40,8 @@ public class SpeedResultFrag extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.frag_speed_result, container, false);
-        mSpeed = getArguments().getFloat("speed");
+        mDownloadSpeed = getArguments().getFloat("download");
+        mUploadSpeed = getArguments().getFloat("upload");
         init(content);
         initData();
         return content;
@@ -49,11 +51,13 @@ public class SpeedResultFrag extends BaseFragment {
     private SpeedAdapter mAdapter;
     private TextView mWifiName;
     private TextView mWifiFrequence;
-    private TextView mSpeedResult;
+    private TextView mDownloadValue;
+    private TextView mUploadValue;
     private TextView mBandwidth;
 
     public void init(View content) {
-        mSpeedResult = (TextView) content.findViewById(R.id.speed_result_value);
+        mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
+        mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mBandwidth = (TextView) content.findViewById(R.id.speed_result_bandwidth);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -66,8 +70,9 @@ public class SpeedResultFrag extends BaseFragment {
     }
 
     private void initData() {
-        mSpeedResult.setText(NetworkUtils.getSpeed(mSpeed));
-        mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mSpeed)));
+        mDownloadValue.setText(NetworkUtils.getSpeed(mDownloadSpeed));
+        mUploadValue.setText(NetworkUtils.getSpeed(mUploadSpeed));
+        mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mDownloadSpeed)));
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo.getSSID() != null) {

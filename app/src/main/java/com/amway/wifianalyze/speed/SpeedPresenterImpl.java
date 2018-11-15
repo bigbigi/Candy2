@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.speed;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -45,6 +46,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                 long lastTime = startTime;
                 long length = 0;
                 byte[] readBuffer = new byte[1024];
+                float speed = 0;
                 while (i < MAX_COUNT) {
                     Response response = HttpHelper.getInstance().getResponse(CHECK_URL);
                     InputStream inputStream = response.body().byteStream();
@@ -53,7 +55,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                         while ((readLen = inputStream.read(readBuffer)) > 0 && i < MAX_COUNT) {
                             length += readLen;
                             if (System.currentTimeMillis() - lastTime > 200) {
-                                float speed = length / (System.currentTimeMillis() - startTime);
+                                speed = length / (System.currentTimeMillis() - startTime);
                                 mView.updateSpeed(String.valueOf(speed));
                                 lastTime = System.currentTimeMillis();
                                 i++;
@@ -64,12 +66,12 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                         e.printStackTrace();
                     }
                 }
-                go2Result();
+                go2Result(speed);
             }
         });
     }
 
-    private void go2Result() {
+    private void go2Result(final float speed) {
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -79,9 +81,12 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                     transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
 
                     Fragment resultFrag = mFragmentManager.findFragmentByTag(SpeedResultFrag.TAG);
-                    if (resultFrag == null) {
-                        resultFrag = SpeedResultFrag.newInstance(null);
+                    if (resultFrag != null) {
+                        transaction.remove(resultFrag);
                     }
+                    Bundle bundle = new Bundle();
+                    bundle.putFloat("speed", speed);
+                    resultFrag = SpeedResultFrag.newInstance(bundle);
                     if (!resultFrag.isAdded()) {
                         transaction.add(R.id.container, resultFrag, SpeedResultFrag.TAG);
                     } else {

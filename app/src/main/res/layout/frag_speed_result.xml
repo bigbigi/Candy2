@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="253px"
-        android:text="4.44KB/S"
         android:textColor="#e70241"
         android:textSize="73px" />
 
@@ -28,7 +27,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="345px"
-        android:text="@string/speed_bandwidth"
         android:textColor="#01305f"
         android:textSize="24px" />
 

@@ -177,13 +177,8 @@ public class NetworkUtils {
         return phoneNum;
     }
 
-   /* public static String getDns(Context context) {
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
-        return intToIp(dhcpInfo.dns1);
-    }*/
 
-    public static String getDns1(Context context) {
+    public static String getDns1() {
         return getProp("getprop net.dns1");
     }
 
@@ -206,6 +201,18 @@ public class NetworkUtils {
             e.printStackTrace();
         }
         return dns;
+    }
 
+    public static String getSpeed(float speed) {
+        if (speed > 1000) {
+            return String.format("%.1fMB/S", speed / 1000);
+        } else {
+            return String.format("%.1fKB/S", speed);
+        }
+    }
+
+    public static int getBandwidth(float speed) {
+        int bandwidth = (int) (speed * 8 / 1000);
+        return bandwidth < 1 ? 1 : bandwidth;
     }
 }

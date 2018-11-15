@@ -1,6 +1,5 @@
 package com.amway.wifianalyze.speed;
 
-import android.content.Context;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,16 +38,23 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
             @Override
             public void run() {
                 int i = 0;
-                while (i < 10) {
-                    i++;
-                    long startTime = System.currentTimeMillis();
+                long startTime = System.currentTimeMillis();
+                long lastTime = startTime;
+                long length = 0;
+                while (i < 25) {
                     Response response = HttpHelper.getInstance(((Fragment) mView).getContext()).getResponse("http://pubstatic.b0.upaiyun.com/check2.jpg");
                     try {
                         byte[] bytes = response.body().bytes();
-                        long time = System.currentTimeMillis() - startTime;
-                        float speed = bytes.length / (time);
-                        Log.e("big", "bytes：" + bytes.length + ",time:" + time);
-                        mView.updateSpeed(String.valueOf(speed));
+                        length += bytes.length;
+                        long time = System.currentTimeMillis() - lastTime;
+                        Log.e("big", "bytes：" + length + ",time:" + time);
+                        if (time > 200) {
+                            float speed = length / (System.currentTimeMillis() - startTime);
+                            mView.updateSpeed(String.valueOf(speed));
+                            lastTime = System.currentTimeMillis();
+                            i++;
+                            Log.e("big", "speed：" + speed);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

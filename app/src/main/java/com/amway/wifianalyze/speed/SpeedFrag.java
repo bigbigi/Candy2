@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.speed;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -17,6 +18,7 @@ import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.home.WifiContract;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
 
 import java.util.ArrayList;
@@ -48,8 +50,10 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     private SpeedAdapter mAdapter;
     private TextView mWifiName;
     private TextView mWifiFrequence;
+    private TextView mSpeedValue;
 
     public void init(View content) {
+        mSpeedValue = (TextView) content.findViewById(R.id.speed_value);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new SpeedAdapter(getContext());
@@ -134,7 +138,13 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
 
 
     @Override
-    public void updateSpeed(String speed) {
+    public void updateSpeed(final String speed) {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSpeedValue.setText(speed);
+            }
+        });
 
     }
 

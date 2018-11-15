@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.speed;
 
+import android.content.Context;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,6 +8,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.utils.HttpHelper;
+
+import java.io.IOException;
+
+import okhttp3.Response;
 
 /**
  * Created by big on 2018/10/25.
@@ -28,19 +35,29 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
 
     @Override
     public void getSpeed() {
-        new Thread() {//todo test
+        ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                int i = 0;
+                while (i < 10) {
+                    i++;
+                    long startTime = System.currentTimeMillis();
+                    Response response = HttpHelper.getInstance(((Fragment) mView).getContext()).getResponse("http://pubstatic.b0.upaiyun.com/check2.jpg");
+                    try {
+                        byte[] bytes = response.body().bytes();
+                        long time = System.currentTimeMillis() - startTime;
+                        float speed = bytes.length / (time);
+                        Log.e("big", "bytes：" + bytes.length + ",time:" + time);
+                        mView.updateSpeed(String.valueOf(speed));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 Log.e("big", "go2Result");
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(mView.isShow()){
+                        if (mView.isShow()) {
                             FragmentTransaction transaction = mFragmentManager.beginTransaction();
                             transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
 
@@ -57,9 +74,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                         }
                     }
                 });
-
             }
-
-        }.start();
+        });
     }
 }

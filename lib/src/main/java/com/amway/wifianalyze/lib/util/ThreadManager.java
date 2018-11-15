@@ -1,5 +1,8 @@
 package com.amway.wifianalyze.lib.util;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -63,6 +66,20 @@ public class ThreadManager {
 
             t.setPriority(this.threadPriority);
             return t;
+        }
+    }
+
+
+    private static Handler uiHandler = new Handler(Looper.getMainLooper());
+
+    public static void runOnUiThread(Runnable runnable) {
+        if (runnable == null) {
+            return;
+        }
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            runnable.run();
+        } else {
+            uiHandler.post(runnable);
         }
     }
 }

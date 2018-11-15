@@ -83,7 +83,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public void skipBrowser() {
         mView.onChecking(Code.INFO_SKIP);
-        Response response = HttpHelper.getInstance(mContext).getResponse(AUTO_SERVER);
+        Response response = HttpHelper.getInstance().getResponse(AUTO_SERVER);
         if (response != null) {
             Log.d(TAG, "skipBrowser:" + response.code());
             if (response.code() != 204) {

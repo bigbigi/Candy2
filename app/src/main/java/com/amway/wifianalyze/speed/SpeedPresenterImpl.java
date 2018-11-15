@@ -1,6 +1,5 @@
 package com.amway.wifianalyze.speed;
 
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +10,7 @@ import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import okhttp3.Response;
 
@@ -19,12 +19,15 @@ import okhttp3.Response;
  */
 
 public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
+    private static final String CHECK_URL = "http://pubstatic.b0.upaiyun.com/check2.jpg";
+    //    private static final String CHECK_URL = "http://dlied5.myapp.com/myapp/1104466820/sgame/2017_com.tencent.tmgp.sgame_h169_1.34.1.23_2fc1ef.apk";
+    private static final int MAX_COUNT = 25;
+
     public SpeedPresenterImpl(SpeedContract.SpeedView view) {
         super(view);
     }
 
     private FragmentManager mFragmentManager;
-    private Handler mHandler = new Handler();
 
     @Override
     public void init(FragmentManager fragmentManager) {
@@ -41,45 +44,51 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                 long startTime = System.currentTimeMillis();
                 long lastTime = startTime;
                 long length = 0;
-                while (i < 25) {
-                    Response response = HttpHelper.getInstance(((Fragment) mView).getContext()).getResponse("http://pubstatic.b0.upaiyun.com/check2.jpg");
+                byte[] readBuffer = new byte[1024];
+                while (i < MAX_COUNT) {
+                    Response response = HttpHelper.getInstance().getResponse(CHECK_URL);
+                    InputStream inputStream = response.body().byteStream();
+                    int readLen;
                     try {
-                        byte[] bytes = response.body().bytes();
-                        length += bytes.length;
-                        long time = System.currentTimeMillis() - lastTime;
-                        Log.e("big", "bytes：" + length + ",time:" + time);
-                        if (time > 200) {
-                            float speed = length / (System.currentTimeMillis() - startTime);
-                            mView.updateSpeed(String.valueOf(speed));
-                            lastTime = System.currentTimeMillis();
-                            i++;
-                            Log.e("big", "speed：" + speed);
+                        while ((readLen = inputStream.read(readBuffer)) > 0 && i < MAX_COUNT) {
+                            length += readLen;
+                            if (System.currentTimeMillis() - lastTime > 200) {
+                                float speed = length / (System.currentTimeMillis() - startTime);
+                                mView.updateSpeed(String.valueOf(speed));
+                                lastTime = System.currentTimeMillis();
+                                i++;
+                                Log.e("big", "length：" + length + ",speed:" + speed);
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                Log.e("big", "go2Result");
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mView.isShow()) {
-                            FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                            transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
+                go2Result();
+            }
+        });
+    }
 
-                            Fragment resultFrag = mFragmentManager.findFragmentByTag(SpeedResultFrag.TAG);
-                            if (resultFrag == null) {
-                                resultFrag = SpeedResultFrag.newInstance(null);
-                            }
-                            if (!resultFrag.isAdded()) {
-                                transaction.add(R.id.container, resultFrag, SpeedResultFrag.TAG);
-                            } else {
-                                transaction.show(resultFrag);
-                            }
-                            transaction.commitAllowingStateLoss();
-                        }
+    private void go2Result() {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("big", "go2Result");
+                if (mView.isShow()) {
+                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                    transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
+
+                    Fragment resultFrag = mFragmentManager.findFragmentByTag(SpeedResultFrag.TAG);
+                    if (resultFrag == null) {
+                        resultFrag = SpeedResultFrag.newInstance(null);
                     }
-                });
+                    if (!resultFrag.isAdded()) {
+                        transaction.add(R.id.container, resultFrag, SpeedResultFrag.TAG);
+                    } else {
+                        transaction.show(resultFrag);
+                    }
+                    transaction.commitAllowingStateLoss();
+                }
             }
         });
     }

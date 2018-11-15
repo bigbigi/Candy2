@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,15 +26,15 @@ public class HttpHelper {
     private final OkHttpClient mClient;
     private static volatile HttpHelper mInstance;
 
-    public HttpHelper(Context context) {
+    public HttpHelper() {
         mClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build();
     }
 
-    public synchronized static HttpHelper getInstance(Context context) {
+    public synchronized static HttpHelper getInstance() {
         if (mInstance == null) {
             synchronized (HttpHelper.class) {
                 if (mInstance == null) {
-                    mInstance = new HttpHelper(context.getApplicationContext());
+                    mInstance = new HttpHelper();
                 }
             }
         }
@@ -64,6 +65,13 @@ public class HttpHelper {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void enqueue(String url, Callback callback) {
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        mClient.newCall(request).enqueue(callback);
     }
 
     public void post(String url, String content) {

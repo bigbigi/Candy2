@@ -79,18 +79,19 @@
             android:textSize="24px" />
 
         <com.autofit.widget.TextView
+            android:id="@+id/speed_definition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="85px"
-            android:text="@string/speed_level1"
             android:textColor="#002d66"
             android:textSize="30px" />
 
         <com.amway.wifianalyze.speed.SpeedView
+            android:id="@+id/speed_level"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="55px" />
+            android:layout_marginTop="65px" />
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.LinearLayout

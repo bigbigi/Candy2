@@ -215,4 +215,22 @@ public class NetworkUtils {
         int bandwidth = (int) (speed * 8 / 1000);
         return bandwidth < 1 ? 1 : bandwidth;
     }
+
+    public static int getLevel(float speed) {
+        if (speed > 750) {//800
+            return 3;
+        } else if (speed > 450) {//500
+            return 2;
+        } else if (speed > 220) {//250
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private static String[] tags = new String[]{"标清", "高清", "超清", "蓝光"};
+
+    public static String getDefinition(float speed) {
+        return tags[getLevel(speed)];
+    }
 }

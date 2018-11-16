@@ -60,4 +60,8 @@ public class SpeedView extends View {
             }
         }
     }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 }

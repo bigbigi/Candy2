@@ -54,8 +54,12 @@ public class SpeedResultFrag extends BaseFragment {
     private TextView mDownloadValue;
     private TextView mUploadValue;
     private TextView mBandwidth;
+    private SpeedView mSpeedView;
+    private TextView mDefinition;
 
     public void init(View content) {
+        mDefinition = (TextView) content.findViewById(R.id.speed_definition);
+        mSpeedView = (SpeedView) content.findViewById(R.id.speed_level);
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mBandwidth = (TextView) content.findViewById(R.id.speed_result_bandwidth);
@@ -73,6 +77,8 @@ public class SpeedResultFrag extends BaseFragment {
         mDownloadValue.setText(NetworkUtils.getSpeed(mDownloadSpeed));
         mUploadValue.setText(NetworkUtils.getSpeed(mUploadSpeed));
         mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mDownloadSpeed)));
+        mSpeedView.setLevel(NetworkUtils.getLevel(mDownloadSpeed));
+        mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(mDownloadSpeed)));
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo.getSSID() != null) {

@@ -1,6 +1,5 @@
 package com.amway.wifianalyze.speed;
 
-import android.os.Handler;
 import android.util.Log;
 
 import com.amway.wifianalyze.lib.listener.Callback;
@@ -9,7 +8,12 @@ import com.amway.wifianalyze.utils.HttpHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -17,42 +21,153 @@ import okhttp3.Response;
  */
 
 public class SpeedChecker {
-    private static final String CHECK_URL = "http://pubstatic.b0.upaiyun.com/check2.jpg";
-    private Callback<String> mCallback;
+    private static final String TAG = "SpeedChecker";
+    private static final String DOWNLOAD_URL = "http://pubstatic.b0.upaiyun.com/check2.jpg";
+    //        private static final String DOWNLOAD_URL = "http://dlied5.myapp.com/myapp/1104466820/sgame/2017_com.tencent.tmgp.sgame_h169_1.34.1.23_2fc1ef.apk";
+    private static final String UPLOAD_URL = "http://health-test.b0.upaiyun.com/check2.jpg?Wed%20Nov%2014%202018%2017:39:40%20GMT+08000.05684841621583214";
+    private static final int MAX_COUNT = 25;
+    private static final int DURATION = 5000;
 
-    public void start() {
-        ThreadManager.execute(new Runnable() {
-            @Override
-            public void run() {
-                int i = 0;
-                long startTime = System.currentTimeMillis();
-                long lastTime = startTime;
-                long length = 0;
-                byte[] readBuffer = new byte[1024];
-                while (i < 25) {
-                    Response response = HttpHelper.getInstance().getResponse(CHECK_URL);
-                    InputStream inputStream = response.body().byteStream();
-                    int readLen;
-                    try {
-                        while ((readLen = inputStream.read(readBuffer)) > 0 && i < 25) {
-                            length += readLen;
-                            if (System.currentTimeMillis() - lastTime > 200) {
-                                float speed = length / (System.currentTimeMillis() - startTime);
-                                if (mCallback != null) {
-                                    mCallback.onSuccess(String.valueOf(speed));
+    private AtomicInteger mCountDownload = new AtomicInteger(0);
+    private AtomicLong mLengthDownload = new AtomicLong(0);
+    private AtomicBoolean mStopTagDownload = new AtomicBoolean();
+    private float mSpeedDownload = 0;
+
+    private void init() {
+        mSpeedDownload = 0;
+        mCountDownload.set(0);
+        mLengthDownload.set(0);
+        mStopTagDownload.set(false);
+
+        mSpeedUpload = 0;
+        mCountUpload.set(0);
+        mLengthUpload.set(0);
+        mStopTagUpload.set(false);
+    }
+
+    public float checkDownload(final Callback<Float> callback) {
+        init();
+        final long startTime = System.currentTimeMillis();
+        for (int i = 0; i < 3; i++) {
+            ThreadManager.execute(new Runnable() {
+                @Override
+                public void run() {
+                    byte[] readBuffer = new byte[1024 * 5];
+                    long lastTime = startTime;
+                    while (!mStopTagDownload.get() && mCountDownload.get() < MAX_COUNT) {
+                        Response response = HttpHelper.getInstance().getResponse(DOWNLOAD_URL);
+                        if (response != null && response.isSuccessful()) {
+                            InputStream inputStream = response.body().byteStream();
+                            int readLen;
+                            try {
+                                while (!mStopTagDownload.get() && mCountDownload.get() < MAX_COUNT
+                                        && (readLen = inputStream.read(readBuffer)) > 0) {
+                                    mLengthDownload.set(mLengthDownload.get() + readLen);
+                                    if (System.currentTimeMillis() - lastTime > 200) {
+                                        lastTime = System.currentTimeMillis();
+                                        mSpeedDownload = mLengthDownload.get() / (System.currentTimeMillis() - startTime);
+                                        if (callback != null) {
+                                            callback.onCallBack(true, mSpeedDownload);
+                                        }
+                                        mCountDownload.set(mCountDownload.get() + 1);
+                                        Log.e("big", "download length：" + mLengthDownload + ",speed:" + mSpeedDownload);
+                                    }
                                 }
-                                lastTime = System.currentTimeMillis();
-                                i++;
-                                Log.e("big", "length：" + length + ",speed:" + speed);
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    }
+                    if (!mStopTagDownload.get()) {
+                        try {
+                            synchronized (mStopTagDownload) {
+                                mStopTagDownload.set(true);
+                                mStopTagDownload.notifyAll();
+                            }
+                        } catch (Exception e) {
+                            Log.i(TAG, "Exception:" + e.getMessage());
+                        }
                     }
                 }
-                Log.e("big", "go2Result");
-
+            });
+        }
+        if (!mStopTagDownload.get()) {
+            try {
+                synchronized (mStopTagDownload) {
+                    mStopTagDownload.wait();
+                }
+            } catch (InterruptedException e) {
+                Log.i(TAG, "InterruptedException:" + e);
             }
-        });
+        }
+        return mSpeedDownload;
+    }
+
+
+    private AtomicInteger mCountUpload = new AtomicInteger(0);
+    private AtomicLong mLengthUpload = new AtomicLong(0);
+    private float mSpeedUpload = 0;
+    private static final int THREAD_NUM = 3;
+    private AtomicBoolean mStopTagUpload = new AtomicBoolean();
+
+
+    public float checkUpload(final Callback callback) {
+        final long startTime = System.currentTimeMillis();
+        final int buffSize = 1024 * 20;
+        for (int i = 0; i < THREAD_NUM; i++) {
+            ThreadManager.execute(new Runnable() {
+                @Override
+                public void run() {
+                    while (!mStopTagUpload.get() && mCountUpload.get() < MAX_COUNT * (100 / THREAD_NUM)) {
+                        String test = new String(new byte[buffSize]);
+                        RequestBody requestBody = new FormBody.Builder()
+                                .add("txt", test)
+                                .build();
+                        Response response = HttpHelper.getInstance().post(UPLOAD_URL, requestBody);
+                        if (response != null && response.code() == 404) {
+                            mLengthUpload.set(mLengthUpload.get() + buffSize);
+                        }
+                        mCountUpload.set(mCountUpload.get() + 1);
+                        long time = (System.currentTimeMillis() - startTime);
+                        if (time > DURATION) {
+                            mCountUpload.set(MAX_COUNT * (100 / THREAD_NUM));
+                        }
+                        mSpeedUpload = mLengthUpload.get() / time;
+                        if (callback != null) {
+                            callback.onCallBack(true, mSpeedUpload);
+                        }
+                        Log.d(TAG, "upload time:" + time + ",length:" + mLengthUpload.get() + ",mSpeedUpload:" + mSpeedUpload);
+                    }
+                    if (!mStopTagUpload.get()) {
+                        try {
+                            synchronized (mStopTagUpload) {
+                                mStopTagUpload.set(true);
+                                mStopTagUpload.notifyAll();
+                            }
+                        } catch (Exception e) {
+                            Log.i(TAG, "Exception:" + e.getMessage());
+                        }
+                    }
+
+                }
+            });
+        }
+        if (!mStopTagUpload.get()) {
+            try {
+                synchronized (mStopTagUpload) {
+                    mStopTagUpload.wait();
+                }
+            } catch (InterruptedException e) {
+                Log.i(TAG, "InterruptedException:" + e);
+            }
+        }
+
+        return mSpeedUpload;
+    }
+
+    public void release() {
+        mStopTagDownload.set(true);
+        mStopTagUpload.set(true);
+        Log.e(TAG, "release");
     }
 }

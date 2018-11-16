@@ -14,8 +14,8 @@ public class PermissionUtil {
 
 
     public void init(Activity activity) {
-        checkPermissions(activity, PER_STORAGE, PERMISSIONS_STORAGE, RESULT_STORAGE);
         checkPermissions(activity, PER_WIFI, PERMISSIONS_WIFI, RESULT_WIFI);
+//        checkPermissions(activity, PER_STORAGE, PERMISSIONS_STORAGE, RESULT_STORAGE);
 //        checkPermissions(activity, PER_PHONE, PERMISSIONS_PHONE, RESULT_PHONE);
 //        checkPermissions(activity, PER_AUDIO, PERMISSIONS_AUDIO, RESULT_AUDIO);
     }

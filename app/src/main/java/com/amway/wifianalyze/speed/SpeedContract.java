@@ -11,7 +11,7 @@ import com.amway.wifianalyze.base.BasePresenterImpl;
 
 public interface SpeedContract extends BaseContract {
     interface SpeedView extends BaseView {
-        void updateSpeed(float speed,boolean download);
+        void updateSpeed(float speed, boolean download);
 
         boolean isShow();
     }
@@ -24,5 +24,7 @@ public interface SpeedContract extends BaseContract {
         public abstract void init(FragmentManager fragmentManager);
 
         public abstract void getSpeed();
+
+        public abstract void release();
     }
 }

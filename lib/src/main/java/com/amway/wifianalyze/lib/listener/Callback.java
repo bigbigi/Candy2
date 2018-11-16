@@ -5,7 +5,5 @@ package com.amway.wifianalyze.lib.listener;
  */
 
 public interface Callback<T> {
-    void onSuccess(T t);
-
-    void onFailure(T t);
+    void onCallBack(boolean success, T t);
 }

@@ -200,10 +200,13 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive:" + intent.getAction());
+            Log.d(TAG, "mRefreshScanList:" + mRefreshScanList);
             if (mRefreshScanList && WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 mCheckConnected = false;
                 mWifiInfo = mWm.getConnectionInfo();
                 List<ScanResult> list = mWm.getScanResults();
+                Log.d(TAG, "list:" + list);
+                Log.d(TAG, "WIFI:" + mWifiInfo);
                 if (list != null && !list.isEmpty()) {
                     mRefreshScanList = false;
                     mReScanTimes = 0;

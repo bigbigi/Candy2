@@ -7,18 +7,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.BufferedSink;
 
 /**
  * Created by big on 2018/10/25.
@@ -36,6 +34,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
     }
 
     private FragmentManager mFragmentManager;
+    private SpeedChecker mSpeedChecker = new SpeedChecker();
 
     @Override
     public void init(FragmentManager fragmentManager) {
@@ -49,11 +48,31 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
             @Override
             public void run() {
 //                float download = checkDownload();
-                float download = 0;
-                float upload = checkUpload();
+//                float download = 0;
+//                float upload = checkUpload();
+//                go2Result(download, upload);
+
+                float download = mSpeedChecker.checkDownload(new Callback<Float>() {
+                    @Override
+                    public void onCallBack(boolean success, Float o) {
+                        mView.updateSpeed(o, true);
+                    }
+                });
+                float upload = mSpeedChecker.checkUpload(new Callback<Float>() {
+                    @Override
+                    public void onCallBack(boolean success, Float o) {
+                        mView.updateSpeed(o, false);
+                    }
+                });
                 go2Result(download, upload);
             }
         });
+
+    }
+
+    @Override
+    public void release() {
+        mSpeedChecker.release();
     }
 
     private float checkDownload() {

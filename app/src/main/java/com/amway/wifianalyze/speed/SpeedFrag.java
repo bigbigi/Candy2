@@ -76,6 +76,8 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         super.onHiddenChanged(hidden);
         if (!hidden) {
             start();
+        } else {
+            mSpeedPresenter.release();
         }
     }
 
@@ -83,6 +85,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     public void onDestroy() {
         super.onDestroy();
         mWifiPresenter.release(getContext());
+        mSpeedPresenter.release();
     }
 
     private void start() {

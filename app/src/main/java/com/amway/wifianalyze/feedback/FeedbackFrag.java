@@ -24,6 +24,7 @@ import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.listener.OnItemClickListener;
 import com.amway.wifianalyze.utils.HttpHelper;
+import com.amway.wifianalyze.utils.PermissionUtil;
 import com.autofit.widget.RecyclerView;
 import com.autofit.widget.ScreenParameter;
 
@@ -49,6 +50,8 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.frag_feedback, container, false);
         init(content);
+        PermissionUtil.checkPermissions(getActivity(), PermissionUtil.PER_STORAGE,
+                PermissionUtil.PERMISSIONS_STORAGE, PermissionUtil.RESULT_STORAGE);
         return content;
     }
 

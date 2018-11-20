@@ -80,6 +80,8 @@ public class Code {
     public static final int ERROR_BUSY_CHANNEL = 0x0000ff03;//信道拥堵
     public static final int ERROR_LOW_LEVEL = 0x0000ff04;//信号差
     public static final int ERROR_ELSE = 0x0000ff05;//其他问题，AP人数过多等，找客服
+    public static final int ERR_ONLY24G = 0x0000ff06;//不支持5G
+    public static final int ERR_NOTFOUND_5G = 0x0000ff06;//未找到5G信号
 
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
@@ -101,6 +103,9 @@ public class Code {
                 break;
             case ERROR_ELSE:
                 message = "AP人数过多等，找客服";
+                break;
+            case ERR_ONLY24G:
+                message = "不支持5G";
                 break;
         }
         return message;

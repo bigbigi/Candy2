@@ -18,6 +18,7 @@ import android.util.Log;
 
 
 import com.amway.wifianalyze.base.Code;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.utils.WifiConnector;
 
 import java.util.HashMap;
@@ -207,6 +208,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                 List<ScanResult> list = mWm.getScanResults();
                 Log.d(TAG, "list:" + list);
                 Log.d(TAG, "WIFI:" + mWifiInfo);
+                boolean has5G = false;
                 if (list != null && !list.isEmpty()) {
                     mRefreshScanList = false;
                     mReScanTimes = 0;
@@ -217,11 +219,12 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                         ScanResult dstResult = null;
                         while (iterator.hasNext()) {
                             ScanResult temp = iterator.next();
+                            has5G = has5G || NetworkUtils.is5GHz(temp.frequency);
                             if (DEFAULT_SSID.equals(temp.SSID.replaceAll("\"", ""))) {
                                 dstResult = temp;
-                                break;
                             }
                         }
+                        Log.d(TAG, "has5G:" + has5G);
                         if (dstResult == null) {
                             mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                         } else {
@@ -236,10 +239,13 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                 } else if (mReScanTimes < MAX_SCAN_TIMES) {
                     mReScanTimes++;
                     scanWifi();
-                } else {
+                } else if (NetworkUtils.isOnly24G(context)) {
+                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_ONLY24G);
+                } else if (has5G) {
                     mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
+                } else {
+                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NOTFOUND_5G);
                 }
-
             } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {//todo
                 if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED && mWifiOff) {
                     mWifiOff = false;
@@ -268,4 +274,5 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             }
         }
     }
+
 }

@@ -1,7 +1,6 @@
 package com.amway.wifianalyze.home;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseActivity;
-import com.amway.wifianalyze.feedback.FeedbackContract;
 import com.amway.wifianalyze.feedback.FeedbackFrag;
 import com.amway.wifianalyze.feedback.FeedbackPresenterImpl;
 import com.amway.wifianalyze.lib.util.DevicesUtils;
@@ -29,14 +27,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         init();
-        showLauncher();
         new PermissionUtil().init(this);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideLauncher();
-            }
-        }, 2000);
+        findViewById(R.id.tab_detect).performClick();
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
         Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this));
     }
@@ -53,27 +45,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.tab_feedback).setOnClickListener(this);
     }
 
-    private Handler mHandler = new Handler();
-
-    private void showLauncher() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(LaunchFrag.TAG);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = LaunchFrag.newInstance(null);
-            transaction.add(R.id.launcher_container, fragment, LaunchFrag.TAG);
-        } else {
-            transaction.show(fragment);
-        }
-        transaction.commit();
-    }
-
-
-    private void hideLauncher() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.remove(getSupportFragmentManager().findFragmentByTag(LaunchFrag.TAG));
-        transaction.commit();
-        findViewById(R.id.tab_detect).performClick();
-    }
 
     @Override
     public void onClick(View v) {
@@ -125,9 +96,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     public Fragment getVisibleFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment != null && fragment.isVisible())
-                return fragment;
+        if(fragments!=null){
+            for (Fragment fragment : fragments) {
+                if (fragment != null && fragment.isVisible())
+                    return fragment;
+            }
         }
         return null;
     }

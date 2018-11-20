@@ -69,7 +69,7 @@ public class HomeFrag extends BaseFragment implements
         startAni();
 
         //todo test
-        /*mDialog = new TestDialog(getContext());
+        mDialog = new TestDialog(getContext());
         mDialog.setOnStartListener(new TestDialog.OnStartListener() {
             @Override
             public void onStart() {
@@ -78,7 +78,7 @@ public class HomeFrag extends BaseFragment implements
             }
         });
         mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
-        mDialog.show();*/
+        mDialog.show();
     }
 
     @Override

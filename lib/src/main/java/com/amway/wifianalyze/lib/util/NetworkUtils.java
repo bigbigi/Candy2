@@ -233,4 +233,13 @@ public class NetworkUtils {
     public static String getDefinition(float speed) {
         return tags[getLevel(speed)];
     }
+
+    public static boolean isOnly24G(Context context) {
+        boolean only = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            only = !wm.is5GHzBandSupported();
+        }
+        return only;
+    }
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 
 public class ThreadManager {
+    private static final int MAX_SIZE = 5;
     private static ExecutorService mExecutor; // 会自动回收的无界限线程池
 
     /**
@@ -35,7 +36,7 @@ public class ThreadManager {
      */
     private static synchronized ExecutorService getExecutor() {
         if (mExecutor == null) {
-            mExecutor = new ThreadPoolExecutor(5, 5, 0L, TimeUnit.MILLISECONDS,
+            mExecutor = new ThreadPoolExecutor(MAX_SIZE, MAX_SIZE, 0L, TimeUnit.MILLISECONDS,
                     new LinkedBlockingQueue(), createThreadFactory(10, "ThreadManager-"));
         }
         return mExecutor;

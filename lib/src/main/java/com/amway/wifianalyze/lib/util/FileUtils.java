@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.lib.util;
 
+import java.io.Closeable;
 import java.io.File;
 
 /**
@@ -28,6 +29,16 @@ public class FileUtils {
         // 如果目录不中存在，创建这个目录
         if (!file.exists())
             file.mkdirs();
+    }
+
+    public static void closeIO(Closeable ioStream) {
+        if (ioStream != null) {
+            try {
+                ioStream.close();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

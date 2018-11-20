@@ -3,17 +3,21 @@ package com.amway.wifianalyze.speed;
 import android.util.Log;
 
 import com.amway.wifianalyze.lib.listener.Callback;
+import com.amway.wifianalyze.lib.util.FileUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -24,7 +28,7 @@ public class SpeedChecker {
     private static final String TAG = "SpeedChecker";
     private static final String DOWNLOAD_URL = "http://pubstatic.b0.upaiyun.com/check2.jpg";
     //        private static final String DOWNLOAD_URL = "http://dlied5.myapp.com/myapp/1104466820/sgame/2017_com.tencent.tmgp.sgame_h169_1.34.1.23_2fc1ef.apk";
-    private static final String UPLOAD_URL = "http://health-test.b0.upaiyun.com/check2.jpg?Wed%20Nov%2014%202018%2017:39:40%20GMT+08000.05684841621583214";
+    private static final String UPLOAD_URL = "http://health-test.b0.upaiyun.com/check2.jpg?t=%s";
     private static final int MAX_COUNT = 25;
     private static final int DURATION = 5000;
 
@@ -77,6 +81,7 @@ public class SpeedChecker {
                                 e.printStackTrace();
                             }
                         }
+                        response.close();
                     }
                     if (!mStopTagDownload.get()) {
                         try {
@@ -112,19 +117,16 @@ public class SpeedChecker {
 
 
     public float checkUpload(final Callback callback) {
+        final int buffSize = 1024 * 1024 * 1;
+        final String test = new String(new byte[buffSize]);
         final long startTime = System.currentTimeMillis();
-        final int buffSize = 1024 * 20;
         for (int i = 0; i < THREAD_NUM; i++) {
             ThreadManager.execute(new Runnable() {
                 @Override
                 public void run() {
                     while (!mStopTagUpload.get() && mCountUpload.get() < MAX_COUNT * (100 / THREAD_NUM)) {
-                        String test = new String(new byte[buffSize]);
-                        RequestBody requestBody = new FormBody.Builder()
-                                .add("txt", test)
-                                .build();
-                        Response response = HttpHelper.getInstance().post(UPLOAD_URL, requestBody);
-                        if (response != null && response.code() == 404) {
+                        int code = httpPost(String.format(UPLOAD_URL, System.currentTimeMillis()), null, test);
+                        if (code == 404) {
                             mLengthUpload.set(mLengthUpload.get() + buffSize);
                         }
                         mCountUpload.set(mCountUpload.get() + 1);
@@ -165,9 +167,45 @@ public class SpeedChecker {
         return mSpeedUpload;
     }
 
+    public static int httpPost(String requestUrl, Map<String, String> header, String postBody) {
+        int code = 0;
+        BufferedReader br = null;
+        DataOutputStream out = null;
+        try {
+            URL url = new URL(requestUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            // 10秒超时
+            conn.setReadTimeout(30000);
+            conn.setRequestMethod("POST");
+            conn.setUseCaches(false);
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+            if (header != null) {
+                for (String key : header.keySet()) {
+                    conn.setRequestProperty(key, header.get(key));
+                }
+            }
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            out = new DataOutputStream(conn.getOutputStream());
+            out.write(postBody.getBytes("utf-8"));
+            out.flush();
+            code = conn.getResponseCode();
+            conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            FileUtils.closeIO(out);
+            FileUtils.closeIO(br);
+        }
+        return code;
+    }
+
     public void release() {
         mStopTagDownload.set(true);
         mStopTagUpload.set(true);
         Log.e(TAG, "release");
     }
+
+
 }

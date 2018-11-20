@@ -1,10 +1,14 @@
 package com.amway.wifianalyze.utils;
 
 import android.content.Context;
+import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
@@ -83,6 +87,29 @@ public class HttpHelper {
                     .url(url)
                     .post(requestBody)
                     .build();
+            response = mClient.newCall(request).execute();
+            Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString());
+            return response;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public Response post(String url, RequestBody requestBody, HashMap<String, String> headers) {
+        Response response = null;
+        try {
+            Request.Builder builder = new Request.Builder()
+                    .url(url).post(requestBody);
+            if (headers != null && !headers.isEmpty()) {
+                Iterator<String> iterator = headers.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+                    headers.put(key, headers.get(key));
+                    Log.d(TAG, "KEY:" + key);
+                }
+            }
+            Request request = builder.build();
             response = mClient.newCall(request).execute();
             Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString());
             return response;

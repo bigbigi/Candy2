@@ -97,6 +97,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             } else {
                 mView.onInfo(Code.INFO_SKIP, 0, 0);
             }
+            response.close();
         } else {
             mView.onError(Code.INFO_SKIP, -1);
         }

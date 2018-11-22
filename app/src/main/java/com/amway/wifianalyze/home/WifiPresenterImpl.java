@@ -18,7 +18,9 @@ import android.util.Log;
 
 
 import com.amway.wifianalyze.base.Code;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.WifiConnector;
 
 import java.util.HashMap;
@@ -274,5 +276,6 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             }
         }
     }
+
 
 }

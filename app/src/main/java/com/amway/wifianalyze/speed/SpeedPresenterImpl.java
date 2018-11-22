@@ -36,15 +36,16 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
             public void run() {
                 float download = mSpeedChecker.checkDownload(new Callback<Float>() {
                     @Override
-                    public void onCallBack(boolean success, Float o) {
-                        mView.updateSpeed(o, true);
+                    public void onCallBack(boolean success, Float... o) {
+                        mView.updateSpeed(o[0], true);
                     }
                 });
                 float upload = mSpeedChecker.checkUpload(new Callback<Float>() {
                     @Override
-                    public void onCallBack(boolean success, Float o) {
-                        mView.updateSpeed(o, false);
+                    public void onCallBack(boolean success, Float... o) {
+                        mView.updateSpeed(o[0], false);
                     }
+
                 });
                 go2Result(download, upload);
             }

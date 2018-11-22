@@ -19,7 +19,9 @@ import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.home.DetectResult.Status;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
 
 
@@ -50,6 +52,7 @@ public class HomeFrag extends BaseFragment implements
     private DetectAdapter mAdapter;
     private TextView mWifiName;
     private TextView mWifiFrequence;
+    private TextView mApName;
     private TestDialog mDialog;
     private View mRadar;
 
@@ -60,6 +63,7 @@ public class HomeFrag extends BaseFragment implements
         mAdapter = new DetectAdapter(getContext());
         mRecyclerView.setAdapter(mAdapter);
         mWifiName = (TextView) content.findViewById(R.id.wifi_name);
+        mApName = (TextView) content.findViewById(R.id.wifi_ap);
         mWifiFrequence = (TextView) content.findViewById(R.id.wifi_frequence);
         mWifiName.setText("");
         mWifiFrequence.setText("");
@@ -144,6 +148,17 @@ public class HomeFrag extends BaseFragment implements
             Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
             mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
         }
+        HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, final String... t) {
+                ThreadManager.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mApName.setText(t[0]);
+                    }
+                });
+            }
+        });
     }
 
 

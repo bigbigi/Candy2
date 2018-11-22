@@ -16,7 +16,9 @@ import android.view.ViewGroup;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.home.WifiContract;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
@@ -54,12 +56,14 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     private TextView mDownloadValue;
     private TextView mUploadValue;
     private TextView mState;
+    private TextView mApName;
 
     public void init(View content) {
         mSpeedValue = (TextView) content.findViewById(R.id.speed_value);
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mState = (TextView) content.findViewById(R.id.speed_state);
+        mApName = (TextView) content.findViewById(R.id.wifi_ap);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new SpeedAdapter(getContext());
@@ -127,6 +131,17 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mAdapter.setData(list);
         if (!isHidden()) {
             mSpeedPresenter.getSpeed();
+            HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
+                @Override
+                public void onCallBack(boolean success, final String... t) {
+                    ThreadManager.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mApName.setText(t[0]);
+                        }
+                    });
+                }
+            });
         }
     }
 

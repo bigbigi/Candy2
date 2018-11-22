@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="109px">
+    android:layout_height="109px"
+    android:paddingRight="25px">
 
     <com.autofit.widget.View
         android:layout_width="32px"
@@ -29,6 +30,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="54px"
+        android:textColor="#e70241"
+        android:textSize="24px" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/wifi_ap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:gravity="right"
+        android:text="sdfsdg"
         android:textColor="#e70241"
         android:textSize="24px" />
 </com.autofit.widget.LinearLayout>

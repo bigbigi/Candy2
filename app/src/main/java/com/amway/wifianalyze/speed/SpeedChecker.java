@@ -116,7 +116,7 @@ public class SpeedChecker {
     private AtomicBoolean mStopTagUpload = new AtomicBoolean();
 
 
-    public float checkUpload(final Callback callback) {
+    public float checkUpload(final Callback<Float> callback) {
         final int buffSize = 1024 * 1024 * 1;
         final String test = new String(new byte[buffSize]);
         final long startTime = System.currentTimeMillis();

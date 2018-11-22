@@ -6,6 +6,12 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
+
+import java.util.List;
+
 /**
  * Created by big on 2018/10/19.
  */
@@ -14,7 +20,7 @@ public class PermissionUtil {
 
 
     public void init(Activity activity) {
-        checkPermissions(activity, PER_WIFI, PERMISSIONS_WIFI, RESULT_WIFI);
+//        checkPermissions(activity, PER_WIFI, PERMISSIONS_WIFI, RESULT_WIFI);
 //        checkPermissions(activity, PER_STORAGE, PERMISSIONS_STORAGE, RESULT_STORAGE);
 //        checkPermissions(activity, PER_PHONE, PERMISSIONS_PHONE, RESULT_PHONE);
 //        checkPermissions(activity, PER_AUDIO, PERMISSIONS_AUDIO, RESULT_AUDIO);
@@ -45,12 +51,13 @@ public class PermissionUtil {
 
 
     public static boolean checkPermissions(Activity context, String permission, String[] permissions, int resultCode) {
-        Log.e("permisson", "checkPermissions permission:" + permission);
+        /*Log.e("permisson", "checkPermissions permission:" + permission);
         boolean hasPermission = false;
         try {
             //检测是否有权限
             int result = ActivityCompat.checkSelfPermission(context, permission);
             hasPermission = result == PackageManager.PERMISSION_GRANTED;
+            Log.e("permisson", "checkPermissions :" + permission + ",result:" + result);
             if (!hasPermission) {
                 // 没有权限，去申请权限，会弹出对话框
                 ActivityCompat.requestPermissions(context, permissions, resultCode);
@@ -59,6 +66,19 @@ public class PermissionUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return hasPermission;
+        return hasPermission;*/
+        boolean grant = XXPermissions.isHasPermission(context, Permission.Group.LOCATION);
+        XXPermissions.with(context).constantRequest().permission(Permission.Group.LOCATION).request(new OnPermission() {
+            @Override
+            public void hasPermission(List<String> list, boolean b) {
+
+            }
+
+            @Override
+            public void noPermission(List<String> list, boolean b) {
+                Log.e("permisson", "no permission :" + list);
+            }
+        });
+        return grant;
     }
 }

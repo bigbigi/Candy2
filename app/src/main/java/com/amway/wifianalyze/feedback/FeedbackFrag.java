@@ -15,18 +15,25 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.listener.OnItemClickListener;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.PermissionUtil;
 import com.autofit.widget.RecyclerView;
 import com.autofit.widget.ScreenParameter;
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
+
+import java.util.List;
 
 /**
  * Created by big on 2018/10/25.
@@ -50,8 +57,7 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.frag_feedback, container, false);
         init(content);
-        PermissionUtil.checkPermissions(getActivity(), PermissionUtil.PER_STORAGE,
-                PermissionUtil.PERMISSIONS_STORAGE, PermissionUtil.RESULT_STORAGE);
+        checkStoragePermisson();
         return content;
     }
 
@@ -61,10 +67,12 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     private FeedbackContract.FeedbackPresenter mPresenter;
     private View mTimeLayout;
     private TextView mVoiceTime;
+    private EditText mContent;
 
     public void init(View content) {
         content.findViewById(R.id.feedback_submit).setOnClickListener(this);
         content.findViewById(R.id.feedback_voice_retry).setOnClickListener(this);
+        mContent = (EditText) content.findViewById(R.id.feedback_content);
         mVoiceText = (TextView) content.findViewById(R.id.feedback_voice);
         mTimeLayout = content.findViewById(R.id.feedback_voice_time_layout);
         mVoiceTime = (TextView) content.findViewById(R.id.feedback_voice_time);
@@ -95,13 +103,12 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     public void onClick(View v) {
         if (v.getId() == R.id.feedback_submit) {
             Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
-            String phoneNum = NetworkUtils.getPhoneNumber(getContext());
-            Log.d(TAG, "phoneNum:" + phoneNum);
-            if (TextUtils.isEmpty(phoneNum)) {//Dialog
-            } else {//
-//                HttpHelper.getInstance(getContext()).post("", "");
-//            mPresenter.submit(mAdapter.getData());
-            }
+//            String phoneNum = NetworkUtils.getPhoneNumber(getContext());
+//            Log.d(TAG, "phoneNum:" + phoneNum);
+//            if (TextUtils.isEmpty(phoneNum)) {//Dialog
+//            } else {
+            mPresenter.submit(getContext(), mAdapter.getData(), String.valueOf(mContent.getText()));
+//            }
         } else if (v.getId() == R.id.feedback_voice_retry) {
             mVoiceText.setEnabled(true);
             mVoiceText.setText(R.string.feedback_voice);
@@ -122,7 +129,7 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     public boolean onLongClick(View v) {
         Log.d(TAG, "onLongClick");
         if (v.getId() == R.id.feedback_voice && !v.isSelected()) {
-            mPresenter.startRecord();
+            mPresenter.startRecord(getActivity());
         }
         return true;
     }
@@ -185,5 +192,16 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     @Override
     public void updateTime(String s) {
         mVoiceTime.setText(s);
+    }
+
+    public void checkStoragePermisson() {
+        XXPermissions.with(getActivity()).constantRequest()
+                .permission(Permission.Group.STORAGE)
+                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_storage)) {
+                    @Override
+                    public void hasPermission(List<String> list, boolean b) {
+                        super.hasPermission(list, b);
+                    }
+                });
     }
 }

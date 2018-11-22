@@ -92,7 +92,9 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
 
     @Override
     public void scanWifi() {
-        if (mWm.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
+        if (mWm == null) {
+            return;
+        } else if (mWm.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
             mWifiOff = true;
             mView.onChecking(Code.INFO_OPEN_WIFI);
             mWm.setWifiEnabled(true);
@@ -141,6 +143,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     }
 
     public boolean isConnected() {
+        if (mWm == null) return false;
         WifiInfo info = mWm.getConnectionInfo();
         return info != null && info.getSSID() != null
                 && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""));
@@ -224,6 +227,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                             has5G = has5G || NetworkUtils.is5GHz(temp.frequency);
                             if (DEFAULT_SSID.equals(temp.SSID.replaceAll("\"", ""))) {
                                 dstResult = temp;
+                                HomeBiz.getInstance(context).setFrequence(temp.frequency);
                             }
                         }
                         Log.d(TAG, "has5G:" + has5G);

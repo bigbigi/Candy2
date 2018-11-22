@@ -33,5 +33,9 @@
     <string name="feedback_voice_time">%ss</string>
     <string name="feedback_submint">提交</string>
 
+    <!--权限-->
+    <string name="permisson_wifi">没有定位权限，无法获取WIFI</string>
+    <string name="permisson_storage">没有读取文件权限</string>
+    <string name="permisson_audio">没有录音权限</string>
 
 </resources>

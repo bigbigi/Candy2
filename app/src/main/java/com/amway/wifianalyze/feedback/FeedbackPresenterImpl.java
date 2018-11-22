@@ -1,18 +1,41 @@
 package com.amway.wifianalyze.feedback;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
+import android.app.Activity;
+import android.content.Context;
 import android.media.MediaRecorder;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.Toast;
 
 
+import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.home.HomeBiz;
+import com.amway.wifianalyze.lib.ToastOnPermission;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.FileUtils;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.PermissionUtil;
+import com.amway.wifianalyze.utils.Server;
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,26 +69,97 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
         }
     };
 
+    private final String URL = "%s/checkwifi-api/addNetFeedback.dat";
+
     @Override
-    public void submit(List<Bitmap> list, String content) {
+    public void submit(final Context context, final List<String> list, final String content) {
+        HomeBiz.getInstance(context).getShopName(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, String... t) {
+                final String shopName = t[1];
+                WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wm.getConnectionInfo();
+                if (!TextUtils.isEmpty(shopName) && wifiInfo != null) {
+                    post(shopName, content, list, context);
+                }
+            }
+        });
 
     }
 
-    @Override
-    public void addPicture() {
+    private void post(final String shopName, final String content, final List<String> list, final Context context) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                final JSONObject json = new JSONObject();
+                try {
+                    json.put("content", content);//文字
+                    if (list != null && list.size() > 0) {//图片
+                        JSONArray imgArray = new JSONArray();
+                        for (String path : list) {
 
+                            JSONObject imgItem = new JSONObject();
+                            imgItem.put("value", Base64.encodeToString(FileUtils.File2byte(path), 0));
+                            imgItem.put("postfix", "jpg");
+                            imgArray.put(imgItem);
+                        }
+                        json.put("imgs", imgArray);
+                    }
+                    if (!TextUtils.isEmpty(mRecordPath)) {//语音
+                        JSONArray recordArray = new JSONArray();
+                        JSONObject record = new JSONObject();
+                        record.put("value", Base64.encodeToString(FileUtils.File2byte(mRecordPath), 0));
+                        record.put("postfix", "wav");
+                        recordArray.put(record);
+                        json.put("voices", recordArray);
+                    }
+                    //设备信息
+                    WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    WifiInfo wifiInfo = wm.getConnectionInfo();
+                    if (wifiInfo != null) {//todo ssid must be same
+                        json.put("ssid", "");
+                        json.put("ip", NetworkUtils.intToIp(wifiInfo.getIpAddress()));
+                        json.put("mac", NetworkUtils.getMac(context));
+                        json.put("dns", NetworkUtils.getDns1());
+                        json.put("phoneType", Build.MODEL);
+                        json.put("system", String.valueOf(Build.VERSION.SDK_INT));
+                        WebView webView = new WebView(context);
+                        WebSettings settings = webView.getSettings();
+                        webView.getSettings().setJavaScriptEnabled(true);
+                        json.put("browser", settings.getUserAgentString());
+                        int channel = NetworkUtils.is5GHz(HomeBiz.getInstance(context).getFrequence()) ? 2 : 1;
+                        json.put("wifiChannel", channel);
+                        json.put("shop", shopName);
+                        json.put("processor", "处理人");//todo
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                HttpHelper.getInstance().post(String.format(URL, Server.FEEDBACK), json.toString());
+            }
+        });
     }
 
+
     @Override
-    public void startRecord() {
-        if (PermissionUtil.checkPermissions(((Fragment) mView).getActivity(), PermissionUtil.PER_AUDIO, PermissionUtil.PERMISSIONS_AUDIO, PermissionUtil.RESULT_AUDIO)) {
+    public void startRecord(final Activity context) {
+        if (XXPermissions.isHasPermission(context, Permission.RECORD_AUDIO)) {
             mIsRecording = true;
             mTime = 1;
             mHandler.sendEmptyMessage(MSG_UPDATE_TIME);
             mView.onRecordStart();
             record();
-        }
+        } else {
+            XXPermissions.with(context).constantRequest()
+                    .permission(Permission.RECORD_AUDIO)
+                    .request(new ToastOnPermission(context, context.getString(R.string.permisson_storage)) {
+                        @Override
+                        public void hasPermission(List<String> list, boolean b) {
+                            super.hasPermission(list, b);
 
+                        }
+                    });
+        }
     }
 
     @Override
@@ -75,9 +169,13 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
             mHandler.removeMessages(MSG_UPDATE_TIME);
             mTime = 1;
             mView.onRecordStop();
-            mRecorder.stop();
-            mRecorder.release();
-            mRecorder = null;
+            try {
+                mRecorder.stop();
+                mRecorder.release();
+                mRecorder = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -86,18 +184,18 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
 
     private MediaRecorder mRecorder;
     private SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA);
-    private String mPath;
+    private String mRecordPath;
 
     public void record() {
         String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/amway/";
-        mPath = dir + mFormat.format(new Date(System.currentTimeMillis())) + ".mp4";
+        mRecordPath = dir + mFormat.format(new Date(System.currentTimeMillis())) + ".wav";
         FileUtils.mkdirs(dir);
-        Log.d("record", "path:" + mPath);
+        Log.d("record", "path:" + mRecordPath);
         FileUtils.clearDir(dir);
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4); //录音文件保存的格式，这里保存为 mp4
-        mRecorder.setOutputFile(mPath); // 设置录音文件的保存路径
+        mRecorder.setOutputFile(mRecordPath); // 设置录音文件的保存路径
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setAudioChannels(1);
         // 设置录音文件的清晰度

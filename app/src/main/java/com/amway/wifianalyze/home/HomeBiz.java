@@ -7,6 +7,7 @@ import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
+import com.amway.wifianalyze.utils.Server;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,12 +33,12 @@ public class HomeBiz {
     private String mShopName;
     private String mApName;
     private Context mContext;
+    private int mFrequence;
 
     public HomeBiz(Context context) {
         mContext = context;
     }
 
-    private static final String SERVER = "http://10.0.0.171";
     private static final String SHOP_URL = "%s/checkwifi-api/shop/getShopInfo_%s.dat";
 
     public void getShopName(final Callback<String> callback) {
@@ -49,7 +50,7 @@ public class HomeBiz {
             ThreadManager.execute(new Runnable() {
                 @Override
                 public void run() {
-                    String result = HttpHelper.getInstance().get(String.format(SHOP_URL, SERVER,
+                    String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.AP,
                             NetworkUtils.getMac(mContext)));
                     if (!TextUtils.isEmpty(result)) {
                         try {
@@ -67,5 +68,13 @@ public class HomeBiz {
                 }
             });
         }
+    }
+
+    public int getFrequence() {
+        return mFrequence;
+    }
+
+    public void setFrequence(int frequence) {
+        this.mFrequence = frequence;
     }
 }

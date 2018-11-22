@@ -1,5 +1,7 @@
 package com.amway.wifianalyze.feedback;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.amway.wifianalyze.base.BaseContract;
@@ -29,11 +31,9 @@ public interface FeedbackContract extends BaseContract {
             super(view);
         }
 
-        public abstract void submit(List<Bitmap> list, String content);
+        public abstract void submit(final Context context, final List<String> list, final String content);
 
-        public abstract void addPicture();
-
-        public abstract void startRecord();
+        public abstract void startRecord(final Activity context);
 
         public abstract void stopRecord();
 

@@ -27,7 +27,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         init();
-        new PermissionUtil().init(this);
         findViewById(R.id.tab_detect).performClick();
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
         Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this));

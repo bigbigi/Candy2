@@ -13,16 +13,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.home.DetectResult.Status;
+import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
+
+import java.util.List;
 
 
 /**
@@ -67,22 +74,29 @@ public class HomeFrag extends BaseFragment implements
         mWifiFrequence = (TextView) content.findViewById(R.id.wifi_frequence);
         mWifiName.setText("");
         mWifiFrequence.setText("");
+        XXPermissions.with(getActivity()).constantRequest()
+                .permission(Permission.Group.LOCATION)
+                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_wifi)) {
+                    @Override
+                    public void hasPermission(List<String> list, boolean b) {
+                        super.hasPermission(list, b);
+                        mWifiPresenter.init(getContext());
+                        mWifiPresenter.scanWifi();
+                        startAni();
+                        //todo test
+                        mDialog = new TestDialog(getContext());
+                        mDialog.setOnStartListener(new TestDialog.OnStartListener() {
+                            @Override
+                            public void onStart() {
+                                mAdapter.getData().clear();
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+                        mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
+                        mDialog.show();
+                    }
+                });
 
-        mWifiPresenter.init(getContext());
-        mWifiPresenter.scanWifi();
-        startAni();
-
-        //todo test
-        mDialog = new TestDialog(getContext());
-        mDialog.setOnStartListener(new TestDialog.OnStartListener() {
-            @Override
-            public void onStart() {
-                mAdapter.getData().clear();
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-        mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
-        mDialog.show();
     }
 
     @Override

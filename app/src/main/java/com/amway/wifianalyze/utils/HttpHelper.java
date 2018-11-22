@@ -53,6 +53,7 @@ public class HttpHelper {
             Response response = mClient.newCall(request).execute();
             return response.body().string();
         } catch (IOException e) {
+            Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
         return "";
@@ -66,6 +67,7 @@ public class HttpHelper {
             Response response = mClient.newCall(request).execute();
             return response;
         } catch (IOException e) {
+            Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
         return null;
@@ -91,6 +93,7 @@ public class HttpHelper {
             Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString());
             return response;
         } catch (IOException e) {
+            Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
         return response;

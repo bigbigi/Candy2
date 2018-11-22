@@ -43,6 +43,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
+
 /**
  * Created by big on 2018/11/14.
  */
@@ -73,7 +77,7 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
 
     @Override
     public void submit(final Context context, final List<String> list, final String content) {
-        HomeBiz.getInstance(context).getShopName(new Callback<String>() {
+       /* HomeBiz.getInstance(context).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
                 final String shopName = t[1];
@@ -83,8 +87,8 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                     post(shopName, content, list, context);
                 }
             }
-        });
-
+        });*/
+        post("test", content, list, context);
     }
 
     private void post(final String shopName, final String content, final List<String> list, final Context context) {
@@ -97,11 +101,13 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                     if (list != null && list.size() > 0) {//图片
                         JSONArray imgArray = new JSONArray();
                         for (String path : list) {
-
-                            JSONObject imgItem = new JSONObject();
-                            imgItem.put("value", Base64.encodeToString(FileUtils.File2byte(path), 0));
-                            imgItem.put("postfix", "jpg");
-                            imgArray.put(imgItem);
+                            if (!"add_head".equals(path)) {
+                                Log.d("path", "path:" + path);
+                                JSONObject imgItem = new JSONObject();
+                                imgItem.put("value", Base64.encodeToString(FileUtils.File2byte(path), 0));
+                                imgItem.put("postfix", "jpg");
+                                imgArray.put(imgItem);
+                            }
                         }
                         json.put("imgs", imgArray);
                     }
@@ -132,10 +138,21 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                         json.put("shop", shopName);
                         json.put("processor", "处理人");//todo
                     }
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
-                HttpHelper.getInstance().post(String.format(URL, Server.FEEDBACK), json.toString());
+                RequestBody body = new RequestBody() {
+                    @Override
+                    public MediaType contentType() {
+                        return MediaType.parse("application/json; charset=utf-8");
+                    }
+
+                    @Override
+                    public void writeTo(BufferedSink bufferedSink) throws IOException {
+                        bufferedSink.writeUtf8(json.toString());
+                    }
+                };
+                HttpHelper.getInstance().post(String.format(URL, Server.FEEDBACK), body);
             }
         });
     }

@@ -45,6 +45,7 @@ import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 import okio.BufferedSink;
 
 /**
@@ -76,7 +77,7 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
     private final String URL = "%s/checkwifi-api/addNetFeedback.dat";
 
     @Override
-    public void submit(final Context context, final List<String> list, final String content) {
+    public void submit(final Context context, final List<String> list, final String content, Callback callback) {
        /* HomeBiz.getInstance(context).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
@@ -88,10 +89,10 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                 }
             }
         });*/
-        post("test", content, list, context);
+        post("test", content, list, context, callback);
     }
 
-    private void post(final String shopName, final String content, final List<String> list, final Context context) {
+    private void post(final String shopName, final String content, final List<String> list, final Context context, final Callback callback) {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
@@ -152,7 +153,15 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                         bufferedSink.writeUtf8(json.toString());
                     }
                 };
-                HttpHelper.getInstance().post(String.format(URL, Server.FEEDBACK), body);
+                boolean success = HttpHelper.getInstance().post(String.format(URL, Server.FEEDBACK), body);
+                if (callback != null) {
+                    if (success) {
+                        callback.onCallBack(true);
+                    } else {
+                        callback.onCallBack(false);
+                    }
+                }
+
             }
         });
     }

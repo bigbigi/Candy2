@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BasePresenterImpl;
+import com.amway.wifianalyze.lib.listener.Callback;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public interface FeedbackContract extends BaseContract {
             super(view);
         }
 
-        public abstract void submit(final Context context, final List<String> list, final String content);
+        public abstract void submit(final Context context, final List<String> list, final String content, Callback callback);
 
         public abstract void startRecord(final Activity context);
 

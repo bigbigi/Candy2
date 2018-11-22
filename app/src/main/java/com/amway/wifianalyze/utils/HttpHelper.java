@@ -73,34 +73,34 @@ public class HttpHelper {
         return null;
     }
 
-    public Response post(String url, String content) {
+    public boolean post(String url, String content) {
         try {
             return post(url, new TextRequestBody(compress(content)));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return false;
     }
 
-    public Response post(String url, RequestBody requestBody) {
-        Response response = null;
+    public boolean post(String url, RequestBody requestBody) {
+        boolean success = false;
         try {
             Request request = new Request.Builder()
                     .url(url)
                     .post(requestBody)
                     .build();
-            response = mClient.newCall(request).execute();
-            Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString());
-            return response;
+            Response response = mClient.newCall(request).execute();
+            success = response.isSuccessful();
+            Log.i(TAG, "response:" + success + "," + response.toString());
         } catch (IOException e) {
             Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
-        return response;
+        return success;
     }
 
-    public Response post(String url, RequestBody requestBody, HashMap<String, String> headers) {
-        Response response = null;
+    public boolean post(String url, RequestBody requestBody, HashMap<String, String> headers) {
+        boolean success = false;
         try {
             Request.Builder builder = new Request.Builder()
                     .url(url).post(requestBody);
@@ -113,13 +113,13 @@ public class HttpHelper {
                 }
             }
             Request request = builder.build();
-            response = mClient.newCall(request).execute();
-            Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString());
-            return response;
+            Response response = mClient.newCall(request).execute();
+            success = response.isSuccessful();
+            Log.i(TAG, "response:" + success + "," + response.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return response;
+        return success;
     }
 
     public ByteArrayOutputStream compress(String str) throws IOException {

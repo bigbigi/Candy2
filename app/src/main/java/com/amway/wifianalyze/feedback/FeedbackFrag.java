@@ -23,8 +23,10 @@ import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.lib.ToastOnPermission;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.listener.OnItemClickListener;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.PermissionUtil;
 import com.autofit.widget.RecyclerView;
@@ -102,13 +104,21 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.feedback_submit) {
-            Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
-//            String phoneNum = NetworkUtils.getPhoneNumber(getContext());
-//            Log.d(TAG, "phoneNum:" + phoneNum);
-//            if (TextUtils.isEmpty(phoneNum)) {//Dialog
-//            } else {
-            mPresenter.submit(getContext(), mAdapter.getData(), String.valueOf(mContent.getText()));
-//            }
+            mPresenter.submit(getContext(), mAdapter.getData(), String.valueOf(mContent.getText()), new Callback() {
+                @Override
+                public void onCallBack(final boolean success, Object[] t) {
+                    ThreadManager.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (success) {
+                                Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "提交失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
         } else if (v.getId() == R.id.feedback_voice_retry) {
             mVoiceText.setEnabled(true);
             mVoiceText.setText(R.string.feedback_voice);

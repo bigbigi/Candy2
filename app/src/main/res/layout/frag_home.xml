@@ -5,6 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <com.autofit.widget.View
+        android:id="@+id/barcode"
+        android:layout_width="30px"
+        android:layout_height="30px"
+        android:layout_gravity="right"
+        android:layout_marginRight="40px"
+        android:layout_marginTop="100px"
+        android:background="@drawable/ic_gz_ewm" />
+
+    <com.autofit.widget.View
+        android:id="@+id/scan_barcode"
+        android:layout_width="30px"
+        android:layout_height="30px"
+        android:layout_gravity="right"
+        android:layout_marginRight="110px"
+        android:layout_marginTop="100px"
+        android:background="@drawable/ic_gz_sys" />
+
     <com.autofit.widget.View
         android:layout_width="220px"
         android:layout_height="115px"

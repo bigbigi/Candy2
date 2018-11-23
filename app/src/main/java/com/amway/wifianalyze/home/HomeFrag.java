@@ -42,7 +42,8 @@ import java.util.List;
 
 public class HomeFrag extends BaseFragment implements
         WifiContract.WifiView,
-        AuthContract.AuthView {
+        AuthContract.AuthView,
+        View.OnClickListener {
     public static final String TAG = "HomeFrag";
 
     public static HomeFrag newInstance(Bundle bundle) {
@@ -68,6 +69,8 @@ public class HomeFrag extends BaseFragment implements
     private View mRadar;
 
     public void init(View content) {
+        content.findViewById(R.id.barcode).setOnClickListener(this);
+        content.findViewById(R.id.scan_barcode).setOnClickListener(this);
         mRadar = content.findViewById(R.id.detect_radar);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -295,5 +298,15 @@ public class HomeFrag extends BaseFragment implements
             mBarcodeDialog = new BarcodeDialog(getContext());
         }
         mBarcodeDialog.show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d("big", "onclick");
+        if (v.getId() == R.id.barcode) {
+            showBarcode();
+        } else if (v.getId() == R.id.scan_barcode) {
+            go2Capture();
+        }
     }
 }

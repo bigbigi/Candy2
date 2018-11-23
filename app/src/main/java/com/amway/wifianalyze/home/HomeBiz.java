@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.amway.wifianalyze.lib.listener.Callback;
-import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.Server;
@@ -19,6 +18,7 @@ import org.json.JSONObject;
 
 public class HomeBiz {
     private static final String SHOP_URL = "%s/checkwifi-api/shop/getShopInfo_mac_%s_ip_.dat";
+    private static final String LOCALNET_URL = "%s/checkwifi-api/shop/getCisco2901Load_mac_%s_ip_.dat";
     private static final String INTERNET_URL = "%s/checkwifi-api/shop/getSangforLoad_mac_%s_ip_.dat";
 
     private static volatile HomeBiz mInstance;
@@ -55,7 +55,7 @@ public class HomeBiz {
                 @Override
                 public void run() {
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST,
-                            NetworkUtils.getMac(mContext)));
+                           /*NetworkUtils.getMac(mContext)*/"f0:99:bf:df:5e:64"));//todo
                     if (!TextUtils.isEmpty(result)) {
                         try {
                             JSONObject obj = new JSONObject(result);
@@ -74,12 +74,12 @@ public class HomeBiz {
         }
     }
 
-    public void checkInternetLoad(final Callback<Boolean> callback) {
+    private void checkNetLoad(final String url, final Callback<Boolean> callback) {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                String result = HttpHelper.getInstance().get(String.format(INTERNET_URL, Server.HOST,
-                        /*NetworkUtils.getMac(mContext)*/"f0:99:bf:df:5e:64"));
+                String result = HttpHelper.getInstance().get(String.format(url, Server.HOST,
+                        /*NetworkUtils.getMac(mContext)*/"f0:99:bf:df:5e:64"));//todo
                 if (!TextUtils.isEmpty(result)) {
                     try {
                         JSONObject obj = new JSONObject(result);
@@ -97,7 +97,14 @@ public class HomeBiz {
                 callback.onCallBack(false);
             }
         });
+    }
 
+    public void checkLocalnetLoad(final Callback<Boolean> callback) {
+        checkNetLoad(LOCALNET_URL, callback);
+    }
+
+    public void checkInternetLoad(final Callback<Boolean> callback) {
+        checkNetLoad(INTERNET_URL, callback);
     }
 
     public int getFrequence() {

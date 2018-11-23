@@ -17,13 +17,15 @@ public class Code {
     public static final int INFO_EMPTY_IP = 0x00000012;//IP空
     public static final int INFO_SERVER = 0x00000013;//服务器ping不通
     public static final int INFO_SERVER_PORT = 0x00000014;//服务器端口被占用
-    public static final int INFO_INTERNET = 0x00000005;//Internet专线不通
+    public static final int INFO_INTERNET = 0x00000015;//Internet专线不通
     public static final int INFO_DNS = 0x00000016;//DNS错误
     public static final int INFO_SKIP = 0x00000017;//自动跳转
 
     public static final int INFO_WEIXIN = 0x00000018;//微信无法认证
     public static final int INFO_CARD = 0x00000019;//卡号无法认证
     public static final int INFO_SMS = 0x0000001a;//短信无法认证
+
+    public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
 
 
     public static String getMessage(int code, int loss, int delay) {
@@ -55,13 +57,16 @@ public class Code {
                 message = "检查服务器端口被占用";
                 break;
             case Code.INFO_INTERNET:
-                message = "检查Internet专线带宽";
+                message = "检查外网专线带宽";
                 break;
             case Code.INFO_DNS:
                 message = "检查DNS配置";
                 break;
             case Code.INFO_SKIP:
                 message = "是否已认证";
+                break;
+            case Code.INFO_LOCALNET:
+                message = "检查内网专线带宽";
                 break;
             default:
                 message = null;

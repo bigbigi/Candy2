@@ -27,6 +27,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
+    //静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证
     public AuthPresenterImpl(AuthContract.AuthView view) {
         super(view);
     }
@@ -39,7 +40,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute.setOnTraceRouteListener(this);
         }
         checkDhcp();
-        checkServer();
+        checkLocalnet();
     }
 
 
@@ -68,11 +69,33 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         mTraceroute.executeTraceroute(SERVER_URL, Code.INFO_SERVER);
     }
 
+    @Override
+    public void checkLocalnet() {
+        mView.onChecking(Code.INFO_LOCALNET);
+        HomeBiz.getInstance(mContext).checkLocalnetLoad(new Callback<Boolean>() {
+            @Override
+            public void onCallBack(boolean success, Boolean... t) {
+                if (success) {
+                    boolean input = t[0];
+                    boolean output = t[1];
+                    if (!input && !output) {
+                        mView.onInfo(Code.INFO_LOCALNET, 0, 0);
+                        checkInternet();
+                    } else {
+                        mView.onError(Code.INFO_LOCALNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
+                    }
+                } else {
+                    mView.onError(Code.INFO_LOCALNET, Code.ERR_QUEST);
+                }
+            }
+        });
+    }
+
 
     @Override
     public void checkInternet() {
         mView.onChecking(Code.INFO_INTERNET);
-        HomeBiz.getInstance(mContext).checkInternetLoad(new Callback<Boolean>() {
+        HomeBiz.getInstance(mContext).checkLocalnetLoad(new Callback<Boolean>() {
             @Override
             public void onCallBack(boolean success, Boolean... t) {
                 boolean input = t[0];
@@ -96,7 +119,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         mView.onChecking(Code.INFO_DNS);
         if (!TextUtils.isEmpty(NetworkUtils.getIp(SERVER_URL))) {
             mView.onInfo(Code.INFO_DNS, 0, 0);
-            skipBrowser();
+            checkServer();
         } else {
             mView.onError(Code.INFO_DNS, -1);
         }
@@ -133,19 +156,11 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         if (what == Code.INFO_SERVER) {
             if (checkPort()) {
                 mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
-                checkInternet();
+                skipBrowser();
             } else {
                 mView.onError(Code.INFO_SERVER_PORT, -1);
             }
         }
-//        else if (what == Code.INFO_INTERNET) {
-//            if (checkDns()) {
-//                mView.onInfo(Code.INFO_DNS, 0, 0);
-//                skipBrowser();
-//            } else {
-//                mView.onError(Code.INFO_DNS, -1);
-//            }
-//        }
     }
 
     @Override

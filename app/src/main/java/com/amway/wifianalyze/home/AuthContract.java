@@ -33,6 +33,8 @@ public interface AuthContract extends BaseContract {
 
         public abstract void checkServer();
 
+        public abstract void checkLocalnet();
+
         public abstract void checkInternet();
 
         public abstract void checkDns();

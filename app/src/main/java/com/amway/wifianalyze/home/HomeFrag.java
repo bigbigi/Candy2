@@ -2,9 +2,11 @@ package com.amway.wifianalyze.home;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +30,8 @@ import com.autofit.widget.TextView;
 import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
+import com.uuzuche.lib_zxing.activity.CaptureActivity;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.util.List;
 
@@ -84,7 +88,7 @@ public class HomeFrag extends BaseFragment implements
                         mWifiPresenter.scanWifi();
                         startAni();
                         //todo test
-                        mDialog = new TestDialog(getContext());
+                      /*  mDialog = new TestDialog(getContext());
                         mDialog.setOnStartListener(new TestDialog.OnStartListener() {
                             @Override
                             public void onStart() {
@@ -93,9 +97,17 @@ public class HomeFrag extends BaseFragment implements
                             }
                         });
                         mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
-                        mDialog.show();
+                        mDialog.show();*/
                     }
                 });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                go2Capture();
+//                showBarcode();
+            }
+        }, 2000);
 
     }
 
@@ -241,4 +253,47 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
+    private static final int REQUEST_CODE = 3;
+
+    private void go2Capture() {
+        XXPermissions.with(getActivity()).constantRequest()
+                .permission(Permission.CAMERA)
+                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_wifi)) {
+                    @Override
+                    public void hasPermission(List<String> list, boolean b) {
+                        super.hasPermission(list, b);
+                        Intent intent = new Intent(getActivity(), CaptureActivity.class);
+                        startActivityForResult(intent, REQUEST_CODE);
+                    }
+                });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            //处理扫描结果（在界面上显示）
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    Log.d(TAG, "code result:" + result);
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    Toast.makeText(getContext(), "解析二维码失败", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private BarcodeDialog mBarcodeDialog;
+
+    private void showBarcode() {
+        if (mBarcodeDialog == null) {
+            mBarcodeDialog = new BarcodeDialog(getContext());
+        }
+        mBarcodeDialog.show();
+    }
 }

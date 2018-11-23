@@ -55,11 +55,7 @@ public class Code {
                 message = "检查服务器端口被占用";
                 break;
             case Code.INFO_INTERNET:
-                if (loss == -1) {
-                    message = "检查Internet专线延迟";
-                } else {
-                    message = "检查Internet专线延迟，丢包：" + loss + ",延迟:" + delay;
-                }
+                message = "检查Internet专线带宽";
                 break;
             case Code.INFO_DNS:
                 message = "检查DNS配置";
@@ -75,6 +71,7 @@ public class Code {
     }
 
     //错误
+    public static final int ERR_QUEST = 0x0000ff00;//请求失败
     public static final int ERR_NO_WIFI = 0x0000ff01;//未找到目标wifi
     public static final int ERROR_PWD = 0x0000ff02;//密码错误
     public static final int ERROR_BUSY_CHANNEL = 0x0000ff03;//信道拥堵
@@ -82,6 +79,8 @@ public class Code {
     public static final int ERROR_ELSE = 0x0000ff05;//其他问题，AP人数过多等，找客服
     public static final int ERR_ONLY24G = 0x0000ff06;//不支持5G
     public static final int ERR_NOTFOUND_5G = 0x0000ff06;//未找到5G信号
+    public static final int ERR_INTERNET_INPUT = 0x0000ff07;//入口带宽异常
+    public static final int ERR_INTERNET_OUTPUT = 0x0000ff08;//出口带宽异常
 
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
@@ -89,6 +88,9 @@ public class Code {
         }
         String message = null;
         switch (reason) {
+            case ERR_QUEST:
+                message = "请求失败";
+                break;
             case ERR_NO_WIFI:
                 message = "未找到目标wifi";
                 break;
@@ -106,6 +108,12 @@ public class Code {
                 break;
             case ERR_ONLY24G:
                 message = "不支持5G";
+                break;
+            case ERR_INTERNET_INPUT:
+                message = "入口带宽异常";
+                break;
+            case ERR_INTERNET_OUTPUT:
+                message = "出口带宽异常";
                 break;
         }
         return message;

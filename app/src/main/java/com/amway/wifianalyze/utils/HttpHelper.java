@@ -51,7 +51,9 @@ public class HttpHelper {
                 .build();
         try {
             Response response = mClient.newCall(request).execute();
-            return response.body().string();
+            String result = response.body().string();
+            Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString() + "\nresult:" + result);
+            return result;
         } catch (IOException e) {
             Log.e(TAG, "url:" + url);
             e.printStackTrace();

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.amway.wifianalyze.base.Code;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
@@ -71,13 +72,34 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public void checkInternet() {
         mView.onChecking(Code.INFO_INTERNET);
-        mTraceroute.executeTraceroute(INTERNET, Code.INFO_INTERNET);
+        HomeBiz.getInstance(mContext).checkInternetLoad(new Callback<Boolean>() {
+            @Override
+            public void onCallBack(boolean success, Boolean... t) {
+                boolean input = t[0];
+                boolean output = t[1];
+                if (success) {
+                    if (!input && !output) {
+                        mView.onInfo(Code.INFO_INTERNET, 0, 0);
+                        checkDns();
+                    } else {
+                        mView.onError(Code.INFO_INTERNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
+                    }
+                } else {
+                    mView.onError(Code.INFO_INTERNET, Code.ERR_QUEST);
+                }
+            }
+        });
     }
 
     @Override
-    public boolean checkDns() {
+    public void checkDns() {
         mView.onChecking(Code.INFO_DNS);
-        return !TextUtils.isEmpty(NetworkUtils.getIp(SERVER_URL));
+        if (!TextUtils.isEmpty(NetworkUtils.getIp(SERVER_URL))) {
+            mView.onInfo(Code.INFO_DNS, 0, 0);
+            skipBrowser();
+        } else {
+            mView.onError(Code.INFO_DNS, -1);
+        }
     }
 
     @Override
@@ -115,14 +137,15 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             } else {
                 mView.onError(Code.INFO_SERVER_PORT, -1);
             }
-        } else if (what == Code.INFO_INTERNET) {
-            if (checkDns()) {
-                mView.onInfo(Code.INFO_DNS, 0, 0);
-                skipBrowser();
-            } else {
-                mView.onError(Code.INFO_DNS, -1);
-            }
         }
+//        else if (what == Code.INFO_INTERNET) {
+//            if (checkDns()) {
+//                mView.onInfo(Code.INFO_DNS, 0, 0);
+//                skipBrowser();
+//            } else {
+//                mView.onError(Code.INFO_DNS, -1);
+//            }
+//        }
     }
 
     @Override

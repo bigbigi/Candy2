@@ -97,6 +97,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         if (mWifiPresenter.isConnected()) {
             WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             onConnected(wifiManager.getConnectionInfo());
+            mWifiPresenter.getAp(getContext());
         } else {
             mWifiPresenter.scanWifi();
         }
@@ -131,18 +132,18 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mAdapter.setData(list);
         if (!isHidden()) {
             mSpeedPresenter.getSpeed();
-            HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
-                @Override
-                public void onCallBack(boolean success, final String... t) {
-                    ThreadManager.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mApName.setText(t[0]);
-                        }
-                    });
-                }
-            });
         }
+    }
+
+    @Override
+    public void onGetAp(final String apName) {
+        Log.d(TAG, "onGetAp:" + apName);
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mApName.setText(apName);
+            }
+        });
     }
 
 

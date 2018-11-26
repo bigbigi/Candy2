@@ -169,7 +169,6 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onConnected(WifiInfo wifiInfo) {
-        mAuthPresenter.startCheck(getContext());
         if (wifiInfo.getSSID() != null) {
             mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
         }
@@ -177,19 +176,18 @@ public class HomeFrag extends BaseFragment implements
             Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
             mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
         }
-        HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
+    }
+
+    @Override
+    public void onGetAp(final String apName) {
+        ThreadManager.runOnUiThread(new Runnable() {
             @Override
-            public void onCallBack(boolean success, final String... t) {
-                ThreadManager.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mApName.setText(t[0]);
-                    }
-                });
+            public void run() {
+                mApName.setText(apName);
+                mAuthPresenter.startCheck(getContext());
             }
         });
     }
-
 
     @Override
     public void onChecking(final int code) {

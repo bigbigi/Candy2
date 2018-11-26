@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,5 +36,21 @@ public class Utils {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static int parseInt(String str) {
+        return parseInt(str, -1);
+    }
+
+    public static int parseInt(String str, int def) {
+        int i = def;
+        if (!TextUtils.isEmpty(str)) {
+            try {
+                i = Integer.parseInt(str.trim());
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+        return i;
     }
 }

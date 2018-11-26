@@ -21,6 +21,7 @@ import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.WifiConnector;
 
 import java.util.HashMap;
@@ -46,6 +47,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private MyWifiBrocastReceiver mWifiReceiver;
     private WifiManager mWm;
     private WifiInfo mWifiInfo;
+    private Context mContext;
 
     private int mReScanTimes = 0;
     private boolean mRefreshScanList = true;
@@ -59,6 +61,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
 
     @Override
     public void init(Context context) {
+        mContext = context;
         if (mWm == null) {
             mWm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             mWifiReceiver = new MyWifiBrocastReceiver();
@@ -138,6 +141,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             mCheckConnected = true;
             mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
             mView.onConnected(mWm.getConnectionInfo());
+            getAp(mContext);
         }
 
     }
@@ -281,5 +285,20 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         }
     }
 
-
+    @Override
+    public void getAp(Context context) {
+        mView.onChecking(Code.INFO_GET_AP);
+        HomeBiz.getInstance(context).getShopName(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, final String... t) {
+                if (success) {
+                    mView.onGetAp(t[0]);
+                    mView.onInfo(Code.INFO_GET_AP, Utils.parseInt(t[2]), 0);
+                } else {
+                    mView.onGetAp("");
+                    mView.onError(Code.INFO_GET_AP, -1);
+                }
+            }
+        });
+    }
 }

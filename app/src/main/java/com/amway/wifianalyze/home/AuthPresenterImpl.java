@@ -105,7 +105,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public void checkInternet() {
         mView.onChecking(Code.INFO_INTERNET);
-        HomeBiz.getInstance(mContext).checkLocalnetLoad(new Callback<Boolean>() {
+        HomeBiz.getInstance(mContext).checkInternetLoad(new Callback<Boolean>() {
             @Override
             public void onCallBack(boolean success, Boolean... t) {
                 if (success) {

@@ -27,6 +27,7 @@ public class Code {
 
     public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
+    public static final int INFO_GET_AP = 0x0000001d;//获取ap人数
 
 
     public static String getMessage(int code, int loss, int delay) {
@@ -51,7 +52,7 @@ public class Code {
                 if (loss == -1) {
                     message = "检查服务器延迟";
                 } else {
-                    message = "检查服务器延迟，丢包：" + loss + ",延迟:" + delay;
+                    message = "检查服务器延迟，丢包：" + loss + "，延迟:" + delay;
                 }
                 break;
             case Code.INFO_SERVER_PORT:
@@ -73,7 +74,14 @@ public class Code {
                 if (loss == -1) {
                     message = "ping外网延迟";
                 } else {
-                    message = "ping外网，丢包：" + loss + "%,延迟:" + delay + "ms";
+                    message = "ping外网，丢包：" + loss + "%，延迟:" + delay + "ms";
+                }
+                break;
+            case Code.INFO_GET_AP:
+                if (loss == -1) {
+                    message = "获取AP人数";
+                } else {
+                    message = "AP在线人数：" + loss;
                 }
                 break;
             default:

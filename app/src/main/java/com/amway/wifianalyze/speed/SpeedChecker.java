@@ -120,6 +120,9 @@ public class SpeedChecker {
         final int buffSize = 1024 * 1024 * 1;
         final String test = new String(new byte[buffSize]);
         final long startTime = System.currentTimeMillis();
+        if (callback != null) {
+            callback.onCallBack(true, 0f);
+        }
         for (int i = 0; i < THREAD_NUM; i++) {
             ThreadManager.execute(new Runnable() {
                 @Override

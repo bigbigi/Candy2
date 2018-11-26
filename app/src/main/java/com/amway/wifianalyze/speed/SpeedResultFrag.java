@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.home.HomeBiz;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.autofit.widget.TextView;
 
@@ -56,8 +58,10 @@ public class SpeedResultFrag extends BaseFragment {
     private TextView mBandwidth;
     private SpeedView mSpeedView;
     private TextView mDefinition;
+    private TextView mApName;
 
     public void init(View content) {
+        mApName = (TextView) content.findViewById(R.id.wifi_ap);
         mDefinition = (TextView) content.findViewById(R.id.speed_definition);
         mSpeedView = (SpeedView) content.findViewById(R.id.speed_level);
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
@@ -79,6 +83,14 @@ public class SpeedResultFrag extends BaseFragment {
         mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mDownloadSpeed)));
         mSpeedView.setLevel(NetworkUtils.getLevel(mDownloadSpeed));
         mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(mDownloadSpeed)));
+        HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, String... t) {
+                if (success) {
+                    mApName.setText(t[0]);
+                }
+            }
+        });
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo.getSSID() != null) {

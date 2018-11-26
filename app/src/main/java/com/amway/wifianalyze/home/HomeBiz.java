@@ -38,6 +38,7 @@ public class HomeBiz {
     private String mApName;
     private Context mContext;
     private int mFrequence;
+    private String mUserCount;
 
     public HomeBiz(Context context) {
         mContext = context;
@@ -48,7 +49,7 @@ public class HomeBiz {
         Log.d("big", "getShopName:" + mShopName + ",ap:" + mApName);
         if (!TextUtils.isEmpty(mShopName) && !TextUtils.isEmpty(mApName)) {
             if (callback != null) {
-                callback.onCallBack(true, mApName, mShopName);
+                callback.onCallBack(true, mApName, mShopName, mUserCount);
             }
         } else {
             ThreadManager.execute(new Runnable() {
@@ -62,12 +63,17 @@ public class HomeBiz {
                             JSONObject data = obj.getJSONObject("data");
                             mApName = data.optString("apName");
                             mShopName = data.optString("shopName");
+                            mUserCount = data.optString("users");
                             if (callback != null) {
-                                callback.onCallBack(true, mApName, mShopName);
+                                callback.onCallBack(true, mApName, mShopName, mUserCount);
                             }
+                            return;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+                    if (callback != null) {
+                        callback.onCallBack(false);
                     }
                 }
             });
@@ -113,5 +119,9 @@ public class HomeBiz {
 
     public void setFrequence(int frequence) {
         this.mFrequence = frequence;
+    }
+
+    public String getUserCount() {
+        return mUserCount;
     }
 }

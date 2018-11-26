@@ -35,7 +35,6 @@
         android:layout_marginTop="48px"
         android:background="@drawable/ic_logo" />
 
-
     <com.autofit.widget.View
         android:layout_width="261px"
         android:layout_height="261px"

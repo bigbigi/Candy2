@@ -21,13 +21,13 @@ import okhttp3.Response;
 public class AuthPresenterImpl extends AuthContract.AuthPresenter implements TracerouteWithPing.OnTraceRouteListener {
     private static final String TAG = "AuthPresenterImpl";
 
-    private static final String INTERNET = "114.114.114.114";
-    private static final String SERVER_URL = "www.baidu.com";
-    private static final String AUTO_SERVER = "http://www.baidu.com/generate_204 ";
+    private static final String INTERNET = "www.baidu.com";
+    private static final String SERVER_URL = "www.baidu.com";//todo 认证服务器地址
+    private static final String AUTO_SERVER = "http://www.baidu.com/generate_204 ";//todo 认证204返回
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
-    //静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证
+    //静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
     public AuthPresenterImpl(AuthContract.AuthView view) {
         super(view);
     }
@@ -59,9 +59,19 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public boolean checkPort() {
         mView.onChecking(Code.INFO_SERVER_PORT);
-        return NetworkUtils.telnet(SERVER_URL, 80);
+        if (NetworkUtils.telnet(SERVER_URL, 80)) {
+            mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
+            skipBrowser();
+        } else {
+            mView.onError(Code.INFO_SERVER_PORT, -1);
+        }
+        return false;
     }
 
+    public void pingInternet() {
+        mView.onChecking(Code.INFO_PING_INTERNET);
+        mTraceroute.executeTraceroute(INTERNET, Code.INFO_PING_INTERNET);
+    }
 
     @Override
     public void checkServer() {
@@ -80,13 +90,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean output = t[1];
                     if (!input && !output) {
                         mView.onInfo(Code.INFO_LOCALNET, 0, 0);
-                        checkInternet();
                     } else {
                         mView.onError(Code.INFO_LOCALNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
                 } else {
                     mView.onError(Code.INFO_LOCALNET, Code.ERR_QUEST);
                 }
+                checkInternet();
             }
         });
     }
@@ -98,18 +108,18 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         HomeBiz.getInstance(mContext).checkLocalnetLoad(new Callback<Boolean>() {
             @Override
             public void onCallBack(boolean success, Boolean... t) {
-                boolean input = t[0];
-                boolean output = t[1];
                 if (success) {
+                    boolean input = t[0];
+                    boolean output = t[1];
                     if (!input && !output) {
                         mView.onInfo(Code.INFO_INTERNET, 0, 0);
-                        checkDns();
                     } else {
                         mView.onError(Code.INFO_INTERNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
                 } else {
                     mView.onError(Code.INFO_INTERNET, Code.ERR_QUEST);
                 }
+                checkDns();
             }
         });
     }
@@ -142,6 +152,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             } else {
                 mView.onInfo(Code.INFO_SKIP, 0, 0);
             }
+            pingInternet();
             response.close();
         } else {
             mView.onError(Code.INFO_SKIP, -1);
@@ -154,12 +165,8 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         Log.e("big", "onResult:" + what);
         mView.onInfo(what, loss, delay);
         if (what == Code.INFO_SERVER) {
-            if (checkPort()) {
-                mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
-                skipBrowser();
-            } else {
-                mView.onError(Code.INFO_SERVER_PORT, -1);
-            }
+            checkPort();
+        } else if (what == Code.INFO_PING_INTERNET) {
         }
     }
 

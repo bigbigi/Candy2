@@ -17,7 +17,7 @@ public class Code {
     public static final int INFO_EMPTY_IP = 0x00000012;//IP空
     public static final int INFO_SERVER = 0x00000013;//服务器ping不通
     public static final int INFO_SERVER_PORT = 0x00000014;//服务器端口被占用
-    public static final int INFO_INTERNET = 0x00000015;//Internet专线不通
+    public static final int INFO_INTERNET = 0x00000015;//检查外网专线带宽
     public static final int INFO_DNS = 0x00000016;//DNS错误
     public static final int INFO_SKIP = 0x00000017;//自动跳转
 
@@ -26,6 +26,7 @@ public class Code {
     public static final int INFO_SMS = 0x0000001a;//短信无法认证
 
     public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
+    public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
 
 
     public static String getMessage(int code, int loss, int delay) {
@@ -67,6 +68,13 @@ public class Code {
                 break;
             case Code.INFO_LOCALNET:
                 message = "检查内网专线带宽";
+                break;
+            case Code.INFO_PING_INTERNET:
+                if (loss == -1) {
+                    message = "ping外网延迟";
+                } else {
+                    message = "ping外网，丢包：" + loss + "%,延迟:" + delay + "ms";
+                }
                 break;
             default:
                 message = null;

@@ -27,7 +27,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
-    //静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
+    //获取ap人数--静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
     public AuthPresenterImpl(AuthContract.AuthView view) {
         super(view);
     }
@@ -42,8 +42,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         checkDhcp();
         checkLocalnet();
     }
-
-
+    
     @Override
     public boolean checkDhcp() {
         mView.onChecking(Code.INFO_STATIC_IP);

@@ -103,15 +103,6 @@ public class HomeFrag extends BaseFragment implements
                         mDialog.show();*/
                     }
                 });
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                go2Capture();
-//                showBarcode();
-            }
-        }, 2000);
-
     }
 
     @Override

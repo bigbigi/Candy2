@@ -32,6 +32,8 @@
     <string name="feedback_voice_retry">重新录音</string>
     <string name="feedback_voice_time">%ss</string>
     <string name="feedback_submint">提交</string>
+    <string name="feedback_phone">手机号码（非必填）</string>
+    <string name="feedback_phone_tip">请输入手机号码</string>
 
     <!--权限-->
     <string name="permisson_wifi">没有定位权限，无法获取WIFI</string>

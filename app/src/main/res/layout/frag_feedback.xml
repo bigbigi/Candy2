@@ -89,6 +89,8 @@
         android:layout_marginTop="941px"
         android:background="@drawable/bg_detect"
         android:inputType="phone|number"
+        android:hint="@string/feedback_phone_tip"
+        android:textColorHint="#aaaaaa"
         android:paddingLeft="5px"
         android:textColor="#606060"
         android:textSize="30px" />

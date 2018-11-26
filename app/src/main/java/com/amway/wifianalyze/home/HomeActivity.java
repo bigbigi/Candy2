@@ -14,6 +14,7 @@ import com.amway.wifianalyze.feedback.FeedbackFrag;
 import com.amway.wifianalyze.feedback.FeedbackPresenterImpl;
 import com.amway.wifianalyze.lib.util.DevicesUtils;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.speed.SpeedFrag;
 import com.amway.wifianalyze.speed.SpeedPresenterImpl;
 import com.amway.wifianalyze.utils.PermissionUtil;
@@ -30,6 +31,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         findViewById(R.id.tab_detect).performClick();
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
         Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this));
+        Log.d("big", "hasInstall:" + Utils.hasInstall(this, "com.tencent.mm"));
     }
 
     private ViewGroup mTabLayout;
@@ -95,7 +97,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     public Fragment getVisibleFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments!=null){
+        if (fragments != null) {
             for (Fragment fragment : fragments) {
                 if (fragment != null && fragment.isVisible())
                     return fragment;

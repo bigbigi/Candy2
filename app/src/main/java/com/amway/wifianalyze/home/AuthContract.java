@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BasePresenterImpl;
+import com.amway.wifianalyze.lib.listener.Callback;
 
 /**
  * Created by big on 2018/10/22.
@@ -27,18 +28,18 @@ public interface AuthContract extends BaseContract {
 
         public abstract void startCheck(Context context);
 
-        public abstract boolean checkDhcp();
+        public abstract void checkDhcp(final Callback callback);
 
-        public abstract boolean checkPort();
+        public abstract void checkPort(final Callback callback);
 
-        public abstract void checkServer();
+        public abstract void checkServer(final Callback callback);
 
-        public abstract void checkLocalnet();
+        public abstract void checkLocalnet(final Callback callback);
 
-        public abstract void checkInternet();
+        public abstract void checkInternet(final Callback callback);
 
-        public abstract void checkDns();
+        public abstract void checkDns(final Callback callback);
 
-        public abstract void skipBrowser();
+        public abstract void skipBrowser(final Callback callback);
     }
 }

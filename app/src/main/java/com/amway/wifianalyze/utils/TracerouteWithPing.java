@@ -27,6 +27,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
+import com.amway.wifianalyze.lib.listener.Callback;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -90,9 +92,9 @@ public class TracerouteWithPing {
      * @param url    The url to trace
      * @param maxTtl The max time to live to set (ping param)
      */
-    public void executeTraceroute(String url, int what) {
+    public void executeTraceroute(String url, int what, Callback callback) {
         this.finishedTasks = 0;
-        new ExecutePingAsyncTask(url, what).execute();
+        new ExecutePingAsyncTask(url, what, callback).execute();
     }
 
     /**
@@ -160,9 +162,12 @@ public class TracerouteWithPing {
 
         private boolean isfinished = false;
 
-        public ExecutePingAsyncTask(String url, int what) {
+        private Callback callback;
+
+        public ExecutePingAsyncTask(String url, int what, Callback callback) {
             this.currentWhat = what;
             this.urlToPing = url;
+            this.callback = callback;
         }
 
         /**
@@ -195,6 +200,9 @@ public class TracerouteWithPing {
                 if (mOnTraceRouteListener != null) {
                     mOnTraceRouteListener.onException(currentWhat);
                 }
+            }
+            if (callback != null) {
+                callback.onCallBack(true);
             }
             return res;
         }

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
 
@@ -27,7 +28,6 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
-    //获取ap人数--静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
     public AuthPresenterImpl(AuthContract.AuthView view) {
         super(view);
     }
@@ -39,12 +39,57 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
-        checkDhcp();
-        checkLocalnet();
+        //获取ap人数--静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                checkDhcp(new Callback() {
+                    @Override
+                    public void onCallBack(boolean success, Object[] t) {
+                        checkLocalnet(new Callback() {
+                            @Override
+                            public void onCallBack(boolean success, Object[] t) {
+                                checkInternet(new Callback() {
+                                    @Override
+                                    public void onCallBack(boolean success, Object[] t) {
+                                        checkDns(new Callback() {
+                                            @Override
+                                            public void onCallBack(boolean success, Object[] t) {
+                                                checkServer(new Callback() {
+                                                    @Override
+                                                    public void onCallBack(boolean success, Object[] t) {
+                                                        checkPort(new Callback() {
+                                                            @Override
+                                                            public void onCallBack(boolean success, Object[] t) {
+                                                                skipBrowser(new Callback() {
+                                                                    @Override
+                                                                    public void onCallBack(boolean success, Object[] t) {
+                                                                        pingInternet(new Callback() {
+                                                                            @Override
+                                                                            public void onCallBack(boolean success, Object[] t) {
+
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
-    
+
     @Override
-    public boolean checkDhcp() {
+    public void checkDhcp(Callback callback) {
         mView.onChecking(Code.INFO_STATIC_IP);
         boolean staticIp = NetworkUtils.isStaticIp(mContext);
         if (staticIp) {
@@ -52,34 +97,39 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         } else {
             mView.onInfo(Code.INFO_STATIC_IP, 0, 0);
         }
-        return !staticIp;
+        if (callback != null) {
+            callback.onCallBack(!staticIp);
+        }
     }
 
     @Override
-    public boolean checkPort() {
+    public void checkPort(Callback callback) {
+        boolean success = false;
         mView.onChecking(Code.INFO_SERVER_PORT);
         if (NetworkUtils.telnet(SERVER_URL, 80)) {
             mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
-            skipBrowser();
+            success = true;
         } else {
             mView.onError(Code.INFO_SERVER_PORT, -1);
         }
-        return false;
+        if (callback != null) {
+            callback.onCallBack(success);
+        }
     }
 
-    public void pingInternet() {
+    public void pingInternet(Callback callback) {
         mView.onChecking(Code.INFO_PING_INTERNET);
-        mTraceroute.executeTraceroute(INTERNET, Code.INFO_PING_INTERNET);
+        mTraceroute.executeTraceroute(INTERNET, Code.INFO_PING_INTERNET, callback);
     }
 
     @Override
-    public void checkServer() {
+    public void checkServer(Callback callback) {
         mView.onChecking(Code.INFO_SERVER);
-        mTraceroute.executeTraceroute(SERVER_URL, Code.INFO_SERVER);
+        mTraceroute.executeTraceroute(SERVER_URL, Code.INFO_SERVER, callback);
     }
 
     @Override
-    public void checkLocalnet() {
+    public void checkLocalnet(final Callback callback) {
         mView.onChecking(Code.INFO_LOCALNET);
         HomeBiz.getInstance(mContext).checkLocalnetLoad(new Callback<Boolean>() {
             @Override
@@ -95,14 +145,16 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 } else {
                     mView.onError(Code.INFO_LOCALNET, Code.ERR_QUEST);
                 }
-                checkInternet();
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
             }
         });
     }
 
 
     @Override
-    public void checkInternet() {
+    public void checkInternet(final Callback callback) {
         mView.onChecking(Code.INFO_INTERNET);
         HomeBiz.getInstance(mContext).checkInternetLoad(new Callback<Boolean>() {
             @Override
@@ -118,24 +170,31 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 } else {
                     mView.onError(Code.INFO_INTERNET, Code.ERR_QUEST);
                 }
-                checkDns();
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
             }
         });
     }
 
     @Override
-    public void checkDns() {
+    public void checkDns(Callback callback) {
         mView.onChecking(Code.INFO_DNS);
+        boolean success = false;
         if (!TextUtils.isEmpty(NetworkUtils.getIp(SERVER_URL))) {
             mView.onInfo(Code.INFO_DNS, 0, 0);
-            checkServer();
+            success = true;
         } else {
             mView.onError(Code.INFO_DNS, -1);
+        }
+        if (callback != null) {
+            callback.onCallBack(success);
         }
     }
 
     @Override
-    public void skipBrowser() {
+    public void skipBrowser(Callback callback) {
+        boolean success = false;
         mView.onChecking(Code.INFO_SKIP);
         Response response = HttpHelper.getInstance().getResponse(AUTO_SERVER);
         if (response != null) {
@@ -151,10 +210,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             } else {
                 mView.onInfo(Code.INFO_SKIP, 0, 0);
             }
-            pingInternet();
+            success = true;
             response.close();
         } else {
             mView.onError(Code.INFO_SKIP, -1);
+        }
+        if (callback != null) {
+            callback.onCallBack(success);
         }
     }
 
@@ -163,10 +225,6 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void onResult(int what, int loss, int delay) {
         Log.e("big", "onResult:" + what);
         mView.onInfo(what, loss, delay);
-        if (what == Code.INFO_SERVER) {
-            checkPort();
-        } else if (what == Code.INFO_PING_INTERNET) {
-        }
     }
 
     @Override

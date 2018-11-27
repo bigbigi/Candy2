@@ -18,6 +18,8 @@ public interface AuthContract extends BaseContract {
         void onInfo(int code, int loss, int delay);
 
         void onChecking(int code);
+
+        void onStopCheck();
     }
 
     abstract class AuthPresenter extends BasePresenterImpl<AuthView> {

@@ -39,41 +39,41 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
-        //获取ap人数--静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
+        //获取ap人数--信道利用率-静态ip-内网满载-外网满载-dns-ping服务器-服务器端口-认证-ping外网
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                checkDhcp(new Callback() {
+                checkUtilization(new Callback<Integer>() {
                     @Override
-                    public void onCallBack(boolean success, Object[] t) {
-                        checkLocalnet(new Callback() {
+                    public void onCallBack(boolean success, Integer... t) {
+                        checkDhcp(new Callback() {
                             @Override
                             public void onCallBack(boolean success, Object[] t) {
-                                checkInternet(new Callback() {
+                                checkLocalnet(new Callback() {
                                     @Override
                                     public void onCallBack(boolean success, Object[] t) {
-                                        checkDns(new Callback() {
+                                        checkInternet(new Callback() {
                                             @Override
                                             public void onCallBack(boolean success, Object[] t) {
-                                                checkServer(new Callback() {
+                                                checkDns(new Callback() {
                                                     @Override
                                                     public void onCallBack(boolean success, Object[] t) {
-                                                        checkPort(new Callback() {
+                                                        checkServer(new Callback() {
                                                             @Override
                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                skipBrowser(new Callback() {
+                                                                checkPort(new Callback() {
                                                                     @Override
                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                        pingInternet(new Callback() {
+                                                                        skipBrowser(new Callback() {
                                                                             @Override
                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                ThreadManager.runOnUiThread(new Runnable() {
+                                                                                pingInternet(new Callback() {
                                                                                     @Override
-                                                                                    public void run() {
+                                                                                    public void onCallBack(boolean success, Object[] t) {
+                                                                                        mView.onStopCheck();
                                                                                         HomeBiz.getInstance(mContext).submitDetectResult(null);
                                                                                     }
                                                                                 });
-
                                                                             }
                                                                         });
                                                                     }
@@ -90,6 +90,23 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                         });
                     }
                 });
+            }
+        });
+    }
+
+    public void checkUtilization(Callback<Integer> callback) {
+        mView.onChecking(Code.INFO_UTILIZATION);
+        HomeBiz.getInstance(mContext).getUtilization(new Callback<Integer>() {
+            @Override
+            public void onCallBack(boolean success, Integer... t) {
+                if (success) {
+                    mView.onInfo(Code.INFO_UTILIZATION, t[0], 0);
+                    if (t[0] >= 80) {
+                        mView.onError(Code.INFO_UTILIZATION, -1);
+                    }
+                } else {
+                    mView.onError(Code.INFO_UTILIZATION, -1);
+                }
             }
         });
     }

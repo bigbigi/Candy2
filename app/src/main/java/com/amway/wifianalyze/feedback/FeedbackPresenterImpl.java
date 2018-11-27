@@ -18,6 +18,7 @@ import android.webkit.WebView;
 
 
 import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.base.Application;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
@@ -130,10 +131,7 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                         json.put("dns", NetworkUtils.getDns1());
                         json.put("phoneType", Build.MODEL);
                         json.put("system", "Android_" + Build.VERSION.SDK_INT);
-                        WebView webView = new WebView(context);
-                        WebSettings settings = webView.getSettings();
-                        webView.getSettings().setJavaScriptEnabled(true);
-                        json.put("browser", settings.getUserAgentString());
+                        json.put("browser", Application.USER_AGENT);
                         int channel = NetworkUtils.isSupport5G(context) || HomeBiz.getInstance(context).mHas5G ? 2 : 1;
                         json.put("wifiChannel", channel);
                         json.put("shop", shopName);

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.amway.wifianalyze.base.Application;
 import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
@@ -35,6 +36,7 @@ public class HomeBiz {
     private static final String LOCALNET_URL = "%s/checkwifi-api/shop/getCisco2901Load_mac_%s_ip_.dat";
     private static final String INTERNET_URL = "%s/checkwifi-api/shop/getSangforLoad_mac_%s_ip_.dat";
     private static final String SUBMIT_URL = "%s/checkwifi-api/addUserAutoSubmit.dat";
+    private static final String UTILIZE_URL = "%s/checkwifi-api/shop/getApInfo_mac_%s_ip_.dat";
 
     private static volatile HomeBiz mInstance;
     private Context mContext;
@@ -144,15 +146,11 @@ public class HomeBiz {
                     DeviceInfo info = new DeviceInfo();
                     WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     WifiInfo wifiInfo = wm.getConnectionInfo();
-                    Looper.prepare();
-                    WebView webView = new WebView(mContext);
-                    WebSettings settings = webView.getSettings();
-                    settings.setJavaScriptEnabled(true);
                     if (!TextUtils.isEmpty(wifiInfo.getSSID())) {
                         info.ssid = wifiInfo.getSSID().replaceAll("\"", "");
                     }
                     info.ap = mApName;
-                    info.browser = settings.getUserAgentString();
+                    info.browser = Application.USER_AGENT;
                     info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
                     info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
                     info.mac = NetworkUtils.getMac(mContext);
@@ -180,6 +178,35 @@ public class HomeBiz {
             }
         });
 
+    }
+
+    public void getUtilization(final Callback<Integer> callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                int utilization = 0;
+                boolean success = false;
+                String result = HttpHelper.getInstance().get(String.format(UTILIZE_URL, Server.HOST));
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        JSONObject json = new JSONObject(result);
+                        JSONObject data = json.getJSONObject("data");
+                        int channel = data.getInt("wifi");
+                        if (channel == 2) {
+                            utilization = data.optInt("utilization_5g");
+                        } else {
+                            utilization = data.optInt("utilization_24g");
+                        }
+                        success = true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (callback != null) {
+                    callback.onCallBack(success, utilization);
+                }
+            }
+        });
     }
 
     public int getFrequence() {

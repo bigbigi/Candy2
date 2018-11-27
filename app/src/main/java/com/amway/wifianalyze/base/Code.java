@@ -29,7 +29,10 @@ public class Code {
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
     public static final int INFO_GET_AP = 0x0000001d;//获取ap人数
     public static final int INFO_SUPPORT_5G = 0x0000001e;//是否支持5G;
+    public static final int INFO_UTILIZATION = 0x0000001f;//检测信道利用率;
 
+
+    public static final int CHECKING = -1;
 
     public static String getMessage(int code, int loss, int delay) {
         String message;
@@ -50,7 +53,7 @@ public class Code {
                 message = "检查静态IP";
                 break;
             case Code.INFO_SERVER:
-                if (loss == -1) {
+                if (loss == CHECKING) {
                     message = "检查服务器延迟";
                 } else {
                     message = "检查服务器延迟，丢包：" + loss + "，延迟:" + delay;
@@ -72,14 +75,14 @@ public class Code {
                 message = "检查内网专线带宽";
                 break;
             case Code.INFO_PING_INTERNET:
-                if (loss == -1) {
+                if (loss == CHECKING) {
                     message = "ping外网延迟";
                 } else {
                     message = "ping外网，丢包：" + loss + "%，延迟:" + delay + "ms";
                 }
                 break;
             case Code.INFO_GET_AP:
-                if (loss == -1) {
+                if (loss == CHECKING) {
                     message = "获取AP人数";
                 } else {
                     message = "AP在线人数：" + loss;
@@ -87,6 +90,13 @@ public class Code {
                 break;
             case INFO_SUPPORT_5G:
                 message = "是否支持5G";
+                break;
+            case INFO_UTILIZATION:
+                if (loss == CHECKING) {
+                    message = "检测信道利用率";
+                } else {
+                    message = "信道利用率：" + loss + "%";
+                }
                 break;
             default:
                 message = null;

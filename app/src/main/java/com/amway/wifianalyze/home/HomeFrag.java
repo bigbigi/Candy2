@@ -139,12 +139,6 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
-    private void checkEnd(int code) {
-        if (code == Code.INFO_SKIP) {
-            stopAni();
-        }
-    }
-
 
     private WifiContract.WifiPresenter mWifiPresenter;
     private AuthContract.AuthPresenter mAuthPresenter;
@@ -196,6 +190,11 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
+    public void onStopCheck() {
+        stopAni();
+    }
+
+    @Override
     public void onInfo(final int code, int loss, int delay) {
         final String message = Code.getMessage(code, loss, delay);
         Activity activity = getActivity();
@@ -203,7 +202,6 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    checkEnd(code);
                     for (int i = 0; i < mAdapter.getData().size(); i++) {
                         DetectResult result = mAdapter.getData().get(i);
                         if (result.getCode() == code) {
@@ -227,7 +225,6 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    checkEnd(code);
                     for (int i = 0; i < mAdapter.getData().size(); i++) {
                         DetectResult result = mAdapter.getData().get(i);
                         if (result.getCode() == code) {

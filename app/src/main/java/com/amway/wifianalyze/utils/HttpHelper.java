@@ -1,18 +1,14 @@
 package com.amway.wifianalyze.utils;
 
-import android.content.Context;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -54,7 +50,7 @@ public class HttpHelper {
             String result = response.body().string();
             Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString() + "\nresult:" + result);
             return result;
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
@@ -68,7 +64,7 @@ public class HttpHelper {
         try {
             Response response = mClient.newCall(request).execute();
             return response;
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
@@ -78,7 +74,7 @@ public class HttpHelper {
     public boolean post(String url, String content) {
         try {
             return post(url, new TextRequestBody(compress(content)));
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -93,8 +89,8 @@ public class HttpHelper {
                     .build();
             Response response = mClient.newCall(request).execute();
             success = response.isSuccessful();
-            Log.i(TAG, "response:" + success + "," + response.toString());
-        } catch (IOException e) {
+            Log.i(TAG, "response:" + success + "," + response.toString() + ",\nbody:" + response.body().string());
+        } catch (Exception e) {
             Log.e(TAG, "url:" + url);
             e.printStackTrace();
         }
@@ -118,7 +114,7 @@ public class HttpHelper {
             Response response = mClient.newCall(request).execute();
             success = response.isSuccessful();
             Log.i(TAG, "response:" + success + "," + response.toString());
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return success;

@@ -238,6 +238,7 @@ public class HomeFrag extends BaseFragment implements
                         DetectResult result = mAdapter.getData().get(i);
                         if (result.getCode() == code) {
                             result.setStatus(Status.ERROR);
+                            result.setContent(message);
                             DetectAdapter.TextHolder holder = (DetectAdapter.TextHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
                             if (holder != null) {
                                 mAdapter.onBindViewHolder(holder, i);
@@ -245,10 +246,10 @@ public class HomeFrag extends BaseFragment implements
                             break;
                         }
                     }
-                    if (reason > 0) {
+                    /*if (reason > 0) {
                         mAdapter.getData().add(0, new DetectResult(Status.ERROR, code, message));
                         mAdapter.insert();
-                    }
+                    }*/
                 }
             });
         }

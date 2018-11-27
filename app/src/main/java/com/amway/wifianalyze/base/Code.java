@@ -38,13 +38,13 @@ public class Code {
         String message;
         switch (code) {
             case Code.INFO_OPEN_WIFI:
-                message = "正在打开wifi...";
+                message = "正在打开WIFI...";
                 break;
             case Code.INFO_SCAN_WIFI:
-                message = "开始扫描附近wifi";
+                message = "开始扫描附近WIFI";
                 break;
             case Code.INFO_CONNECTING:
-                message = "正在连接wifi...";
+                message = "正在连接WIFI...";
                 break;
             case Code.INFO_CONNECTED:
                 message = "连接成功";
@@ -56,7 +56,7 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检查服务器延迟";
                 } else {
-                    message = "检查服务器延迟，丢包：" + loss + "，延迟:" + delay;
+                    message = "检查服务器延迟，丢包：" + loss + "%，延迟:" + delay + "ms";
                 }
                 break;
             case Code.INFO_SERVER_PORT:
@@ -83,9 +83,9 @@ public class Code {
                 break;
             case Code.INFO_GET_AP:
                 if (loss == CHECKING) {
-                    message = "检测wifi在线人数";
+                    message = "检测WIFI在线人数";
                 } else {
-                    message = "wifi在线人数：" + loss;
+                    message = "WIFI在线人数：" + loss;
                 }
                 break;
             case INFO_SUPPORT_5G:
@@ -108,7 +108,7 @@ public class Code {
     //错误
     public static final int ERR_NONE = -1;//无
     public static final int ERR_QUEST = 0x0000ff00;//请求失败
-    public static final int ERR_NO_WIFI = 0x0000ff01;//未找到目标wifi
+    public static final int ERR_NO_WIFI = 0x0000ff01;//未找到目标WIFI
     public static final int ERROR_PWD = 0x0000ff02;//密码错误
     public static final int ERROR_BUSY_CHANNEL = 0x0000ff03;//信道拥堵
     public static final int ERROR_LOW_LEVEL = 0x0000ff04;//信号差
@@ -130,19 +130,19 @@ public class Code {
         String message = null;
         switch (reason) {
             case ERR_QUEST:
-                message = "请求失败";
+                message = getMessage(code, CHECKING, -1) + "（请求失败）";
                 break;
             case ERR_NO_WIFI:
-                message = "未找到目标wifi";
+                message = "未找到目标WIFI";
                 break;
             case ERROR_PWD:
-                message = "密码错误";
+                message = "WIFI密码错误";
                 break;
             case ERROR_BUSY_CHANNEL:
-                message = "信道拥堵";
+                message = "WIFI信道拥堵";
                 break;
             case ERROR_LOW_LEVEL:
-                message = "信号差";
+                message = "WIFI信号差";
                 break;
             case ERROR_ELSE:
                 message = "AP人数过多等，找客服";

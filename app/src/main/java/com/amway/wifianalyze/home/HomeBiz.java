@@ -77,25 +77,23 @@ public class HomeBiz {
             ThreadManager.execute(new Runnable() {
                 @Override
                 public void run() {
+                    boolean success = false;
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST,
                            /*NetworkUtils.getMac(mContext)*/"f0:99:bf:df:5e:64"));//todo
                     if (!TextUtils.isEmpty(result)) {
                         try {
                             JSONObject obj = new JSONObject(result);
                             JSONObject data = obj.getJSONObject("data");
+                            success = 100 == obj.getInt("code");
                             mApName = data.optString("apName");
                             mShopName = data.optString("shopName");
                             mUserCount = data.optString("users");
-                            if (callback != null) {
-                                callback.onCallBack(true, mApName, mShopName, mUserCount);
-                            }
-                            return;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                     if (callback != null) {
-                        callback.onCallBack(false);
+                        callback.onCallBack(success, mApName, mShopName, mUserCount);
                     }
                 }
             });

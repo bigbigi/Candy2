@@ -307,7 +307,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                     }
                 } else {
                     mView.onGetAp("");
-                    mView.onError(Code.INFO_GET_AP, Code.ERR_NONE);
+                    mView.onError(Code.INFO_GET_AP, Code.ERR_QUEST);
                 }
             }
         });

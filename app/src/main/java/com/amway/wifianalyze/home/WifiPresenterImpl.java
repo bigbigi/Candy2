@@ -246,15 +246,21 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                         onInfo(Code.INFO_SCAN_WIFI);
                         onConnected();
                     }
+
+                    HomeBiz.getInstance(context).mHas5G = has5G;
+                    mView.onChecking(Code.INFO_SUPPORT_5G);
+                    if (NetworkUtils.isSupport5G(context) || has5G) {
+                        onInfo(Code.INFO_SUPPORT_5G);
+                    } else if (NetworkUtils.isOnly24G(context)) {
+                        mView.onError(Code.INFO_SUPPORT_5G, Code.ERR_ONLY24G);
+                    } else {
+                        mView.onError(Code.INFO_SUPPORT_5G, Code.ERR_NOTFOUND_5G);
+                    }
                 } else if (mReScanTimes < MAX_SCAN_TIMES) {
                     mReScanTimes++;
                     scanWifi();
-                } else if (NetworkUtils.isOnly24G(context)) {
-                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_ONLY24G);
-                } else if (has5G) {
-                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                 } else {
-                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NOTFOUND_5G);
+                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                 }
             } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {//todo
                 if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED && mWifiOff) {

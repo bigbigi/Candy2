@@ -67,6 +67,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                         pingInternet(new Callback() {
                                                                             @Override
                                                                             public void onCallBack(boolean success, Object[] t) {
+                                                                                ThreadManager.runOnUiThread(new Runnable() {
+                                                                                    @Override
+                                                                                    public void run() {
+                                                                                        HomeBiz.getInstance(mContext).submitDetectResult(null);
+                                                                                    }
+                                                                                });
 
                                                                             }
                                                                         });
@@ -205,7 +211,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 intent.setAction("android.intent.action.VIEW");
                 Uri content_url = Uri.parse("http://www.baidu.com");
                 intent.setData(content_url);
-                mContext.startActivity(intent);
+//                mContext.startActivity(intent);
                 mView.onError(Code.INFO_SKIP, -1);
             } else {
                 mView.onInfo(Code.INFO_SKIP, 0, 0);

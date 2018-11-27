@@ -234,6 +234,15 @@ public class NetworkUtils {
         return tags[getLevel(speed)];
     }
 
+    public static boolean isSupport5G(Context context) {
+        boolean support = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            support = wm.is5GHzBandSupported();
+        }
+        return support;
+    }
+
     public static boolean isOnly24G(Context context) {
         boolean only = false;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {

@@ -28,6 +28,7 @@ public class Code {
     public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
     public static final int INFO_GET_AP = 0x0000001d;//获取ap人数
+    public static final int INFO_SUPPORT_5G = 0x0000001e;//是否支持5G;
 
 
     public static String getMessage(int code, int loss, int delay) {
@@ -83,6 +84,9 @@ public class Code {
                 } else {
                     message = "AP在线人数：" + loss;
                 }
+                break;
+            case INFO_SUPPORT_5G:
+                message = "是否支持5G";
                 break;
             default:
                 message = null;

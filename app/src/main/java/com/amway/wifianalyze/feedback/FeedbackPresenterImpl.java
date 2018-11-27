@@ -10,13 +10,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 
 import com.amway.wifianalyze.R;
@@ -124,19 +122,22 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                     WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     WifiInfo wifiInfo = wm.getConnectionInfo();
                     if (wifiInfo != null) {//todo ssid must be same
-                        json.put("ssid", "");
+                        if (!TextUtils.isEmpty(wifiInfo.getSSID())) {
+                            json.put("ssid", wifiInfo.getSSID().replaceAll("\"", ""));
+                        }
                         json.put("ip", NetworkUtils.intToIp(wifiInfo.getIpAddress()));
                         json.put("mac", NetworkUtils.getMac(context));
                         json.put("dns", NetworkUtils.getDns1());
                         json.put("phoneType", Build.MODEL);
-                        json.put("system", String.valueOf(Build.VERSION.SDK_INT));
+                        json.put("system", "Android_" + Build.VERSION.SDK_INT);
                         WebView webView = new WebView(context);
                         WebSettings settings = webView.getSettings();
                         webView.getSettings().setJavaScriptEnabled(true);
                         json.put("browser", settings.getUserAgentString());
-                        int channel = NetworkUtils.is5GHz(HomeBiz.getInstance(context).getFrequence()) ? 2 : 1;
+                        int channel = NetworkUtils.isSupport5G(context) || HomeBiz.getInstance(context).mHas5G ? 2 : 1;
                         json.put("wifiChannel", channel);
                         json.put("shop", shopName);
+                        json.put("ap", HomeBiz.getInstance(context).mApName);
                         json.put("processor", "处理人");//todo
                     }
                 } catch (Exception e) {

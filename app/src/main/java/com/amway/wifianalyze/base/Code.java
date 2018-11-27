@@ -83,9 +83,9 @@ public class Code {
                 break;
             case Code.INFO_GET_AP:
                 if (loss == CHECKING) {
-                    message = "获取AP人数";
+                    message = "检测wifi在线人数";
                 } else {
-                    message = "AP在线人数：" + loss;
+                    message = "wifi在线人数：" + loss;
                 }
                 break;
             case INFO_SUPPORT_5G:
@@ -121,6 +121,7 @@ public class Code {
     public static final int ERR_WEIXIN = 0x00000009;//微信无法认证
     public static final int ERR_CARD = 0x0000000a;//卡号无法认证
     public static final int ERR_SMS = 0x0000000b;//短信无法认证
+    public static final int ERR_AP_USER = 0x0000000c;//WIFI连接人数过多
 
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
@@ -163,6 +164,9 @@ public class Code {
                 break;
             case ERR_SMS:
                 message = "短信无法认证";
+                break;
+            case ERR_AP_USER:
+                message = "WIFI连接人数过多";
                 break;
         }
         return message;

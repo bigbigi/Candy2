@@ -299,7 +299,12 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             public void onCallBack(boolean success, final String... t) {
                 if (success) {
                     mView.onGetAp(t[0]);
-                    mView.onInfo(Code.INFO_GET_AP, Utils.parseInt(t[2]), 0);
+                    int count = Utils.parseInt(t[2]);
+                    if (count > 50) {
+                        mView.onError(Code.INFO_GET_AP, Code.ERR_AP_USER);
+                    } else {
+                        mView.onInfo(Code.INFO_GET_AP, count, 0);
+                    }
                 } else {
                     mView.onGetAp("");
                     mView.onError(Code.INFO_GET_AP, Code.ERR_NONE);

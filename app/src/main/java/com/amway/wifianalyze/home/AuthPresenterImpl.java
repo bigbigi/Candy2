@@ -224,7 +224,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             @Override
             public void onCallBack(boolean success, Integer... t) {
                 int code = t[0];
-                if (code == 100) {
+                if (success) {
                     mView.onInfo(Code.INFO_AUTH, 0, 0);
                 } else if (code == 103) {
                     mView.onError(Code.INFO_AUTH, Code.ERR_WEIXIN);

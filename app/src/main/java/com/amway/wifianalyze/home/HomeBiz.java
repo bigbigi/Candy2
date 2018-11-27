@@ -219,18 +219,21 @@ public class HomeBiz {
             @Override
             public void run() {
                 int code = 0;
+                int authType = 0;
                 String result = HttpHelper.getInstance().get(String.format(AUTH_URL, Server.HOST,
-                        "48:43:7c:bd:37:e0"/*NetworkUtils.getMac(mContext)*/));//todo change mac
+                        "10.0.0.4"/*NetworkUtils.getMac(mContext)*/));//todo change mac
                 if (!TextUtils.isEmpty(result)) {
                     try {
                         JSONObject json = new JSONObject(result);
                         code = json.getInt("code");
+                        JSONObject info = json.getJSONObject("info");
+                        authType = info.getInt("auth");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
                 if (callback != null) {
-                    callback.onCallBack(true, code);
+                    callback.onCallBack(code == 100, authType);
                 }
             }
         });

@@ -37,6 +37,7 @@ public class HomeBiz {
     private static final String INTERNET_URL = "%s/checkwifi-api/shop/getSangforLoad_mac_%s_ip_.dat";
     private static final String SUBMIT_URL = "%s/checkwifi-api/addUserAutoSubmit.dat";
     private static final String UTILIZE_URL = "%s/checkwifi-api/shop/getApInfo_mac_%s_ip_.dat";
+    private static final String AUTH_URL = "%s/checkwifi-api/checkLogin/mac_%s.dat";
 
     private static volatile HomeBiz mInstance;
     private Context mContext;
@@ -106,23 +107,26 @@ public class HomeBiz {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
+                boolean success = false;
+                boolean input = false;
+                boolean output = false;
                 String result = HttpHelper.getInstance().get(String.format(url, Server.HOST,
                         /*NetworkUtils.getMac(mContext)*/"f0:99:bf:df:5e:64"));//todo
                 if (!TextUtils.isEmpty(result)) {
                     try {
                         JSONObject obj = new JSONObject(result);
                         JSONObject data = obj.getJSONObject("data");
-                        boolean input = data.optBoolean("input");
-                        boolean output = data.optBoolean("output");
-                        if (callback != null) {
-                            callback.onCallBack(true, input, output);
-                        }
-                        return;
+                        input = data.optBoolean("input");
+                        output = data.optBoolean("output");
+                        success = true;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                callback.onCallBack(false);
+
+                if (callback != null) {
+                    callback.onCallBack(success, input, output);
+                }
             }
         });
     }
@@ -186,7 +190,8 @@ public class HomeBiz {
             public void run() {
                 int utilization = 0;
                 boolean success = false;
-                String result = HttpHelper.getInstance().get(String.format(UTILIZE_URL, Server.HOST));
+                String result = HttpHelper.getInstance().get(String.format(UTILIZE_URL, Server.HOST,
+                        "48:43:7c:bd:37:e0"/*NetworkUtils.getMac(mContext)*/));//todo change mac
                 if (!TextUtils.isEmpty(result)) {
                     try {
                         JSONObject json = new JSONObject(result);
@@ -207,6 +212,24 @@ public class HomeBiz {
                 }
             }
         });
+    }
+
+    private void getAuth(Callback callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                String result = HttpHelper.getInstance().get(String.format(AUTH_URL, Server.HOST, ""));
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        JSONObject json = new JSONObject(result);
+                        JSONObject data = json.getJSONObject("data");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
     }
 
     public int getFrequence() {

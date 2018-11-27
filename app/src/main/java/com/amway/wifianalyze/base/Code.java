@@ -106,6 +106,7 @@ public class Code {
     }
 
     //错误
+    public static final int ERR_NONE = -1;//无
     public static final int ERR_QUEST = 0x0000ff00;//请求失败
     public static final int ERR_NO_WIFI = 0x0000ff01;//未找到目标wifi
     public static final int ERROR_PWD = 0x0000ff02;//密码错误
@@ -119,7 +120,7 @@ public class Code {
 
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
-            return getMessage(code, -1, -1);
+            return getMessage(code, CHECKING, -1);
         }
         String message = null;
         switch (reason) {

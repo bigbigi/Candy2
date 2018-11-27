@@ -133,10 +133,15 @@ public class HomeFrag extends BaseFragment implements
     }
 
     private void stopAni() {
-        if (mAni != null) {
-            mRadar.setRotation(0);
-            mAni.cancel();
-        }
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mAni != null) {
+                    mRadar.setRotation(0);
+                    mAni.cancel();
+                }
+            }
+        });
     }
 
 
@@ -207,7 +212,11 @@ public class HomeFrag extends BaseFragment implements
                         if (result.getCode() == code) {
                             result.setContent(message);
                             result.setStatus(Status.SUCCESS);
-                            mAdapter.notifyItemChanged(i);
+                            DetectAdapter.TextHolder holder = (DetectAdapter.TextHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+                            Log.d("big", "holder:" + holder + ",i:" + i + ",size:" + mAdapter.getData().size() + ",name:" + result.getContent());
+                            if (holder != null) {
+                                mAdapter.onBindViewHolder(holder, i);
+                            }
                             break;
                         }
                     }
@@ -229,7 +238,10 @@ public class HomeFrag extends BaseFragment implements
                         DetectResult result = mAdapter.getData().get(i);
                         if (result.getCode() == code) {
                             result.setStatus(Status.ERROR);
-                            mAdapter.notifyItemChanged(i);
+                            DetectAdapter.TextHolder holder = (DetectAdapter.TextHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+                            if (holder != null) {
+                                mAdapter.onBindViewHolder(holder, i);
+                            }
                             break;
                         }
                     }

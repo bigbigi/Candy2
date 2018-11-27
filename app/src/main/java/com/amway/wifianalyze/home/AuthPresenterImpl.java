@@ -94,7 +94,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         });
     }
 
-    public void checkUtilization(Callback<Integer> callback) {
+    public void checkUtilization(final Callback<Integer> callback) {
         mView.onChecking(Code.INFO_UTILIZATION);
         HomeBiz.getInstance(mContext).getUtilization(new Callback<Integer>() {
             @Override
@@ -102,10 +102,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 if (success) {
                     mView.onInfo(Code.INFO_UTILIZATION, t[0], 0);
                     if (t[0] >= 80) {
-                        mView.onError(Code.INFO_UTILIZATION, -1);
+                        mView.onError(Code.INFO_UTILIZATION, Code.ERR_NONE);
                     }
                 } else {
-                    mView.onError(Code.INFO_UTILIZATION, -1);
+                    mView.onError(Code.INFO_UTILIZATION, Code.ERR_QUEST);
+                }
+                if (callback != null) {
+                    callback.onCallBack(true);
                 }
             }
         });
@@ -116,7 +119,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         mView.onChecking(Code.INFO_STATIC_IP);
         boolean staticIp = NetworkUtils.isStaticIp(mContext);
         if (staticIp) {
-            mView.onError(Code.INFO_STATIC_IP, -1);
+            mView.onError(Code.INFO_STATIC_IP, Code.ERR_NONE);
         } else {
             mView.onInfo(Code.INFO_STATIC_IP, 0, 0);
         }
@@ -133,7 +136,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
             success = true;
         } else {
-            mView.onError(Code.INFO_SERVER_PORT, -1);
+            mView.onError(Code.INFO_SERVER_PORT, Code.ERR_NONE);
         }
         if (callback != null) {
             callback.onCallBack(success);
@@ -208,7 +211,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mView.onInfo(Code.INFO_DNS, 0, 0);
             success = true;
         } else {
-            mView.onError(Code.INFO_DNS, -1);
+            mView.onError(Code.INFO_DNS, Code.ERR_NONE);
         }
         if (callback != null) {
             callback.onCallBack(success);
@@ -229,14 +232,14 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 Uri content_url = Uri.parse("http://www.baidu.com");
                 intent.setData(content_url);
 //                mContext.startActivity(intent);
-                mView.onError(Code.INFO_SKIP, -1);
+                mView.onError(Code.INFO_SKIP, Code.ERR_NONE);
             } else {
                 mView.onInfo(Code.INFO_SKIP, 0, 0);
             }
             success = true;
             response.close();
         } else {
-            mView.onError(Code.INFO_SKIP, -1);
+            mView.onError(Code.INFO_SKIP, Code.ERR_NONE);
         }
         if (callback != null) {
             callback.onCallBack(success);
@@ -253,12 +256,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public void onTimeout(int what) {
         Log.e(TAG, "onTimeout:" + what);
-        mView.onError(what, -1);
+        mView.onError(what, Code.ERR_NONE);
     }
 
     @Override
     public void onException(int what) {
         Log.e(TAG, "onException:" + what);
-        mView.onError(what, -1);
+        mView.onError(what, Code.ERR_NONE);
     }
 }

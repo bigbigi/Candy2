@@ -126,7 +126,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     }
 
     private void onInfo(int code) {
-        mView.onInfo(code, -1, -1);
+        mView.onInfo(code, 0, -1);
     }
 
 
@@ -302,7 +302,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                     mView.onInfo(Code.INFO_GET_AP, Utils.parseInt(t[2]), 0);
                 } else {
                     mView.onGetAp("");
-                    mView.onError(Code.INFO_GET_AP, -1);
+                    mView.onError(Code.INFO_GET_AP, Code.ERR_NONE);
                 }
             }
         });

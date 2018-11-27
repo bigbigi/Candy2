@@ -64,7 +64,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                 checkPort(new Callback() {
                                                                     @Override
                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                        skipBrowser(new Callback() {
+                                                                        checkAuth(new Callback() {
                                                                             @Override
                                                                             public void onCallBack(boolean success, Object[] t) {
                                                                                 pingInternet(new Callback() {
@@ -218,34 +218,29 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         }
     }
 
-    @Override
-    public void skipBrowser(Callback callback) {
-        boolean success = false;
-        mView.onChecking(Code.INFO_SKIP);
-        Response response = HttpHelper.getInstance().getResponse(AUTO_SERVER);
-        if (response != null) {
-            Log.d(TAG, "skipBrowser:" + response.code());
-            if (response.code() != 204) {
-                Intent intent = new Intent();
-                intent.setPackage("com.android.browser");
-                intent.setAction("android.intent.action.VIEW");
-                Uri content_url = Uri.parse("http://www.baidu.com");
-                intent.setData(content_url);
-//                mContext.startActivity(intent);
-                mView.onError(Code.INFO_SKIP, Code.ERR_NONE);
-            } else {
-                mView.onInfo(Code.INFO_SKIP, 0, 0);
+    private void checkAuth(final Callback callback) {
+        mView.onChecking(Code.INFO_AUTH);
+        HomeBiz.getInstance(mContext).getAuth(new Callback<Integer>() {
+            @Override
+            public void onCallBack(boolean success, Integer... t) {
+                int code = t[0];
+                if (code == 100) {
+                    mView.onInfo(Code.INFO_AUTH, 0, 0);
+                } else if (code == 103) {
+                    mView.onError(Code.INFO_AUTH, Code.ERR_WEIXIN);
+                } else if (code == 102) {
+                    mView.onError(Code.INFO_AUTH, Code.ERR_SMS);
+                } else if (code == 101) {
+                    mView.onError(Code.INFO_AUTH, Code.ERR_CARD);
+                } else {
+                    mView.onError(Code.INFO_AUTH, Code.ERR_QUEST);
+                }
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
             }
-            success = true;
-            response.close();
-        } else {
-            mView.onError(Code.INFO_SKIP, Code.ERR_NONE);
-        }
-        if (callback != null) {
-            callback.onCallBack(success);
-        }
+        });
     }
-
 
     @Override
     public void onResult(int what, int loss, int delay) {

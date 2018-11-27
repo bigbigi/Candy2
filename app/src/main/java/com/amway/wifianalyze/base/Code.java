@@ -19,11 +19,11 @@ public class Code {
     public static final int INFO_SERVER_PORT = 0x00000014;//服务器端口被占用
     public static final int INFO_INTERNET = 0x00000015;//检查外网专线带宽
     public static final int INFO_DNS = 0x00000016;//DNS错误
-    public static final int INFO_SKIP = 0x00000017;//自动跳转
+    public static final int INFO_AUTH = 0x00000017;//自动跳转
 
-    public static final int INFO_WEIXIN = 0x00000018;//微信无法认证
-    public static final int INFO_CARD = 0x00000019;//卡号无法认证
-    public static final int INFO_SMS = 0x0000001a;//短信无法认证
+//    public static final int INFO_WEIXIN = 0x00000018;//微信无法认证
+//    public static final int INFO_CARD = 0x00000019;//卡号无法认证
+//    public static final int INFO_SMS = 0x0000001a;//短信无法认证
 
     public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
@@ -68,7 +68,7 @@ public class Code {
             case Code.INFO_DNS:
                 message = "检查DNS配置";
                 break;
-            case Code.INFO_SKIP:
+            case Code.INFO_AUTH:
                 message = "是否已认证";
                 break;
             case Code.INFO_LOCALNET:
@@ -118,6 +118,10 @@ public class Code {
     public static final int ERR_INTERNET_INPUT = 0x0000ff07;//入口带宽异常
     public static final int ERR_INTERNET_OUTPUT = 0x0000ff08;//出口带宽异常
 
+    public static final int ERR_WEIXIN = 0x00000009;//微信无法认证
+    public static final int ERR_CARD = 0x0000000a;//卡号无法认证
+    public static final int ERR_SMS = 0x0000000b;//短信无法认证
+
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
             return getMessage(code, CHECKING, -1);
@@ -150,6 +154,15 @@ public class Code {
                 break;
             case ERR_INTERNET_OUTPUT:
                 message = "出口带宽异常";
+                break;
+            case ERR_WEIXIN:
+                message = "微信无法认证";
+                break;
+            case ERR_CARD:
+                message = "卡号无法认证";
+                break;
+            case ERR_SMS:
+                message = "短信无法认证";
                 break;
         }
         return message;

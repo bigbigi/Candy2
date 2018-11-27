@@ -42,6 +42,5 @@ public interface AuthContract extends BaseContract {
 
         public abstract void checkDns(final Callback callback);
 
-        public abstract void skipBrowser(final Callback callback);
     }
 }

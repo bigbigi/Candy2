@@ -214,18 +214,23 @@ public class HomeBiz {
         });
     }
 
-    private void getAuth(Callback callback) {
+    public void getAuth(final Callback<Integer> callback) {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                String result = HttpHelper.getInstance().get(String.format(AUTH_URL, Server.HOST, ""));
+                int code = 0;
+                String result = HttpHelper.getInstance().get(String.format(AUTH_URL, Server.HOST,
+                        "48:43:7c:bd:37:e0"/*NetworkUtils.getMac(mContext)*/));//todo change mac
                 if (!TextUtils.isEmpty(result)) {
                     try {
                         JSONObject json = new JSONObject(result);
-                        JSONObject data = json.getJSONObject("data");
+                        code = json.getInt("code");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+                if (callback != null) {
+                    callback.onCallBack(true, code);
                 }
             }
         });

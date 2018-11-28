@@ -21,9 +21,7 @@ public class Code {
     public static final int INFO_DNS = 0x00000016;//DNS错误
     public static final int INFO_AUTH = 0x00000017;//自动跳转
 
-//    public static final int INFO_WEIXIN = 0x00000018;//微信无法认证
-//    public static final int INFO_CARD = 0x00000019;//卡号无法认证
-//    public static final int INFO_SMS = 0x0000001a;//短信无法认证
+    public static final int INFO_FILEWALL= 0x00000018;//视频网站访问被拦截
 
     public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
@@ -98,6 +96,9 @@ public class Code {
                     message = "信道利用率：" + loss + "%";
                 }
                 break;
+            case INFO_FILEWALL:
+                message = "视频网站访问被拦截";
+                break;
             default:
                 message = null;
                 break;
@@ -139,10 +140,10 @@ public class Code {
                 message = "WIFI密码错误";
                 break;
             case ERROR_BUSY_CHANNEL:
-                message = "WIFI信道拥堵";
+                message = "WIFI信号干扰严重";
                 break;
             case ERROR_LOW_LEVEL:
-                message = "WIFI信号差";
+                message = "WIFI信号弱";
                 break;
             case ERROR_ELSE:
                 message = "AP人数过多等，找客服";

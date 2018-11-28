@@ -3,6 +3,8 @@ package com.amway.wifianalyze.home;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,17 +27,27 @@ public class BarcodeDialog extends Dialog {
     }
 
     private ImageView mBarcodeImageView;
+    private View mWarn;
 
     private void init() {
         View contentView = View.inflate(getContext(), R.layout.dialog_barcode, null);
         setContentView(contentView, new WindowManager.LayoutParams(-1, -1));
         getWindow().setLayout(-1, -1);
-
         mBarcodeImageView = (ImageView) findViewById(R.id.barcode_img);
-        String content = NetworkUtils.getMac(getContext());//todo
-        int size = ScreenParameter.getFitSize(getContext(), 600);
-        Bitmap bitmap = CodeUtils.createImage(content, size, size, null);
-        mBarcodeImageView.setImageBitmap(bitmap);
+        mWarn = findViewById(R.id.barcode_text);
+
+        WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wm.getConnectionInfo();
+        if (wifiInfo != null) {
+            String content = HomeBiz.getInstance(getContext()).getDeviceInfo().toJson().toString();
+            int size = ScreenParameter.getFitSize(getContext(), 600);
+            Bitmap bitmap = CodeUtils.createImage(content, size, size, null);
+            mWarn.setVisibility(View.GONE);
+            mBarcodeImageView.setImageBitmap(bitmap);
+        } else {
+            mWarn.setVisibility(View.VISIBLE);
+            mBarcodeImageView.setVisibility(View.GONE);
+        }
     }
 
     @Override

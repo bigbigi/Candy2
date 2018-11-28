@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,11 +22,9 @@ import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.home.DetectResult.Status;
 import com.amway.wifianalyze.lib.ToastOnPermission;
-import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
-import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
@@ -246,10 +243,7 @@ public class HomeFrag extends BaseFragment implements
                             break;
                         }
                     }
-                    /*if (reason > 0) {
-                        mAdapter.getData().add(0, new DetectResult(Status.ERROR, code, message));
-                        mAdapter.insert();
-                    }*/
+
                 }
             });
         }

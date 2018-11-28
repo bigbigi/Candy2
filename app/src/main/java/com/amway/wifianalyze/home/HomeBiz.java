@@ -38,6 +38,9 @@ public class HomeBiz {
     private static final String SUBMIT_URL = "%s/checkwifi-api/addUserAutoSubmit.dat";
     private static final String UTILIZE_URL = "%s/checkwifi-api/shop/getApInfo_mac_%s_ip_.dat";
     private static final String AUTH_URL = "%s/checkwifi-api/checkLogin/mac_%s.dat";
+    private static final String SYS_URL = "%s/checkwifi-api/shop/getSysConfig_%s.dat";
+    private static final String FIREWALL_URL = "%s/checkwifi-api/shop/filterFirewall.dat";
+
 
     private static volatile HomeBiz mInstance;
     private Context mContext;
@@ -63,8 +66,52 @@ public class HomeBiz {
 
     public HomeBiz(Context context) {
         mContext = context;
+        getSysconfig(null);
     }
 
+
+    public void getSysconfig(Callback callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                String ret = HttpHelper.getInstance().get(String.format(SYS_URL, Server.HOST, "ping_domain"));
+                if (!TextUtils.isEmpty(ret)) {
+                    try {
+                        JSONObject json = new JSONObject(ret);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
+    public void getFilewall(final Callback<Boolean> callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                String ret = HttpHelper.getInstance().get(String.format(FIREWALL_URL, Server.HOST));
+                boolean success = false;
+                boolean filter = false;
+                if (!TextUtils.isEmpty(ret)) {
+                    try {
+                        JSONObject json = new JSONObject(ret);
+                        if (json.optInt("code") == 100) {
+                            JSONObject data = json.getJSONObject("data");
+                            filter = data.optBoolean("filter");
+                            success = true;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (callback != null) {
+                    callback.onCallBack(success, filter);
+                }
+            }
+        });
+    }
 
     //获取门店信息
     public void getShopName(final Callback<String> callback) {
@@ -79,7 +126,7 @@ public class HomeBiz {
                 public void run() {
                     boolean success = false;
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST,
-                           /*NetworkUtils.getMac(mContext)*/"f0:99:bf:df:5e:64"));//todo
+                           /*NetworkUtils.getMac(mContext)*/"48:43:7c:bd:37:e0"));//todo
                     if (!TextUtils.isEmpty(result)) {
                         try {
                             JSONObject obj = new JSONObject(result);
@@ -145,21 +192,7 @@ public class HomeBiz {
                 if (mDevicesInfo != null) {
                     json = mDevicesInfo.toJson();
                 } else {
-                    DeviceInfo info = new DeviceInfo();
-                    WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    WifiInfo wifiInfo = wm.getConnectionInfo();
-                    if (!TextUtils.isEmpty(wifiInfo.getSSID())) {
-                        info.ssid = wifiInfo.getSSID().replaceAll("\"", "");
-                    }
-                    info.ap = mApName;
-                    info.browser = Application.USER_AGENT;
-                    info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
-                    info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
-                    info.mac = NetworkUtils.getMac(mContext);
-                    info.dns = NetworkUtils.getDns1();
-                    info.phoneType = Build.MODEL;
-                    info.system = "Android_" + Build.VERSION.SDK_INT;
-                    json = info.toJson();
+                    json = getDeviceInfo().toJson();
                 }
                 Log.d("big", "detect submit:" + json);
                 RequestBody body = new RequestBody() {
@@ -181,6 +214,7 @@ public class HomeBiz {
         });
 
     }
+
 
     public void getUtilization(final Callback<Integer> callback) {
         ThreadManager.execute(new Runnable() {
@@ -244,6 +278,24 @@ public class HomeBiz {
 
     public void setFrequence(int frequence) {
         this.mFrequence = frequence;
+    }
+
+    public DeviceInfo getDeviceInfo() {
+        DeviceInfo info = new DeviceInfo();
+        WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wm.getConnectionInfo();
+        if (wifiInfo != null && !TextUtils.isEmpty(wifiInfo.getSSID())) {
+            info.ssid = wifiInfo.getSSID().replaceAll("\"", "");
+            info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
+        }
+        info.ap = mApName;
+        info.browser = Application.USER_AGENT;
+        info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
+        info.mac = NetworkUtils.getMac(mContext);
+        info.dns = NetworkUtils.getDns1();
+        info.phoneType = Build.MODEL;
+        info.system = "Android_" + Build.VERSION.SDK_INT;
+        return info;
     }
 
 }

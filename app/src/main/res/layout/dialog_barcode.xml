@@ -14,9 +14,17 @@
         android:id="@+id/barcode_img"
         android:layout_width="526px"
         android:layout_height="526px"
-        android:layout_gravity="center"
-        android:background="#5eff0000" />
+        android:layout_gravity="center" />
 
+    <com.autofit.widget.TextView
+        android:id="@+id/barcode_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/barcode_warn"
+        android:textColor="#fff"
+        android:textSize="36px"
+        android:visibility="gone" />
 
 </com.autofit.widget.FrameLayout>
 

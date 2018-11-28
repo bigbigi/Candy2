@@ -10,6 +10,7 @@
     <string name="detect_result_error">故障</string>
     <string name="detect_24G">2.4G</string>
     <string name="detect_5G">5G</string>
+    <string name="barcode_warn">您还未连接WIFI</string>
 
     <!--测速-->
     <string name="speed_downloading">正在测试下载速度...</string>

@@ -49,4 +49,5 @@ public class DevicesUtils {
             Log.e(TAG, "putId2Setting fail");
         }
     }
+
 }

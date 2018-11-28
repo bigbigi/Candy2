@@ -1,8 +1,6 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -10,10 +8,7 @@ import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
-import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
-
-import okhttp3.Response;
 
 /**
  * Created by big on 2018/10/22.
@@ -23,8 +18,8 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     private static final String TAG = "AuthPresenterImpl";
 
     private static final String INTERNET = "www.baidu.com";
-    private static final String SERVER_URL = "www.baidu.com";//todo 认证服务器地址
-    private static final String AUTO_SERVER = "http://www.baidu.com/generate_204 ";//todo 认证204返回
+    private static final String AUTH_SERVER = "www.baidu.com";//todo 认证服务器地址
+    private static final int AUTH_PORT = 80;//todo 认证服务器端口
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
@@ -67,13 +62,19 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                         checkAuth(new Callback() {
                                                                             @Override
                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                pingInternet(new Callback() {
+                                                                                checkFilewall(new Callback() {
                                                                                     @Override
                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                        mView.onStopCheck();
-                                                                                        HomeBiz.getInstance(mContext).submitDetectResult(null);
+                                                                                        pingInternet(new Callback() {
+                                                                                            @Override
+                                                                                            public void onCallBack(boolean success, Object[] t) {
+                                                                                                mView.onStopCheck();
+                                                                                                HomeBiz.getInstance(mContext).submitDetectResult(null);
+                                                                                            }
+                                                                                        });
                                                                                     }
                                                                                 });
+
                                                                             }
                                                                         });
                                                                     }
@@ -114,6 +115,27 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         });
     }
 
+    public void checkFilewall(final Callback callback) {
+        mView.onChecking(Code.INFO_FILEWALL);
+        HomeBiz.getInstance(mContext).getFilewall(new Callback<Boolean>() {
+            @Override
+            public void onCallBack(boolean success, Boolean... t) {
+                if (success) {
+                    if (!t[0]) {
+                        onInfo(Code.INFO_FILEWALL);
+                    } else {
+                        mView.onError(Code.INFO_FILEWALL, Code.ERR_NONE);
+                    }
+                } else {
+                    mView.onError(Code.INFO_FILEWALL, Code.ERR_QUEST);
+                }
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
+            }
+        });
+    }
+
     @Override
     public void checkDhcp(Callback callback) {
         mView.onChecking(Code.INFO_STATIC_IP);
@@ -132,7 +154,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void checkPort(Callback callback) {
         boolean success = false;
         mView.onChecking(Code.INFO_SERVER_PORT);
-        if (NetworkUtils.telnet(SERVER_URL, 80)) {
+        if (NetworkUtils.telnet(AUTH_SERVER, AUTH_PORT)) {
             mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
             success = true;
         } else {
@@ -151,7 +173,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public void checkServer(Callback callback) {
         mView.onChecking(Code.INFO_SERVER);
-        mTraceroute.executeTraceroute(SERVER_URL, Code.INFO_SERVER, callback);
+        mTraceroute.executeTraceroute(AUTH_SERVER, Code.INFO_SERVER, callback);
     }
 
     @Override
@@ -207,7 +229,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void checkDns(Callback callback) {
         mView.onChecking(Code.INFO_DNS);
         boolean success = false;
-        if (!TextUtils.isEmpty(NetworkUtils.getIp(SERVER_URL))) {
+        if (!TextUtils.isEmpty(NetworkUtils.getIp(AUTH_SERVER))) {
             mView.onInfo(Code.INFO_DNS, 0, 0);
             success = true;
         } else {
@@ -258,5 +280,9 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void onException(int what) {
         Log.e(TAG, "onException:" + what);
         mView.onError(what, Code.ERR_NONE);
+    }
+
+    public void onInfo(int code) {
+        mView.onInfo(code, 0, 0);
     }
 }

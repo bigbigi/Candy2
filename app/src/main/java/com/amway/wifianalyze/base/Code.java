@@ -32,6 +32,7 @@ public class Code {
     public static final int INFO_PING_ORDER = 0x00000020;//检测下单网站;
     public static final int INFO_ORDER_PORT = 0x00000021;//检测下单网站端口;
     public static final int INFO_CUSTOMER_PICK = 0x00000022;//检测店铺自提;
+    public static final int INFO_NETWORK_ACCESS = 0x00000023;//5分钟断网;
 
 
     public static final int CHECKING = -1;
@@ -130,6 +131,10 @@ public class Code {
             case INFO_CUSTOMER_PICK:
                 message = "检测店铺自提";
                 break;
+            case INFO_NETWORK_ACCESS:
+                message = "未关注公众号，5分钟后断网";
+                break;
+
             default:
                 message = null;
                 break;

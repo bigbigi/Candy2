@@ -92,7 +92,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                                                                                                         checkCustomPick(new Callback() {
                                                                                                                                                             @Override
                                                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                mView.onStopCheck();
+                                                                                                                                                                checkNetworAccess(new Callback() {
+                                                                                                                                                                    @Override
+                                                                                                                                                                    public void onCallBack(boolean success, Object[] t) {
+                                                                                                                                                                        mView.onStopCheck();
+                                                                                                                                                                    }
+                                                                                                                                                                });
+
                                                                                                                                                             }
                                                                                                                                                         });
                                                                                                                                                     }
@@ -390,6 +396,21 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 }
                 if (callback != null) {
                     callback.onCallBack(success);
+                }
+            }
+        });
+    }
+
+    public void checkNetworAccess(final Callback callback) {
+        HomeBiz.getInstance(mContext).checkNetworAccess(new Callback<Boolean>() {
+            @Override
+            public void onCallBack(boolean success, Boolean... t) {
+                if (success && !t[0]) {
+                    mView.onChecking(Code.INFO_NETWORK_ACCESS);
+                    mView.onError(Code.INFO_NETWORK_ACCESS, Code.ERR_NONE);
+                }
+                if (callback != null) {
+                    callback.onCallBack(true);
                 }
             }
         });

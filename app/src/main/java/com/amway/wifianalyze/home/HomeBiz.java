@@ -4,11 +4,8 @@ import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 
 import com.amway.wifianalyze.base.Application;
 import com.amway.wifianalyze.bean.DeviceInfo;
@@ -60,6 +57,7 @@ public class HomeBiz {
     public String mShopName;
     public String mApName;
     public String mUserCount;
+    public String mIp;
     public int mFrequence;
     public boolean mHas5G;
     public DeviceInfo mDevicesInfo;
@@ -114,12 +112,6 @@ public class HomeBiz {
         });
     }
 
-    private void getValue(JSONObject data, String key, String variate) {
-        String value = data.optString(key);
-        if (!TextUtils.isEmpty(value)) {
-            variate = value;
-        }
-    }
 
     public void getFilewall(final Callback<Boolean> callback) {
         ThreadManager.execute(new Runnable() {
@@ -169,6 +161,7 @@ public class HomeBiz {
                             mApName = data.optString("apName");
                             mShopName = data.optString("shopName");
                             mUserCount = data.optString("users");
+                            mIp = data.optString("sangfor_outer");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -304,6 +297,28 @@ public class HomeBiz {
             }
         });
 
+    }
+
+    public void checkCustomPick(final Callback<String> callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                String ip = "";
+                String result = HttpHelper.getInstance().getChome(Server.MY_IP);
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        JSONObject json = new JSONObject(result);
+                        JSONObject data = json.getJSONObject("data");
+                        ip = data.getString("ip");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (callback != null) {
+                    callback.onCallBack(!TextUtils.isEmpty(ip), ip);
+                }
+            }
+        });
     }
 
     public int getFrequence() {

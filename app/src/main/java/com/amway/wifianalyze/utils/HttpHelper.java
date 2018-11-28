@@ -2,6 +2,8 @@ package com.amway.wifianalyze.utils;
 
 import android.util.Log;
 
+import com.amway.wifianalyze.base.Application;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,6 +46,23 @@ public class HttpHelper {
     public String get(String url) {
         Request request = new Request.Builder()
                 .url(url)
+                .build();
+        try {
+            Response response = mClient.newCall(request).execute();
+            String result = response.body().string();
+            Log.i(TAG, "response:" + response.isSuccessful() + "," + response.toString() + "\nresult:" + result);
+            return result;
+        } catch (Exception e) {
+            Log.e(TAG, "url:" + url);
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public String getChome(String url) {
+        Request request = new Request.Builder()
+                .url(url).removeHeader("User-Agent")
+                .addHeader("User-Agent","Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11")
                 .build();
         try {
             Response response = mClient.newCall(request).execute();

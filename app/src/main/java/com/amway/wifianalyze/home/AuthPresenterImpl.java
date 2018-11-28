@@ -270,7 +270,20 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void checkCustomPick(Callback callback) {//todo
         boolean success = false;
         mView.onChecking(Code.INFO_CUSTOMER_PICK);
-
+        HomeBiz.getInstance(mContext).checkCustomPick(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, String... t) {
+                if (success) {
+                    if (t[0].equals(HomeBiz.getInstance(mContext).mIp)) {
+                        onInfo(Code.INFO_CUSTOMER_PICK);
+                    } else {
+                        mView.onError(Code.INFO_CUSTOMER_PICK, Code.ERR_NONE);
+                    }
+                } else {
+                    mView.onError(Code.INFO_CUSTOMER_PICK, Code.ERR_QUEST);
+                }
+            }
+        });
         if (callback != null) {
             callback.onCallBack(success);
         }
@@ -385,7 +398,11 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     @Override
     public void onResult(int what, int loss, int delay) {
         Log.e("big", "onResult:" + what);
-        mView.onInfo(what, loss, delay);
+        if (loss >= 100) {
+            mView.onError(what, Code.ERR_NONE);
+        } else {
+            mView.onInfo(what, loss, delay);
+        }
     }
 
     @Override

@@ -108,10 +108,18 @@ public class Code {
                 message = "视频网站访问被拦截";
                 break;
             case INFO_PAY_WEIXIN:
-                message = "检测微信支付";
+                if (loss == CHECKING) {
+                    message = "检测微信支付";
+                } else {
+                    message = "检测微信支付，丢包：" + loss + "%，延迟:" + delay + "ms";
+                }
                 break;
             case INFO_PAY_ZHIFUBAO:
-                message = "检测支付宝";
+                if (loss == CHECKING) {
+                    message = "检测支付宝";
+                } else {
+                    message = "检测支付宝，丢包：" + loss + "%，延迟:" + delay + "ms";
+                }
                 break;
             case INFO_PING_ORDER:
                 message = "检测下单网站";

@@ -28,4 +28,6 @@ public class Server {
     public static String PAY_WEI_XIN = "pay.weixin.qq.com";
     //检测检测支付宝
     public static String PAY_ZHIFUBAO = "alipay.com";
+
+    public static String MY_IP="http://ip.taobao.com/service/getIpInfo.php?ip=myip";
 }

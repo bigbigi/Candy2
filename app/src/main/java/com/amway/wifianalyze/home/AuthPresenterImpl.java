@@ -8,6 +8,7 @@ import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.utils.Server;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
 
 /**
@@ -17,9 +18,6 @@ import com.amway.wifianalyze.utils.TracerouteWithPing;
 public class AuthPresenterImpl extends AuthContract.AuthPresenter implements TracerouteWithPing.OnTraceRouteListener {
     private static final String TAG = "AuthPresenterImpl";
 
-    private static final String INTERNET = "www.baidu.com";
-    private static final String AUTH_SERVER = "www.baidu.com";//todo 认证服务器地址
-    private static final int AUTH_PORT = 80;//todo 认证服务器端口
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
@@ -143,7 +141,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         if (staticIp) {
             mView.onError(Code.INFO_STATIC_IP, Code.ERR_NONE);
         } else {
-            mView.onInfo(Code.INFO_STATIC_IP, 0, 0);
+            onInfo(Code.INFO_STATIC_IP);
         }
         if (callback != null) {
             callback.onCallBack(!staticIp);
@@ -154,8 +152,8 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void checkPort(Callback callback) {
         boolean success = false;
         mView.onChecking(Code.INFO_SERVER_PORT);
-        if (NetworkUtils.telnet(AUTH_SERVER, AUTH_PORT)) {
-            mView.onInfo(Code.INFO_SERVER_PORT, 0, 0);
+        if (NetworkUtils.telnet(Server.AUTH_SERVER, Server.AUTH_PORT)) {
+            onInfo(Code.INFO_SERVER_PORT);
             success = true;
         } else {
             mView.onError(Code.INFO_SERVER_PORT, Code.ERR_NONE);
@@ -167,13 +165,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
 
     public void pingInternet(Callback callback) {
         mView.onChecking(Code.INFO_PING_INTERNET);
-        mTraceroute.executeTraceroute(INTERNET, Code.INFO_PING_INTERNET, callback);
+        mTraceroute.executeTraceroute(Server.INTERNET, Code.INFO_PING_INTERNET, callback);
     }
 
     @Override
     public void checkServer(Callback callback) {
         mView.onChecking(Code.INFO_SERVER);
-        mTraceroute.executeTraceroute(AUTH_SERVER, Code.INFO_SERVER, callback);
+        mTraceroute.executeTraceroute(Server.AUTH_SERVER, Code.INFO_SERVER, callback);
     }
 
     @Override
@@ -186,7 +184,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean input = t[0];
                     boolean output = t[1];
                     if (!input && !output) {
-                        mView.onInfo(Code.INFO_LOCALNET, 0, 0);
+                        onInfo(Code.INFO_LOCALNET);
                     } else {
                         mView.onError(Code.INFO_LOCALNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
@@ -211,7 +209,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean input = t[0];
                     boolean output = t[1];
                     if (!input && !output) {
-                        mView.onInfo(Code.INFO_INTERNET, 0, 0);
+                        onInfo(Code.INFO_INTERNET);
                     } else {
                         mView.onError(Code.INFO_INTERNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
@@ -229,8 +227,8 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void checkDns(Callback callback) {
         mView.onChecking(Code.INFO_DNS);
         boolean success = false;
-        if (!TextUtils.isEmpty(NetworkUtils.getIp(AUTH_SERVER))) {
-            mView.onInfo(Code.INFO_DNS, 0, 0);
+        if (!TextUtils.isEmpty(NetworkUtils.getIp(Server.DNS_SERVER))) {
+            onInfo(Code.INFO_DNS);
             success = true;
         } else {
             mView.onError(Code.INFO_DNS, Code.ERR_NONE);
@@ -247,7 +245,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             public void onCallBack(boolean success, Integer... t) {
                 int code = t[0];
                 if (success) {
-                    mView.onInfo(Code.INFO_AUTH, 0, 0);
+                    onInfo(Code.INFO_AUTH);
                 } else if (code == 103) {
                     mView.onError(Code.INFO_AUTH, Code.ERR_WEIXIN);
                 } else if (code == 102) {

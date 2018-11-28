@@ -6,6 +6,7 @@ import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.FileUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
+import com.amway.wifianalyze.utils.Server;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -26,9 +27,7 @@ import okhttp3.Response;
 
 public class SpeedChecker {
     private static final String TAG = "SpeedChecker";
-    private static final String DOWNLOAD_URL = "http://pubstatic.b0.upaiyun.com/check2.jpg";
-    //        private static final String DOWNLOAD_URL = "http://dlied5.myapp.com/myapp/1104466820/sgame/2017_com.tencent.tmgp.sgame_h169_1.34.1.23_2fc1ef.apk";
-    private static final String UPLOAD_URL = "http://health-test.b0.upaiyun.com/check2.jpg?t=%s";
+
     private static final int MAX_COUNT = 25;
     private static final int DURATION = 5000;
 
@@ -59,7 +58,7 @@ public class SpeedChecker {
                     byte[] readBuffer = new byte[1024 * 5];
                     long lastTime = startTime;
                     while (!mStopTagDownload.get() && mCountDownload.get() < MAX_COUNT) {
-                        Response response = HttpHelper.getInstance().getResponse(DOWNLOAD_URL);
+                        Response response = HttpHelper.getInstance().getResponse(Server.DOWNLOAD_SERVER);
                         if (response != null && response.isSuccessful()) {
                             InputStream inputStream = response.body().byteStream();
                             int readLen;
@@ -128,7 +127,7 @@ public class SpeedChecker {
                 @Override
                 public void run() {
                     while (!mStopTagUpload.get() && mCountUpload.get() < MAX_COUNT * (100 / THREAD_NUM)) {
-                        int code = httpPost(String.format(UPLOAD_URL, System.currentTimeMillis()), null, test);
+                        int code = httpPost(String.format(Server.UPLOAD_SERVER, System.currentTimeMillis()), null, test);
                         if (code == 404) {
                             mLengthUpload.set(mLengthUpload.get() + buffSize);
                         }

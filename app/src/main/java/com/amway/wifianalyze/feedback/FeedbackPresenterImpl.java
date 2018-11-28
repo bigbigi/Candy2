@@ -152,7 +152,7 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                         bufferedSink.writeUtf8(json.toString());
                     }
                 };
-                boolean success = HttpHelper.getInstance().post(String.format(URL, Server.FEEDBACK), body);
+                boolean success = HttpHelper.getInstance().post(String.format(URL, Server.HOST), body);
                 if (callback != null) {
                     if (success) {
                         callback.onCallBack(true);

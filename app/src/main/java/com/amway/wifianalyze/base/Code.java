@@ -17,13 +17,13 @@ public class Code {
     public static final int INFO_IP_114 = 0x00000012;//ping 114网络中断
     public static final int INFO_SERVER = 0x00000013;//服务器ping不通
     public static final int INFO_SERVER_PORT = 0x00000014;//服务器端口被占用
-    public static final int INFO_INTERNET = 0x00000015;//检查外网专线带宽
+    public static final int INFO_INTERNET_LOAD = 0x00000015;//检查外网专线带宽
     public static final int INFO_DNS = 0x00000016;//DNS错误
-    public static final int INFO_AUTH = 0x00000017;//自动跳转
+    public static final int INFO_AUTH = 0x00000017;//是否已认证
     public static final int INFO_FILEWALL = 0x00000018;//视频网站访问被拦截
     public static final int INFO_PAY_WEIXIN = 0x00000019;//检测微信支付
     public static final int INFO_PAY_ZHIFUBAO = 0x0000001a;//检测支付宝
-    public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
+    public static final int INFO_LOCALNET_LOAD = 0x0000001b;//内网专线带宽
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
     public static final int INFO_GET_AP = 0x0000001d;//获取ap人数
     public static final int INFO_SUPPORT_5G = 0x0000001e;//是否支持5G;
@@ -69,7 +69,7 @@ public class Code {
             case Code.INFO_SERVER_PORT:
                 message = "检查服务器端口被占用";
                 break;
-            case Code.INFO_INTERNET:
+            case Code.INFO_INTERNET_LOAD:
                 message = "检查外网专线带宽";
                 break;
             case Code.INFO_DNS:
@@ -78,7 +78,7 @@ public class Code {
             case Code.INFO_AUTH:
                 message = "是否已认证";
                 break;
-            case Code.INFO_LOCALNET:
+            case Code.INFO_LOCALNET_LOAD:
                 message = "检查内网专线带宽";
                 break;
             case Code.INFO_PING_INTERNET:

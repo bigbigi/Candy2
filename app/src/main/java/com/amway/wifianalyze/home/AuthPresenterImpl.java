@@ -7,7 +7,6 @@ import android.util.Log;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
-import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.Server;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
@@ -296,7 +295,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     }
 
     public void checkLocalnetLoad(final Callback callback) {
-        mView.onChecking(Code.INFO_LOCALNET);
+        mView.onChecking(Code.INFO_LOCALNET_LOAD);
         HomeBiz.getInstance(mContext).checkLocalnetLoad(new Callback<Boolean>() {
             @Override
             public void onCallBack(boolean success, Boolean... t) {
@@ -304,12 +303,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean input = t[0];
                     boolean output = t[1];
                     if (!input && !output) {
-                        onInfo(Code.INFO_LOCALNET);
+                        onInfo(Code.INFO_LOCALNET_LOAD);
                     } else {
-                        mView.onError(Code.INFO_LOCALNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
+                        mView.onError(Code.INFO_LOCALNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
                 } else {
-                    mView.onError(Code.INFO_LOCALNET, Code.ERR_QUEST);
+                    mView.onError(Code.INFO_LOCALNET_LOAD, Code.ERR_QUEST);
                 }
                 if (callback != null) {
                     callback.onCallBack(success);
@@ -320,7 +319,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
 
 
     public void checkInternetLoad(final Callback callback) {
-        mView.onChecking(Code.INFO_INTERNET);
+        mView.onChecking(Code.INFO_INTERNET_LOAD);
         HomeBiz.getInstance(mContext).checkInternetLoad(new Callback<Boolean>() {
             @Override
             public void onCallBack(boolean success, Boolean... t) {
@@ -328,12 +327,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean input = t[0];
                     boolean output = t[1];
                     if (!input && !output) {
-                        onInfo(Code.INFO_INTERNET);
+                        onInfo(Code.INFO_INTERNET_LOAD);
                     } else {
-                        mView.onError(Code.INFO_INTERNET, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
+                        mView.onError(Code.INFO_INTERNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
                 } else {
-                    mView.onError(Code.INFO_INTERNET, Code.ERR_QUEST);
+                    mView.onError(Code.INFO_INTERNET_LOAD, Code.ERR_QUEST);
                 }
                 if (callback != null) {
                     callback.onCallBack(success);

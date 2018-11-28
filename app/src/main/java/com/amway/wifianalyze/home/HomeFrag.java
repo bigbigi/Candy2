@@ -194,6 +194,7 @@ public class HomeFrag extends BaseFragment implements
     @Override
     public void onStopCheck() {
         stopAni();
+        HomeBiz.getInstance(getContext()).submitDetectResult(null);
     }
 
     @Override

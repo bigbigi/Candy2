@@ -15,19 +15,17 @@ public class Server {
     public static int ORDER_PORT = 80;
     //上传、下载
     public static String DOWNLOAD_SERVER = "http://pubstatic.b0.upaiyun.com/check2.jpg";
-    public static String UPLOAD_SERVER = "http://health-test.b0.upaiyun.com/check2.jpg?t=%s";
+    public static String UPLOAD_SERVER = "http://health-test.b0.upaiyun.com/check2.jpg?t=1543397663809";
     //外网
     public static String INTERNET = "www.baidu.com";
     //外网IP
     public static String IP_114 = "114.114.114.114";
     //DNS
     public static String DNS_SERVER = "www.baidu.com";
-    //路由器IP
-    public static String ROUTER_INTERNET_IP = "114.114.114.114";
     //检测微信支付
     public static String PAY_WEI_XIN = "pay.weixin.qq.com";
     //检测检测支付宝
     public static String PAY_ZHIFUBAO = "alipay.com";
-
-    public static String MY_IP="http://ip.taobao.com/service/getIpInfo.php?ip=myip";
+    //获取公网IP
+    public static String MY_IP = "http://ip.taobao.com/service/getIpInfo.php?ip=myip";
 }

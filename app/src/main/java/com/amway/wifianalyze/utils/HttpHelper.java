@@ -2,7 +2,6 @@ package com.amway.wifianalyze.utils;
 
 import android.util.Log;
 
-import com.amway.wifianalyze.base.Application;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

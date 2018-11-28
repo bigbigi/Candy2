@@ -30,8 +30,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         init();
         findViewById(R.id.tab_detect).performClick();
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
-        Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this));
-        Log.d("big", "hasInstall:" + Utils.hasInstall(this, "com.tencent.mm"));
+        Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this)+","+System.currentTimeMillis());
     }
 
     private ViewGroup mTabLayout;

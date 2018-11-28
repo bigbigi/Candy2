@@ -35,7 +35,7 @@ public class HomeBiz {
     private static final String INTERNET_URL = "%s/checkwifi-api/shop/getSangforLoad_mac_%s_ip_.dat";
     private static final String SUBMIT_URL = "%s/checkwifi-api/addUserAutoSubmit.dat";
     private static final String UTILIZE_URL = "%s/checkwifi-api/shop/getApInfo_mac_%s_ip_.dat";
-    private static final String AUTH_URL = "%s/checkwifi-api/checkLogin/mac_%s.dat";
+    private static final String AUTH_URL = "%s/checkwifi-api/auth/checkLogin/mac_%s.dat";
     private static final String SYS_URL = "%s/checkwifi-api/shop/getSysConfig_ping_domain,auth_domain,download_domain,firewall_domain,order_domain,upload_domain,auth_port,order_port.dat";
     private static final String FIREWALL_URL = "%s/checkwifi-api/shop/filterFirewall.dat";
 
@@ -59,6 +59,8 @@ public class HomeBiz {
     public String mUserCount;
     public String mIp;
     public int mFrequence;
+    public float mDownloadSpeed;
+    public float mUploadSpeed;
     public boolean mHas5G;
     public DeviceInfo mDevicesInfo;
 
@@ -220,6 +222,12 @@ public class HomeBiz {
                     json = mDevicesInfo.toJson();
                 } else {
                     json = getDeviceInfo().toJson();
+                }
+                try {
+                    json.put("downSpeed", mDownloadSpeed);
+                    json.put("uploadSpeed", mUploadSpeed);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 Log.d("big", "detect submit:" + json);
                 RequestBody body = new RequestBody() {

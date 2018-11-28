@@ -163,9 +163,11 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                     mState.setText(R.string.speed_downloading);
                     mUploadValue.setText(R.string.speed_prepared);
                     mDownloadValue.setText(NetworkUtils.getSpeed(speed));
+                    HomeBiz.getInstance(getContext()).mDownloadSpeed = speed;
                 } else {
                     mUploadValue.setText(NetworkUtils.getSpeed(speed));
                     mState.setText(R.string.speed_uploading);
+                    HomeBiz.getInstance(getContext()).mUploadSpeed = speed;
                 }
             }
         });

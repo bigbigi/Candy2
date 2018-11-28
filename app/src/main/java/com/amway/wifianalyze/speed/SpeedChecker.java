@@ -127,7 +127,7 @@ public class SpeedChecker {
                 @Override
                 public void run() {
                     while (!mStopTagUpload.get() && mCountUpload.get() < MAX_COUNT * (100 / THREAD_NUM)) {
-                        int code = httpPost(String.format(Server.UPLOAD_SERVER, System.currentTimeMillis()), null, test);
+                        int code = httpPost(Server.UPLOAD_SERVER, null, test);
                         if (code == 404) {
                             mLengthUpload.set(mLengthUpload.get() + buffSize);
                         }

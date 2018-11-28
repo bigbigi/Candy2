@@ -19,7 +19,7 @@ public interface WifiContract extends BaseContract {
 
         void onConnected(WifiInfo wifiInfo);
 
-        void onGetAp(String apName);
+//        void onGetAp(String apName);
 
         void onChecking(int code);
 
@@ -42,6 +42,5 @@ public interface WifiContract extends BaseContract {
 
         public abstract boolean isConnected();
 
-        public abstract void getAp(Context context);
     }
 }

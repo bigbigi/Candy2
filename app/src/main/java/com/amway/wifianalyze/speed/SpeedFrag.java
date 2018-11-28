@@ -64,6 +64,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mState = (TextView) content.findViewById(R.id.speed_state);
         mApName = (TextView) content.findViewById(R.id.wifi_ap);
+        mApName.setText(HomeBiz.getInstance(getContext()).mApName);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new SpeedAdapter(getContext());
@@ -97,7 +98,6 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         if (mWifiPresenter.isConnected()) {
             WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             onConnected(wifiManager.getConnectionInfo());
-            mWifiPresenter.getAp(getContext());
         } else {
             mWifiPresenter.scanWifi();
         }
@@ -133,17 +133,6 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         if (!isHidden()) {
             mSpeedPresenter.getSpeed();
         }
-    }
-
-    @Override
-    public void onGetAp(final String apName) {
-        Log.d(TAG, "onGetAp:" + apName);
-        ThreadManager.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mApName.setText(apName);
-            }
-        });
     }
 
 

@@ -83,14 +83,7 @@ public class SpeedResultFrag extends BaseFragment {
         mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mDownloadSpeed)));
         mSpeedView.setLevel(NetworkUtils.getLevel(mDownloadSpeed));
         mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(mDownloadSpeed)));
-        HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
-            @Override
-            public void onCallBack(boolean success, String... t) {
-                if (success) {
-                    mApName.setText(t[0]);
-                }
-            }
-        });
+        mApName.setText(HomeBiz.getInstance(getContext()).mApName);
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo.getSSID() != null) {

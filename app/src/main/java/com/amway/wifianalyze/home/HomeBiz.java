@@ -15,6 +15,7 @@ import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.Server;
 
@@ -38,7 +39,7 @@ public class HomeBiz {
     private static final String SUBMIT_URL = "%s/checkwifi-api/addUserAutoSubmit.dat";
     private static final String UTILIZE_URL = "%s/checkwifi-api/shop/getApInfo_mac_%s_ip_.dat";
     private static final String AUTH_URL = "%s/checkwifi-api/checkLogin/mac_%s.dat";
-    private static final String SYS_URL = "%s/checkwifi-api/shop/getSysConfig_%s.dat";
+    private static final String SYS_URL = "%s/checkwifi-api/shop/getSysConfig_ping_domain,auth_domain,download_domain,firewall_domain,order_domain,upload_domain,auth_port,order_port.dat";
     private static final String FIREWALL_URL = "%s/checkwifi-api/shop/filterFirewall.dat";
 
 
@@ -66,25 +67,58 @@ public class HomeBiz {
 
     public HomeBiz(Context context) {
         mContext = context;
-        getSysconfig(null);
     }
 
-
-    public void getSysconfig(Callback callback) {
+    public void getSysconfig(final Callback callback) {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                String ret = HttpHelper.getInstance().get(String.format(SYS_URL, Server.HOST, "ping_domain"));
+                boolean success = false;
+                String ret = HttpHelper.getInstance().get(String.format(SYS_URL, Server.HOST));
                 if (!TextUtils.isEmpty(ret)) {
                     try {
                         JSONObject json = new JSONObject(ret);
+                        if (100 == json.optInt("code")) {
+                            JSONObject data = json.getJSONObject("data");
+                            if (!TextUtils.isEmpty(data.optString("order_domain"))) {
+                                Server.ORDER_SERVER = data.optString("order_domain");
+                            }
+                          /*  if (!TextUtils.isEmpty(data.optString("upload_domain"))) {
+                                Server.UPLOAD_SERVER = data.optString("upload_domain");
+                            }
+                            if (!TextUtils.isEmpty(data.optString("download_domain"))) {
+                                Server.DOWNLOAD_SERVER = data.optString("download_domain");
+                            }*/
+                            if (!TextUtils.isEmpty(data.optString("auth_domain"))) {
+                                Server.AUTH_SERVER = data.optString("auth_domain");
+                            }
+                            if (!TextUtils.isEmpty(data.optString("ping_domain"))) {
+                                Server.INTERNET = data.optString("ping_domain").split(",")[0];
+                            }
+                            if (!TextUtils.isEmpty(data.optString("auth_port"))) {
+                                Server.AUTH_PORT = Utils.parseInt(data.optString("auth_port"));
+                            }
+                            if (!TextUtils.isEmpty(data.optString("order_port"))) {
+                                Server.ORDER_PORT = Utils.parseInt(data.optString("order_port"));
+                            }
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
             }
         });
+    }
+
+    private void getValue(JSONObject data, String key, String variate) {
+        String value = data.optString(key);
+        if (!TextUtils.isEmpty(value)) {
+            variate = value;
+        }
     }
 
     public void getFilewall(final Callback<Boolean> callback) {
@@ -126,7 +160,7 @@ public class HomeBiz {
                 public void run() {
                     boolean success = false;
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST,
-                           /*NetworkUtils.getMac(mContext)*/"48:43:7c:bd:37:e0"));//todo
+                           /*NetworkUtils.getMac(mContext)*/"54:33:cb:66:b4:1f"));//todo
                     if (!TextUtils.isEmpty(result)) {
                         try {
                             JSONObject obj = new JSONObject(result);

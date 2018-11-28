@@ -13,6 +13,8 @@ import com.amway.wifianalyze.lib.listener.Callback;
 public interface AuthContract extends BaseContract {
 
     interface AuthView extends BaseView {
+        void onGetAp(String apName);
+
         void onError(int code, int reason);
 
         void onInfo(int code, int loss, int delay);
@@ -30,17 +32,17 @@ public interface AuthContract extends BaseContract {
 
         public abstract void startCheck(Context context);
 
-        public abstract void checkDhcp(final Callback callback);
-
-        public abstract void checkPort(final Callback callback);
-
-        public abstract void checkServer(final Callback callback);
-
-        public abstract void checkLocalnet(final Callback callback);
-
-        public abstract void checkInternet(final Callback callback);
-
-        public abstract void checkDns(final Callback callback);
+//        public abstract void checkDhcp(final Callback callback);
+//
+//        public abstract void checkPort(final Callback callback);
+//
+//        public abstract void checkServer(final Callback callback);
+//
+//        public abstract void checkLocalnetLoad(final Callback callback);
+//
+//        public abstract void checkInternetLoad(final Callback callback);
+//
+//        public abstract void checkDns(final Callback callback);
 
     }
 }

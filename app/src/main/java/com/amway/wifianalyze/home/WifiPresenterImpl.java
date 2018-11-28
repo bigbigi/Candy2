@@ -141,9 +141,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             mCheckConnected = true;
             mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
             mView.onConnected(mWm.getConnectionInfo());
-            getAp(mContext);
         }
-
     }
 
     public boolean isConnected() {
@@ -246,16 +244,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                         onInfo(Code.INFO_SCAN_WIFI);
                         onConnected();
                     }
-
                     HomeBiz.getInstance(context).mHas5G = has5G;
-                    mView.onChecking(Code.INFO_SUPPORT_5G);
-                    if (NetworkUtils.isSupport5G(context) || has5G) {
-                        onInfo(Code.INFO_SUPPORT_5G);
-                    } else if (NetworkUtils.isOnly24G(context)) {
-                        mView.onError(Code.INFO_SUPPORT_5G, Code.ERR_ONLY24G);
-                    } else {
-                        mView.onError(Code.INFO_SUPPORT_5G, Code.ERR_NOTFOUND_5G);
-                    }
                 } else if (mReScanTimes < MAX_SCAN_TIMES) {
                     mReScanTimes++;
                     scanWifi();
@@ -291,25 +280,4 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         }
     }
 
-    @Override
-    public void getAp(Context context) {
-        mView.onChecking(Code.INFO_GET_AP);
-        HomeBiz.getInstance(context).getShopName(new Callback<String>() {
-            @Override
-            public void onCallBack(boolean success, final String... t) {
-                if (success) {
-                    mView.onGetAp(t[0]);
-                    int count = Utils.parseInt(t[2]);
-                    if (count > 50) {
-                        mView.onError(Code.INFO_GET_AP, Code.ERR_AP_USER);
-                    } else {
-                        mView.onInfo(Code.INFO_GET_AP, count, 0);
-                    }
-                } else {
-                    mView.onGetAp("");
-                    mView.onError(Code.INFO_GET_AP, Code.ERR_QUEST);
-                }
-            }
-        });
-    }
 }

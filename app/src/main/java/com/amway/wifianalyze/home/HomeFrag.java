@@ -163,6 +163,7 @@ public class HomeFrag extends BaseFragment implements
             Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
             mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
         }
+        mAuthPresenter.startCheck(getContext());
     }
 
     @Override
@@ -171,7 +172,6 @@ public class HomeFrag extends BaseFragment implements
             @Override
             public void run() {
                 mApName.setText(apName);
-                mAuthPresenter.startCheck(getContext());
             }
         });
     }

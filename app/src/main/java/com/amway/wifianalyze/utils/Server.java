@@ -11,8 +11,8 @@ public class Server {
     public static String AUTH_SERVER = "www.baidu.com";//todo 认证服务器地址
     public static int AUTH_PORT = 80;//todo 认证服务器端口
     //下单网站
-    public static String SHOP_SERVER = "www.baidu.com";
-    public static int SHOP_PORT = 80;
+    public static String ORDER_SERVER = "www.baidu.com";
+    public static int ORDER_PORT = 80;
     //上传、下载
     public static String DOWNLOAD_SERVER = "http://pubstatic.b0.upaiyun.com/check2.jpg";
     public static String UPLOAD_SERVER = "http://health-test.b0.upaiyun.com/check2.jpg?t=%s";
@@ -24,5 +24,8 @@ public class Server {
     public static String DNS_SERVER = "www.baidu.com";
     //路由器IP
     public static String ROUTER_INTERNET_IP = "114.114.114.114";
-
+    //检测微信支付
+    public static String PAY_WEI_XIN = "pay.weixin.qq.com";
+    //检测检测支付宝
+    public static String PAY_ZHIFUBAO = "alipay.com";
 }

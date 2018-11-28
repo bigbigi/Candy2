@@ -14,20 +14,24 @@ public class Code {
     public static final int INFO_CONNECTED = 0x00000004;//连接成功
 
     public static final int INFO_STATIC_IP = 0x00000011;//静态IP
-    public static final int INFO_EMPTY_IP = 0x00000012;//IP空
+    public static final int INFO_IP_114 = 0x00000012;//ping 114网络中断
     public static final int INFO_SERVER = 0x00000013;//服务器ping不通
     public static final int INFO_SERVER_PORT = 0x00000014;//服务器端口被占用
     public static final int INFO_INTERNET = 0x00000015;//检查外网专线带宽
     public static final int INFO_DNS = 0x00000016;//DNS错误
     public static final int INFO_AUTH = 0x00000017;//自动跳转
-
-    public static final int INFO_FILEWALL= 0x00000018;//视频网站访问被拦截
-
+    public static final int INFO_FILEWALL = 0x00000018;//视频网站访问被拦截
+    public static final int INFO_PAY_WEIXIN = 0x00000019;//检测微信支付
+    public static final int INFO_PAY_ZHIFUBAO = 0x0000001a;//检测支付宝
     public static final int INFO_LOCALNET = 0x0000001b;//内网专线带宽
     public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
     public static final int INFO_GET_AP = 0x0000001d;//获取ap人数
     public static final int INFO_SUPPORT_5G = 0x0000001e;//是否支持5G;
     public static final int INFO_UTILIZATION = 0x0000001f;//检测信道利用率;
+
+    public static final int INFO_PING_ORDER = 0x00000020;//检测下单网站;
+    public static final int INFO_ORDER_PORT = 0x00000021;//检测下单网站端口;
+    public static final int INFO_CUSTOMER_PICK = 0x00000022;//检测店铺自提;
 
 
     public static final int CHECKING = -1;
@@ -50,6 +54,10 @@ public class Code {
             case Code.INFO_STATIC_IP:
                 message = "检查静态IP";
                 break;
+            case Code.INFO_IP_114:
+                message = "检查互联网连接";//"网络中断"
+                break;
+
             case Code.INFO_SERVER:
                 if (loss == CHECKING) {
                     message = "检查服务器延迟";
@@ -74,9 +82,9 @@ public class Code {
                 break;
             case Code.INFO_PING_INTERNET:
                 if (loss == CHECKING) {
-                    message = "ping外网延迟";
+                    message = "检查互联网延迟";
                 } else {
-                    message = "ping外网，丢包：" + loss + "%，延迟:" + delay + "ms";
+                    message = "互联网延迟，丢包：" + loss + "%，延迟:" + delay + "ms";
                 }
                 break;
             case Code.INFO_GET_AP:
@@ -98,6 +106,21 @@ public class Code {
                 break;
             case INFO_FILEWALL:
                 message = "视频网站访问被拦截";
+                break;
+            case INFO_PAY_WEIXIN:
+                message = "检测微信支付";
+                break;
+            case INFO_PAY_ZHIFUBAO:
+                message = "检测支付宝";
+                break;
+            case INFO_PING_ORDER:
+                message = "检测下单网站";
+                break;
+            case INFO_ORDER_PORT:
+                message = "检测下单网站端口";
+                break;
+            case INFO_CUSTOMER_PICK:
+                message = "检测店铺自提";
                 break;
             default:
                 message = null;

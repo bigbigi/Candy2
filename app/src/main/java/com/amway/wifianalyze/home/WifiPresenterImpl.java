@@ -118,11 +118,11 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     }
 
     private void scanWifi() {
-        Log.e(TAG, "------scanWifi------");
+        Log.d(TAG, "scanWifi");
         if (mWm == null || mStatus != Status.PREPARED) {
             return;
         } else {
-            mStatus = Status.WORKING;
+            mStatus = Status.SCAN;
             mView.onStartCheck();
             mView.onChecking(Code.INFO_SCAN_WIFI);
             if (mWm.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
@@ -131,7 +131,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
             } else {
                 mWm.startScan();
                 mHandler.sendEmptyMessageDelayed(MSG_SCAN_TIMEOUT, SCAN_DELAY);
-                Log.e(TAG, "开始扫描");
+                Log.e(TAG, "------开始扫描------");
             }
         }
     }
@@ -157,23 +157,13 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     }
 
 
-    private void onConnected() {
-        Log.d(TAG, "NETWORK-->" + "----Connected--------");
-        WifiInfo info = mWm.getConnectionInfo();
-        ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (info != null && info.getSSID() != null && networkInfo != null
-                && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-            scanWifi();
-        }
-    }
-
     public void checkConnect() {
         mView.onChecking(Code.INFO_CONNECTED);
         HomeBiz.getInstance(mContext).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
                 if (success) {
+                    mStatus = Status.CONNECTED;
                     onInfo(Code.INFO_CONNECTED);
                     mView.onConnected(mWm.getConnectionInfo());
                 } else {
@@ -242,7 +232,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive:" + intent.getAction());
-            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
+            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction()) && mStatus == Status.SCAN) {
                 mWifiInfo = mWm.getConnectionInfo();
                 List<ScanResult> list = mWm.getScanResults();
                 Log.d(TAG, "list:" + list);
@@ -278,7 +268,15 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                             Log.d(TAG, "NETWORK-->" + "CONNECTING");
                             break;
                         case CONNECTED:
-                            onConnected();
+//                            onConnected();
+                            Log.d(TAG, "NETWORK-->" + "----Connected--------");
+                            WifiInfo info = mWm.getConnectionInfo();
+//                            ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+//                            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+                            if (info != null && info.getSSID() != null
+                                    && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                                scanWifi();
+                            }
                             break;
                         case DISCONNECTED:
                             Log.d(TAG, "NETWORK-->" + "DISCONNECTED");

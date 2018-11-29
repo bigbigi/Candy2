@@ -31,7 +31,7 @@ public interface WifiContract extends BaseContract {
     }
 
     abstract class WifiPresenter extends BasePresenterImpl<WifiView> {
-        public enum Status {IDLE, PREPARED, WORKING, PASS, FAILED}
+        public enum Status {IDLE, PREPARED, SCAN, CONNECTED, PASS, FAILED}
 
         public WifiPresenter(WifiView view) {
             super(view);

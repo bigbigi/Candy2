@@ -1,8 +1,6 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,8 +10,6 @@ import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.Server;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
-
-import java.util.ArrayList;
 
 
 /**
@@ -226,18 +222,18 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     }
 
     public void checkAuthServer(Callback callback) {
-        mView.onChecking(Code.INFO_SERVER);
-        mTraceroute.executeTraceroute(Server.AUTH_SERVER, Code.INFO_SERVER, callback);
+        mView.onChecking(Code.INFO_AUTH_SERVER);
+        mTraceroute.executeTraceroute(Server.AUTH_SERVER, Code.INFO_AUTH_SERVER, callback);
     }
 
     public void checkAuthPort(Callback callback) {
         boolean success = false;
-        mView.onChecking(Code.INFO_SERVER_PORT);
+        mView.onChecking(Code.INFO_AUTH_SERVER_PORT);
         if (NetworkUtils.telnet(Server.AUTH_SERVER, Server.AUTH_PORT)) {
-            onInfo(Code.INFO_SERVER_PORT);
+            onInfo(Code.INFO_AUTH_SERVER_PORT);
             success = true;
         } else {
-            mView.onError(Code.INFO_SERVER_PORT, Code.ERR_NONE);
+            mView.onError(Code.INFO_AUTH_SERVER_PORT, Code.ERR_NONE);
         }
         if (callback != null) {
             callback.onCallBack(success);
@@ -283,8 +279,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         }
     }
 
-    public void checkCustomPick(Callback callback) {//todo
-        boolean success = false;
+    public void checkCustomPick(final Callback callback) {
         mView.onChecking(Code.INFO_CUSTOMER_PICK);
         HomeBiz.getInstance(mContext).checkCustomPick(new Callback<String>() {
             @Override
@@ -298,11 +293,11 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 } else {
                     mView.onError(Code.INFO_CUSTOMER_PICK, Code.ERR_QUEST);
                 }
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
             }
         });
-        if (callback != null) {
-            callback.onCallBack(success);
-        }
     }
 
     public void checkLocalnetLoad(final Callback callback) {

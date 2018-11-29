@@ -121,7 +121,7 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                     //设备信息
                     WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     WifiInfo wifiInfo = wm.getConnectionInfo();
-                    if (wifiInfo != null) {//todo ssid must be same
+                    if (wifiInfo != null) {
                         if (!TextUtils.isEmpty(wifiInfo.getSSID())) {
                             json.put("ssid", wifiInfo.getSSID().replaceAll("\"", ""));
                         }

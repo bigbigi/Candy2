@@ -8,33 +8,32 @@ public class Code {
     public static final int FLAG_ERROR = 0x0000ff00;
     public static final int FLAG_INFO = 0x000000ff;
 
-    public static final int INFO_OPEN_WIFI = 0x00000001;//正在打开WIFI
-    public static final int INFO_SCAN_WIFI = 0x00000002;//扫描WIFI...
-    public static final int INFO_CONNECTING = 0x00000003;//正在连接
-    public static final int INFO_CONNECTED = 0x00000004;//连接成功
-    public static final int INFO_WIFI_LEVEL = 0x00000005;//检测WIFI信号强度;
+    public static final int INFO_OPEN_WIFI = 1001;//正在打开WIFI
+    public static final int INFO_SCAN_WIFI = 1002;//扫描WIFI...
+    public static final int INFO_CONNECTING = 1003;//正在连接
+    public static final int INFO_CONNECTED = 1004;//连接成功
 
-    public static final int INFO_STATIC_IP = 0x00000011;//静态IP
-    public static final int INFO_IP_114 = 0x00000012;//ping 114网络中断
-    public static final int INFO_SERVER = 0x00000013;//服务器ping不通
-    public static final int INFO_SERVER_PORT = 0x00000014;//服务器端口被占用
-    public static final int INFO_INTERNET_LOAD = 0x00000015;//检查外网专线带宽
-    public static final int INFO_DNS = 0x00000016;//DNS错误
-    public static final int INFO_AUTH = 0x00000017;//是否已认证
-    public static final int INFO_FILEWALL = 0x00000018;//视频网站访问被拦截
-    public static final int INFO_PAY_WEIXIN = 0x00000019;//检测微信支付
-    public static final int INFO_PAY_ZHIFUBAO = 0x0000001a;//检测支付宝
-    public static final int INFO_LOCALNET_LOAD = 0x0000001b;//内网专线带宽
-    public static final int INFO_PING_INTERNET = 0x0000001c;//ping外网
-    public static final int INFO_GET_AP = 0x0000001d;//获取ap人数
-    public static final int INFO_SUPPORT_5G = 0x0000001e;//是否支持5G;
-    public static final int INFO_UTILIZATION = 0x0000001f;//检测信道利用率;
 
-    public static final int INFO_PING_ORDER = 0x00000020;//检测下单网站;
-    public static final int INFO_ORDER_PORT = 0x00000021;//检测下单网站端口;
-    public static final int INFO_CUSTOMER_PICK = 0x00000022;//检测店铺自提;
-    public static final int INFO_NETWORK_ACCESS = 0x00000023;//5分钟断网;
-
+    public static final int INFO_UTILIZATION = 1005;//检测信道利用率;
+    public static final int INFO_STATIC_IP = 1006;//静态IP
+    public static final int INFO_SUPPORT_5G = 1007;//是否支持5G;
+    public static final int INFO_GET_AP = 1008;//获取ap人数
+    public static final int INFO_AUTH_SERVER = 1009;//认证服务器ping不通
+    public static final int INFO_AUTH_SERVER_PORT = 1010;//认证服务器端口被占用
+    public static final int INFO_IP_114 = 1011;//ping 114网络中断
+    public static final int INFO_DNS = 1012;//DNS错误
+    public static final int INFO_AUTH = 1013;//是否已认证
+    public static final int INFO_FILEWALL = 1014;//视频网站访问被拦截
+    public static final int INFO_LOCALNET_LOAD = 1015;//内网专线带宽
+    public static final int INFO_INTERNET_LOAD = 1016;//检查外网专线带宽
+    public static final int INFO_WIFI_LEVEL = 1017;//检测WIFI信号强度;
+    public static final int INFO_PING_INTERNET = 1018;//ping外网
+    public static final int INFO_PAY_WEIXIN = 1019;//检测微信支付
+    public static final int INFO_PAY_ZHIFUBAO = 1020;//检测支付宝
+    public static final int INFO_PING_ORDER = 1021;//检测下单网站;
+    public static final int INFO_ORDER_PORT = 1022;//检测下单网站端口;
+    public static final int INFO_CUSTOMER_PICK = 1023;//检测店铺自提;
+    public static final int INFO_NETWORK_ACCESS = 1024;//5分钟断网;
 
 
     public static final int CHECKING = -1;
@@ -64,15 +63,15 @@ public class Code {
                 message = "检查互联网连接";//"网络中断"
                 break;
 
-            case Code.INFO_SERVER:
+            case Code.INFO_AUTH_SERVER:
                 if (loss == CHECKING) {
-                    message = "检查服务器延迟";
+                    message = "检查认证服务器延迟";
                 } else {
-                    message = "检查服务器延迟，丢包：" + loss + "%，延迟:" + delay + "毫秒";
+                    message = "认证服务器延迟，丢包：" + loss + "%，延迟:" + delay + "毫秒";
                 }
                 break;
-            case Code.INFO_SERVER_PORT:
-                message = "检查服务器端口被占用";
+            case Code.INFO_AUTH_SERVER_PORT:
+                message = "检查认证服务器端口";
                 break;
             case Code.INFO_INTERNET_LOAD:
                 message = "检查外网专线带宽";

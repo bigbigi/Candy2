@@ -1,6 +1,7 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -62,7 +63,7 @@ public class HomeBiz {
     public String mShopName;
     public String mApName;
     public String mUserCount;
-    public String mIp;
+    public String mRouterIp;
     public int mFrequence;
     public float mDownloadSpeed;
     public float mUploadSpeed;
@@ -170,7 +171,7 @@ public class HomeBiz {
                             mApName = data.optString("apName");
                             mShopName = data.optString("shopName");
                             mUserCount = data.optString("users");
-                            mIp = data.optString("sangfor_outer");
+                            mRouterIp = data.optString("sangfor_outer");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -317,6 +318,50 @@ public class HomeBiz {
             }
         });
 
+    }
+
+    public void checkIsp(final Callback<Boolean> callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean success = false;
+                boolean pass = false;
+                String result = HttpHelper.getInstance().getChome(String.format(Server.ISP, Uri.encode(mRouterIp)));
+//                String result = HttpHelper.getInstance().getChome(Server.MY_IP);
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        JSONObject json = new JSONObject(result);
+                        if (0 == json.getInt("code")) {
+                            JSONObject data = json.getJSONObject("data");
+                            String myIp = data.optString("ip");
+                            String myIsp = data.optString("isp");
+                            if (myIp.equals(mRouterIp)) {
+                                success = true;
+                                pass = true;
+                            } else {
+                                String ret = HttpHelper.getInstance().getChome(Server.MY_IP);
+//                                String ret = HttpHelper.getInstance().getChome(String.format(Server.ISP, Uri.encode(mRouterIp)));
+                                if (!TextUtils.isEmpty(ret)) {
+                                    JSONObject object = new JSONObject(ret);
+                                    if (0 == object.getInt("code")) {
+                                        success = true;
+                                        JSONObject routerData = object.getJSONObject("data");
+                                        if (routerData.optString("isp").equals(myIsp)) {
+                                            pass = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (callback != null) {
+                    callback.onCallBack(success, pass);
+                }
+            }
+        });
     }
 
     public void checkCustomPick(final Callback<String> callback) {

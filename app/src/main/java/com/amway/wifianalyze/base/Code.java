@@ -13,7 +13,6 @@ public class Code {
     public static final int INFO_CONNECTING = 1003;//正在连接
     public static final int INFO_CONNECTED = 1004;//连接成功
 
-
     public static final int INFO_UTILIZATION = 1005;//检测信道利用率;
     public static final int INFO_STATIC_IP = 1006;//静态IP
     public static final int INFO_SUPPORT_5G = 1007;//是否支持5G;
@@ -34,6 +33,7 @@ public class Code {
     public static final int INFO_ORDER_PORT = 1022;//检测下单网站端口;
     public static final int INFO_CUSTOMER_PICK = 1023;//检测店铺自提;
     public static final int INFO_NETWORK_ACCESS = 1024;//5分钟断网;
+    public static final int INFO_ISP = 1025;//检测运营商;
 
 
     public static final int CHECKING = -1;
@@ -138,7 +138,13 @@ public class Code {
             case INFO_NETWORK_ACCESS:
                 message = "未关注公众号，5分钟后断网";
                 break;
-
+            case INFO_ISP:
+                if (loss == CHECKING) {
+                    message = "检测运营商";
+                } else {
+                    message = "检测运营商，耗时：" + delay + "毫秒";
+                }
+                break;
             default:
                 message = null;
                 break;

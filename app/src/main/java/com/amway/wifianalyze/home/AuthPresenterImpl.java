@@ -36,7 +36,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         }
         HomeBiz.getInstance(mContext).mErrors.clear();
         //信道利用率-静态ip-5g-获取ap人数--ping认证服务器-认证服务器端口-ping114-dns-认证-防火墙- 内网满载-外网满载
-        //信号弱-ping Interner丢包-ping支付网站--下单网站 -下单网站端口--店铺自提
+        //信号弱-ping Interner丢包-运营商检测-ping支付网站--下单网站 -下单网站端口--店铺自提
         HomeBiz.getInstance(mContext).getSysconfig(new Callback() {
             @Override
             public void onCallBack(boolean success, Object[] t) {
@@ -82,28 +82,33 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                                                                         pingInternet(new Callback() {
                                                                                                                             @Override
                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                pingPayWX(new Callback() {
+                                                                                                                                checkIsp(new Callback() {
                                                                                                                                     @Override
                                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                        pingPayZhifubao(new Callback() {
+                                                                                                                                        pingPayWX(new Callback() {
                                                                                                                                             @Override
                                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                pingOrder(new Callback() {
+                                                                                                                                                pingPayZhifubao(new Callback() {
                                                                                                                                                     @Override
                                                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                        checkOrderPort(new Callback() {
+                                                                                                                                                        pingOrder(new Callback() {
                                                                                                                                                             @Override
                                                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                checkCustomPick(new Callback() {
+                                                                                                                                                                checkOrderPort(new Callback() {
                                                                                                                                                                     @Override
                                                                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                        checkNetworAccess(new Callback() {
+                                                                                                                                                                        checkCustomPick(new Callback() {
                                                                                                                                                                             @Override
                                                                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                                mView.onStopCheck();
+                                                                                                                                                                                checkNetworAccess(new Callback() {
+                                                                                                                                                                                    @Override
+                                                                                                                                                                                    public void onCallBack(boolean success, Object[] t) {
+                                                                                                                                                                                        mView.onStopCheck();
+                                                                                                                                                                                    }
+                                                                                                                                                                                });
+
                                                                                                                                                                             }
                                                                                                                                                                         });
-
                                                                                                                                                                     }
                                                                                                                                                                 });
                                                                                                                                                             }
@@ -114,6 +119,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                                                                                         });
                                                                                                                                     }
                                                                                                                                 });
+
                                                                                                                             }
                                                                                                                         });
                                                                                                                     }
@@ -279,13 +285,35 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         }
     }
 
+    public void checkIsp(final Callback callback) {
+        mView.onChecking(Code.INFO_ISP);
+        final long startTime = System.currentTimeMillis();
+        HomeBiz.getInstance(mContext).checkIsp(new Callback<Boolean>() {
+            @Override
+            public void onCallBack(boolean success, Boolean... t) {
+                if (success) {
+                    if (t[0]) {
+                        mView.onInfo(Code.INFO_ISP, 0, (int) (System.currentTimeMillis() - startTime));
+                    } else {
+                        mView.onError(Code.INFO_ISP, Code.ERR_NONE);
+                    }
+                } else {
+                    mView.onError(Code.INFO_ISP, Code.ERR_QUEST);
+                }
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
+            }
+        });
+    }
+
     public void checkCustomPick(final Callback callback) {
         mView.onChecking(Code.INFO_CUSTOMER_PICK);
         HomeBiz.getInstance(mContext).checkCustomPick(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
                 if (success) {
-                    if (t[0].equals(HomeBiz.getInstance(mContext).mIp)) {
+                    if (t[0].equals(HomeBiz.getInstance(mContext).mRouterIp)) {
                         onInfo(Code.INFO_CUSTOMER_PICK);
                     } else {
                         mView.onError(Code.INFO_CUSTOMER_PICK, Code.ERR_NONE);

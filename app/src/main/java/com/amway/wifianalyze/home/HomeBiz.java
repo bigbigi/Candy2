@@ -64,7 +64,7 @@ public class HomeBiz {
     public String mApName;
     public String mUserCount;
     public String mRouterIp;
-    public int mFrequence;
+    public String mTaobaoIp;
     public float mDownloadSpeed;
     public float mUploadSpeed;
     public boolean mHas5G;
@@ -320,67 +320,35 @@ public class HomeBiz {
 
     }
 
-    public void checkIsp(final Callback<Boolean> callback) {
-        ThreadManager.execute(new Runnable() {
-            @Override
-            public void run() {
-                boolean success = false;
-                boolean pass = false;
-                String result = HttpHelper.getInstance().getChome(String.format(Server.ISP, Uri.encode(mRouterIp)));
-//                String result = HttpHelper.getInstance().getChome(Server.MY_IP);
-                if (!TextUtils.isEmpty(result)) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        if (0 == json.getInt("code")) {
-                            JSONObject data = json.getJSONObject("data");
-                            String myIp = data.optString("ip");
-                            String myIsp = data.optString("isp");
-                            if (myIp.equals(mRouterIp)) {
-                                success = true;
-                                pass = true;
-                            } else {
-                                String ret = HttpHelper.getInstance().getChome(Server.MY_IP);
-//                                String ret = HttpHelper.getInstance().getChome(String.format(Server.ISP, Uri.encode(mRouterIp)));
-                                if (!TextUtils.isEmpty(ret)) {
-                                    JSONObject object = new JSONObject(ret);
-                                    if (0 == object.getInt("code")) {
-                                        success = true;
-                                        JSONObject routerData = object.getJSONObject("data");
-                                        if (routerData.optString("isp").equals(myIsp)) {
-                                            pass = true;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (callback != null) {
-                    callback.onCallBack(success, pass);
-                }
-            }
-        });
-    }
-
     public void checkCustomPick(final Callback<String> callback) {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                String ip = "";
-                String result = HttpHelper.getInstance().getChome(Server.MY_IP);
-                if (!TextUtils.isEmpty(result)) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        JSONObject data = json.getJSONObject("data");
-                        ip = data.getString("ip");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                int count = 0;
+                int cost =0;
+                while (TextUtils.isEmpty(mTaobaoIp) && count++ < 3) {
+                    long startTime = System.currentTimeMillis();
+                    String result = HttpHelper.getInstance().getChome(Server.MY_IP);
+                    if (!TextUtils.isEmpty(result)) {
+                        try {
+                            JSONObject json = new JSONObject(result);
+                            JSONObject data = json.getJSONObject("data");
+                            mTaobaoIp = data.getString("ip");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    cost = (int)(System.currentTimeMillis() - startTime);
                 }
+
                 if (callback != null) {
-                    callback.onCallBack(!TextUtils.isEmpty(ip), ip);
+                    callback.onCallBack(!TextUtils.isEmpty(mTaobaoIp), mTaobaoIp, String.valueOf(cost));
                 }
             }
         });
@@ -432,4 +400,8 @@ public class HomeBiz {
         return info;
     }
 
+    public void reset() {
+        mErrors.clear();
+        mTaobaoIp = "";
+    }
 }

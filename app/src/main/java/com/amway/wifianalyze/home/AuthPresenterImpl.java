@@ -34,7 +34,8 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
-        HomeBiz.getInstance(mContext).mErrors.clear();
+        HomeBiz.getInstance(mContext).reset();
+
         //信道利用率-静态ip-5g-获取ap人数--ping认证服务器-认证服务器端口-ping114-dns-认证-防火墙- 内网满载-外网满载
         //信号弱-ping Interner丢包-运营商检测-ping支付网站--下单网站 -下单网站端口--店铺自提
         HomeBiz.getInstance(mContext).getSysconfig(new Callback() {
@@ -287,13 +288,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
 
     public void checkIsp(final Callback callback) {
         mView.onChecking(Code.INFO_ISP);
-        final long startTime = System.currentTimeMillis();
-        HomeBiz.getInstance(mContext).checkIsp(new Callback<Boolean>() {
+        HomeBiz.getInstance(mContext).checkCustomPick(new Callback<String>() {
             @Override
-            public void onCallBack(boolean success, Boolean... t) {
+            public void onCallBack(boolean success, String... t) {
                 if (success) {
-                    if (t[0]) {
-                        mView.onInfo(Code.INFO_ISP, 0, (int) (System.currentTimeMillis() - startTime));
+                    if (t[0].equals(HomeBiz.getInstance(mContext).mRouterIp)) {
+                        onInfo(Code.INFO_ISP);
+                        mView.onInfo(Code.INFO_ISP, 0, Utils.parseInt(t[1]));
                     } else {
                         mView.onError(Code.INFO_ISP, Code.ERR_NONE);
                     }
@@ -305,6 +306,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 }
             }
         });
+
     }
 
     public void checkCustomPick(final Callback callback) {

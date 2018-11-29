@@ -19,16 +19,19 @@ public interface WifiContract extends BaseContract {
 
         void onConnected(WifiInfo wifiInfo);
 
-//        void onGetAp(String apName);
+        void onStartCheck();
 
         void onChecking(int code);
 
         void onInfo(int code, int loss, int delay);
 
         void onError(int code, int reason);
+
+        void onStopCheck();
     }
 
     abstract class WifiPresenter extends BasePresenterImpl<WifiView> {
+        public enum Status {IDLE, PREPARED, WORKING, PASS, FAILED}
 
         public WifiPresenter(WifiView view) {
             super(view);
@@ -38,9 +41,11 @@ public interface WifiContract extends BaseContract {
 
         public abstract void release(Context context);
 
-        public abstract void scanWifi();
+        public abstract void start();
 
-        public abstract boolean isConnected();
+        public abstract void stop(Status status);
+
+        public abstract Status getStatus();
 
     }
 }

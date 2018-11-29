@@ -28,6 +28,4 @@ public class Server {
     public static String PAY_ZHIFUBAO = "alipay.com";
     //获取公网IP
     public static String MY_IP = "http://ip.taobao.com/service/getIpInfo.php?ip=myip";
-    //ISP
-    public static String ISP = "http://ip.taobao.com/service/getIpInfo.php?ip=%s";
 }

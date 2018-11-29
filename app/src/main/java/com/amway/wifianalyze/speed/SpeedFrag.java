@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.home.WifiContract;
-import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
@@ -95,11 +93,12 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     }
 
     private void start() {
-        if (mWifiPresenter.isConnected()) {
-            WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifiManager.getConnectionInfo();
+        if (info != null && info.getSSID() != null) {
             onConnected(wifiManager.getConnectionInfo());
         } else {
-            mWifiPresenter.scanWifi();
+            mWifiPresenter.start();
         }
     }
 
@@ -117,22 +116,33 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
 
 
     @Override
-    public void onConnected(WifiInfo wifiInfo) {
-        if (wifiInfo.getSSID() != null) {
-            mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
-        }
-        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        List<SpeedResult> list = new ArrayList();
-        list.add(new SpeedResult(getString(R.string.speed_IP), NetworkUtils.intToIp(wifiInfo.getIpAddress())));
-        list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getMac(getContext())));
-        list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
-        mAdapter.setData(list);
-        if (!isHidden()) {
-            mSpeedPresenter.getSpeed();
-        }
+    public void onConnected(final WifiInfo wifiInfo) {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (wifiInfo.getSSID() != null) {
+                    mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
+                }
+                WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                List<SpeedResult> list = new ArrayList();
+                list.add(new SpeedResult(getString(R.string.speed_IP), NetworkUtils.intToIp(wifiInfo.getIpAddress())));
+                list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getMac(getContext())));
+                list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
+                mAdapter.setData(list);
+                if (!isHidden()) {
+                    mSpeedPresenter.getSpeed();
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void onStartCheck() {
+
     }
 
 
@@ -149,6 +159,11 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
 
     @Override
     public void onError(int code, int reason) {
+
+    }
+
+    @Override
+    public void onStopCheck() {
 
     }
 

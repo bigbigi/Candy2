@@ -11,7 +11,7 @@ public class Code {
     public static final int INFO_OPEN_WIFI = 1001;//正在打开WIFI
     public static final int INFO_SCAN_WIFI = 1002;//扫描WIFI...
     public static final int INFO_CONNECTING = 1003;//正在连接
-    public static final int INFO_CONNECTED = 1004;//连接成功
+    public static final int INFO_CONNECTED = 1004;//检查连接
 
     public static final int INFO_UTILIZATION = 1005;//检测信道利用率;
     public static final int INFO_STATIC_IP = 1006;//静态IP
@@ -51,7 +51,11 @@ public class Code {
                 message = "正在连接WIFI...";
                 break;
             case Code.INFO_CONNECTED:
-                message = "连接成功";
+                if (loss == CHECKING) {
+                    message = "检查连接";
+                } else {
+                    message = "连接成功";
+                }
                 break;
             case Code.INFO_WIFI_LEVEL:
                 message = "检测WIFI信号强度";
@@ -155,7 +159,7 @@ public class Code {
     //错误
     public static final int ERR_NONE = -1;//无
     public static final int ERR_QUEST = 0x0000ff00;//请求失败
-    public static final int ERR_NO_WIFI = 0x0000ff01;//未找到目标WIFI
+    public static final int ERR_NO_WIFI = 0x0000ff01;//未连接到店铺WIFI
     public static final int ERROR_PWD = 0x0000ff02;//密码错误
     public static final int ERROR_BUSY_CHANNEL = 0x0000ff03;//信道拥堵
     public static final int ERROR_LOW_LEVEL = 0x0000ff04;//信号差
@@ -169,6 +173,8 @@ public class Code {
     public static final int ERR_CARD = 0x0000000a;//卡号无法认证
     public static final int ERR_SMS = 0x0000000b;//短信无法认证
     public static final int ERR_AP_USER = 0x0000000c;//WIFI连接人数过多
+    public static final int ERR_WIFI_OPEN = 0x0000000d;//未打开WIFI
+    public static final int ERR_WIFI_CONNECT = 0x0000000f;//请确认连接的是店铺WIFI
 
     public static String getErrorMessage(int code, int reason) {
         if (reason < 0) {
@@ -180,7 +186,7 @@ public class Code {
                 message = getMessage(code, CHECKING, -1) + "（请求失败）";
                 break;
             case ERR_NO_WIFI:
-                message = "未找到目标WIFI";
+                message = "未连接到店铺WIFI";
                 break;
             case ERROR_PWD:
                 message = "WIFI密码错误";
@@ -215,6 +221,13 @@ public class Code {
             case ERR_AP_USER:
                 message = "WIFI连接人数过多";
                 break;
+            case ERR_WIFI_OPEN:
+                message = "未打开WIFI";
+                break;
+            case ERR_WIFI_CONNECT:
+                message = "请确认连接的是店铺WIFI";
+                break;
+
         }
         return message;
     }

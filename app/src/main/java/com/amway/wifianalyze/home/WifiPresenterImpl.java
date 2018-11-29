@@ -5,11 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -20,8 +20,6 @@ import android.util.Log;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
-import com.amway.wifianalyze.lib.util.ThreadManager;
-import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.WifiConnector;
 
 import java.util.HashMap;
@@ -36,13 +34,12 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private static final String TAG = "WifiPresenterImpl";
 
     private final static int MAX_SCAN_TIMES = 3;
+    private final static int SCAN_DELAY = 10000;
     private final static int CONNECT_TIMEOUT = 30000;
     private final static int BUSY_CHANNEL = 3;
     private final static int LOW_LEVEL = -80;
     private static String DEFAULT_SSID = "91vst-wifi";
     private static String DEFAULT_PWD = "91vst.com";
-    //    private static String DEFAULT_SSID = "big";
-//    private static String DEFAULT_PWD = "";
     private HashMap<Integer, Integer> mChannelBusyMap = new HashMap<Integer, Integer>();
     private MyWifiBrocastReceiver mWifiReceiver;
     private WifiManager mWm;
@@ -50,9 +47,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private Context mContext;
 
     private int mReScanTimes = 0;
-    private boolean mRefreshScanList = true;
-    private boolean mCheckConnected = false;
-    private boolean mWifiOff;
+    private Status mStatus = Status.IDLE;
 
 
     public WifiPresenterImpl(WifiContract.WifiView view) {
@@ -80,6 +75,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     }
 
     private static final int MSG_CONNECT_TIMEOUT = 1;
+    private static final int MSG_SCAN_TIMEOUT = 2;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
@@ -88,24 +84,55 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                 case MSG_CONNECT_TIMEOUT:
                     findFailReason();
                     break;
+                case MSG_SCAN_TIMEOUT:
+                    if (++mReScanTimes < MAX_SCAN_TIMES) {
+                        Log.e(TAG, "重复扫描:" + mReScanTimes);
+                        mWm.startScan();
+                        sendEmptyMessageDelayed(MSG_SCAN_TIMEOUT, SCAN_DELAY);
+                    } else {
+                        mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
+                        mView.onStopCheck();
+                    }
+                    break;
             }
         }
     };
 
 
     @Override
-    public void scanWifi() {
-        if (mWm == null) {
+    public void start() {
+        mHandler.removeCallbacksAndMessages(null);
+        mReScanTimes = 0;
+        mStatus = Status.PREPARED;
+        scanWifi();
+    }
+
+    @Override
+    public void stop(Status status) {
+        mStatus = status;
+    }
+
+    @Override
+    public Status getStatus() {
+        return mStatus;
+    }
+
+    private void scanWifi() {
+        Log.e(TAG, "------scanWifi------");
+        if (mWm == null || mStatus != Status.PREPARED) {
             return;
-        } else if (mWm.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
-            mWifiOff = true;
-            mView.onChecking(Code.INFO_OPEN_WIFI);
-            mWm.setWifiEnabled(true);
         } else {
+            mStatus = Status.WORKING;
+            mView.onStartCheck();
             mView.onChecking(Code.INFO_SCAN_WIFI);
-            mWm.startScan();
-            mRefreshScanList = true;
-            Log.e(TAG, "开始扫描");
+            if (mWm.getWifiState() != WifiManager.WIFI_STATE_ENABLED) {
+                mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_WIFI_OPEN);
+                mView.onStopCheck();
+            } else {
+                mWm.startScan();
+                mHandler.sendEmptyMessageDelayed(MSG_SCAN_TIMEOUT, SCAN_DELAY);
+                Log.e(TAG, "开始扫描");
+            }
         }
     }
 
@@ -133,23 +160,30 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
     private void onConnected() {
         Log.d(TAG, "NETWORK-->" + "----Connected--------");
         WifiInfo info = mWm.getConnectionInfo();
-        if (!mCheckConnected && !mRefreshScanList && info != null && info.getSSID() != null
-                && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""))) {
-            onInfo(Code.INFO_CONNECTING);
-            mView.onChecking(Code.INFO_CONNECTED);
-            onInfo(Code.INFO_CONNECTED);
-            mCheckConnected = true;
-            mHandler.removeMessages(MSG_CONNECT_TIMEOUT);
-            mView.onConnected(mWm.getConnectionInfo());
+        ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (info != null && info.getSSID() != null && networkInfo != null
+                && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            scanWifi();
         }
     }
 
-    public boolean isConnected() {
-        if (mWm == null) return false;
-        WifiInfo info = mWm.getConnectionInfo();
-        return info != null && info.getSSID() != null
-                && DEFAULT_SSID.equals(info.getSSID().replaceAll("\"", ""));
+    public void checkConnect() {
+        mView.onChecking(Code.INFO_CONNECTED);
+        HomeBiz.getInstance(mContext).getShopName(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, String... t) {
+                if (success) {
+                    onInfo(Code.INFO_CONNECTED);
+                    mView.onConnected(mWm.getConnectionInfo());
+                } else {
+                    mView.onError(Code.INFO_CONNECTED, Code.ERR_WIFI_CONNECT);
+                    mView.onStopCheck();
+                }
+            }
+        });
     }
+
 
     private void findFailReason() {
         if (mFailScanResult != null) {
@@ -208,54 +242,32 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d(TAG, "onReceive:" + intent.getAction());
-            Log.d(TAG, "mRefreshScanList:" + mRefreshScanList);
-            if (mRefreshScanList && WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
-                mCheckConnected = false;
+            if (WifiManager.SCAN_RESULTS_AVAILABLE_ACTION.equals(intent.getAction())) {
                 mWifiInfo = mWm.getConnectionInfo();
                 List<ScanResult> list = mWm.getScanResults();
                 Log.d(TAG, "list:" + list);
                 Log.d(TAG, "WIFI:" + mWifiInfo);
                 boolean has5G = false;
                 if (list != null && !list.isEmpty()) {
-                    mRefreshScanList = false;
-                    mReScanTimes = 0;
+                    mHandler.removeMessages(MSG_SCAN_TIMEOUT);
                     rangeList(list);
-                    Iterator<ScanResult> iterator = list.iterator();
-                    ScanResult dstResult = null;
-                    while (iterator.hasNext()) {
-                        ScanResult temp = iterator.next();
-                        has5G = has5G || NetworkUtils.is5GHz(temp.frequency);
-                        if (DEFAULT_SSID.equals(temp.SSID.replaceAll("\"", ""))) {
-                            dstResult = temp;
-                            HomeBiz.getInstance(context).mScanResult = dstResult;
-                        }
-                    }
-                    HomeBiz.getInstance(context).mHas5G = has5G;
-                    Log.d(TAG, "has5G:" + has5G);
-                    if (mWifiInfo == null || mWifiInfo.getSSID() == null
-                            || !DEFAULT_SSID.equals(mWifiInfo.getSSID().replaceAll("\"", ""))) {
-                        if (dstResult == null) {
-                            mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
-                        } else {
-                            onInfo(Code.INFO_SCAN_WIFI);
-                            connect(dstResult);
-                        }
+                    if (mWifiInfo == null || mWifiInfo.getSSID() == null) {
+                        mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                     } else {
+                        Iterator<ScanResult> iterator = list.iterator();
+                        while (iterator.hasNext()) {
+                            ScanResult temp = iterator.next();
+                            has5G = has5G || NetworkUtils.is5GHz(temp.frequency);
+                            if ((temp.SSID.replaceAll("\"", "")).equals
+                                    (mWifiInfo.getSSID().replaceAll("\"", ""))) {
+                                HomeBiz.getInstance(context).mScanResult = temp;
+                            }
+                        }
+                        HomeBiz.getInstance(context).mHas5G = has5G;
+                        Log.d(TAG, "has5G:" + has5G);
                         onInfo(Code.INFO_SCAN_WIFI);
-                        onConnected();
+                        checkConnect();
                     }
-
-                } else if (mReScanTimes < MAX_SCAN_TIMES) {
-                    mReScanTimes++;
-                    scanWifi();
-                } else {
-                    mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
-                }
-            } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {//todo
-                if (mWm.getWifiState() == WifiManager.WIFI_STATE_ENABLED && mWifiOff) {
-                    mWifiOff = false;
-                    onInfo(Code.INFO_OPEN_WIFI);
-                    scanWifi();
                 }
             } else if (WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(intent.getAction())) {
                 Parcelable parcelableExtra = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);

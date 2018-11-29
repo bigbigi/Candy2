@@ -30,7 +30,6 @@ import com.hjq.permissions.XXPermissions;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -86,8 +85,7 @@ public class HomeFrag extends BaseFragment implements
                     public void hasPermission(List<String> list, boolean b) {
                         super.hasPermission(list, b);
                         mWifiPresenter.init(getContext());
-                        mWifiPresenter.scanWifi();
-                        startAni();
+                        mWifiPresenter.start();
                         //todo test
                       /*  mDialog = new TestDialog(getContext());
                         mDialog.setOnStartListener(new TestDialog.OnStartListener() {
@@ -106,10 +104,8 @@ public class HomeFrag extends BaseFragment implements
     @Override
     public void onHiddenChanged(boolean hidden) {
         Log.e(TAG, "onHiddenChanged:" + hidden);
-        if (!hidden && mWifiPresenter != null && !mWifiPresenter.isConnected()) {
-            mAdapter.getData().clear();
-            mAdapter.notifyDataSetChanged();
-            mWifiPresenter.scanWifi();
+        if (!hidden && mWifiPresenter != null && mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.FAILED) {
+            mWifiPresenter.start();
         }
     }
 
@@ -156,15 +152,28 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
-    public void onConnected(WifiInfo wifiInfo) {
-        if (wifiInfo.getSSID() != null) {
-            mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
-            mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
-        }
-        mAuthPresenter.startCheck(getContext());
+    public void onConnected(final WifiInfo wifiInfo) {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (wifiInfo.getSSID() != null) {
+                    mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
+                    mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
+                }
+                mAuthPresenter.startCheck(getContext());
+            }
+        });
+
+    }
+
+    @Override
+    public void onStartCheck() {
+        startAni();
+        mAdapter.getData().clear();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -185,6 +194,11 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    for (DetectResult result : mAdapter.getData()) {
+                        if (result.getCode() == code) {
+                            return;
+                        }
+                    }
                     mAdapter.getData().add(0, new DetectResult(Status.LOADING, code, message));
                     mAdapter.insert();
                 }
@@ -196,6 +210,11 @@ public class HomeFrag extends BaseFragment implements
     public void onStopCheck() {
         stopAni();
         HomeBiz.getInstance(getContext()).submitDetectResult(null);
+        if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {
+            mWifiPresenter.stop(WifiContract.WifiPresenter.Status.FAILED);
+        } else {
+            mWifiPresenter.stop(WifiContract.WifiPresenter.Status.PASS);
+        }
     }
 
 

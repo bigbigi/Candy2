@@ -54,7 +54,7 @@ public class TestDialog extends Dialog {
     private void start() {
         mWifiPresenterImpl.init(getContext());
         mWifiPresenterImpl.setTestData(String.valueOf(mName.getText()), String.valueOf(mPwd.getText()));
-        mWifiPresenterImpl.scanWifi();
+        mWifiPresenterImpl.start();
     }
 
     private WifiPresenterImpl mWifiPresenterImpl;

@@ -160,6 +160,11 @@ public class HomeBiz {
             ThreadManager.execute(new Runnable() {
                 @Override
                 public void run() {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     boolean success = false;
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST,
                            /*NetworkUtils.getMac(mContext)*/"54:33:cb:66:b4:1f"));//todo
@@ -325,7 +330,7 @@ public class HomeBiz {
             @Override
             public void run() {
                 int count = 0;
-                int cost =0;
+                int cost = 0;
                 while (TextUtils.isEmpty(mTaobaoIp) && count++ < 3) {
                     long startTime = System.currentTimeMillis();
                     String result = HttpHelper.getInstance().getChome(Server.MY_IP);
@@ -344,7 +349,7 @@ public class HomeBiz {
                             e.printStackTrace();
                         }
                     }
-                    cost = (int)(System.currentTimeMillis() - startTime);
+                    cost = (int) (System.currentTimeMillis() - startTime);
                 }
 
                 if (callback != null) {

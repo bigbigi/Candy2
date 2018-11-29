@@ -12,6 +12,7 @@ public class Code {
     public static final int INFO_SCAN_WIFI = 0x00000002;//扫描WIFI...
     public static final int INFO_CONNECTING = 0x00000003;//正在连接
     public static final int INFO_CONNECTED = 0x00000004;//连接成功
+    public static final int INFO_WIFI_LEVEL = 0x00000005;//检测WIFI信号强度;
 
     public static final int INFO_STATIC_IP = 0x00000011;//静态IP
     public static final int INFO_IP_114 = 0x00000012;//ping 114网络中断
@@ -35,6 +36,7 @@ public class Code {
     public static final int INFO_NETWORK_ACCESS = 0x00000023;//5分钟断网;
 
 
+
     public static final int CHECKING = -1;
 
     public static String getMessage(int code, int loss, int delay) {
@@ -52,6 +54,9 @@ public class Code {
             case Code.INFO_CONNECTED:
                 message = "连接成功";
                 break;
+            case Code.INFO_WIFI_LEVEL:
+                message = "检测WIFI信号强度";
+                break;
             case Code.INFO_STATIC_IP:
                 message = "检查静态IP";
                 break;
@@ -63,7 +68,7 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检查服务器延迟";
                 } else {
-                    message = "检查服务器延迟，丢包：" + loss + "%，延迟:" + delay + "ms";
+                    message = "检查服务器延迟，丢包：" + loss + "%，延迟:" + delay + "毫秒";
                 }
                 break;
             case Code.INFO_SERVER_PORT:
@@ -85,7 +90,7 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检查互联网延迟";
                 } else {
-                    message = "互联网延迟，丢包：" + loss + "%，延迟:" + delay + "ms";
+                    message = "互联网延迟，丢包：" + loss + "%，延迟:" + delay + "毫秒";
                 }
                 break;
             case Code.INFO_GET_AP:
@@ -112,14 +117,14 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检测微信支付";
                 } else {
-                    message = "检测微信支付，丢包：" + loss + "%，延迟:" + delay + "ms";
+                    message = "检测微信支付，丢包：" + loss + "%，延迟:" + delay + "毫秒";
                 }
                 break;
             case INFO_PAY_ZHIFUBAO:
                 if (loss == CHECKING) {
                     message = "检测支付宝";
                 } else {
-                    message = "检测支付宝，丢包：" + loss + "%，延迟:" + delay + "ms";
+                    message = "检测支付宝，丢包：" + loss + "%，延迟:" + delay + "毫秒";
                 }
                 break;
             case INFO_PING_ORDER:

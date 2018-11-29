@@ -76,19 +76,18 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
     private final String URL = "%s/checkwifi-api/addNetFeedback.dat";
 
     @Override
-    public void submit(final Context context, final List<String> list, final String content, Callback callback) {
-       /* HomeBiz.getInstance(context).getShopName(new Callback<String>() {
+    public void submit(final Context context, final List<String> list, final String content, final Callback callback) {
+        HomeBiz.getInstance(context).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
                 final String shopName = t[1];
                 WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wm.getConnectionInfo();
                 if (!TextUtils.isEmpty(shopName) && wifiInfo != null) {
-                    post(shopName, content, list, context);
+                    post(shopName, content, list, context, callback);
                 }
             }
-        });*/
-        post("test", content, list, context, callback);
+        });
     }
 
     private void post(final String shopName, final String content, final List<String> list, final Context context, final Callback callback) {

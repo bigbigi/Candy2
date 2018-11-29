@@ -1,6 +1,8 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -11,6 +13,9 @@ import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.Server;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
 
+import java.util.ArrayList;
+
+
 /**
  * Created by big on 2018/10/22.
  */
@@ -18,6 +23,7 @@ import com.amway.wifianalyze.utils.TracerouteWithPing;
 public class AuthPresenterImpl extends AuthContract.AuthPresenter implements TracerouteWithPing.OnTraceRouteListener {
     private static final String TAG = "AuthPresenterImpl";
 
+    private final static int LOW_LEVEL = -80;
     private TracerouteWithPing mTraceroute;
     private Context mContext;
 
@@ -32,8 +38,9 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
+        HomeBiz.getInstance(mContext).mErrors.clear();
         //信道利用率-静态ip-5g-获取ap人数--ping认证服务器-认证服务器端口-ping114-dns-认证-防火墙- 内网满载-外网满载
-        //-ping Interner丢包-ping支付网站--下单网站 -下单网站端口--店铺自提
+        //信号弱-ping Interner丢包-ping支付网站--下单网站 -下单网站端口--店铺自提
         HomeBiz.getInstance(mContext).getSysconfig(new Callback() {
             @Override
             public void onCallBack(boolean success, Object[] t) {
@@ -73,31 +80,36 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                                                         checkInternetLoad(new Callback() {
                                                                                                             @Override
                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                pingInternet(new Callback() {
+                                                                                                                checkWifiLevel(new Callback() {
                                                                                                                     @Override
                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                        pingPayWX(new Callback() {
+                                                                                                                        pingInternet(new Callback() {
                                                                                                                             @Override
                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                pingPayZhifubao(new Callback() {
+                                                                                                                                pingPayWX(new Callback() {
                                                                                                                                     @Override
                                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                        pingOrder(new Callback() {
+                                                                                                                                        pingPayZhifubao(new Callback() {
                                                                                                                                             @Override
                                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                checkOrderPort(new Callback() {
+                                                                                                                                                pingOrder(new Callback() {
                                                                                                                                                     @Override
                                                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                        checkCustomPick(new Callback() {
+                                                                                                                                                        checkOrderPort(new Callback() {
                                                                                                                                                             @Override
                                                                                                                                                             public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                checkNetworAccess(new Callback() {
+                                                                                                                                                                checkCustomPick(new Callback() {
                                                                                                                                                                     @Override
                                                                                                                                                                     public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                        mView.onStopCheck();
+                                                                                                                                                                        checkNetworAccess(new Callback() {
+                                                                                                                                                                            @Override
+                                                                                                                                                                            public void onCallBack(boolean success, Object[] t) {
+                                                                                                                                                                                mView.onStopCheck();
+                                                                                                                                                                            }
+                                                                                                                                                                        });
+
                                                                                                                                                                     }
                                                                                                                                                                 });
-
                                                                                                                                                             }
                                                                                                                                                         });
                                                                                                                                                     }
@@ -110,7 +122,6 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                                                                                                                         });
                                                                                                                     }
                                                                                                                 });
-
                                                                                                             }
                                                                                                         });
                                                                                                     }
@@ -398,6 +409,19 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                 }
             }
         });
+    }
+
+    public void checkWifiLevel(Callback callback) {
+        mView.onChecking(Code.INFO_WIFI_LEVEL);
+        if (HomeBiz.getInstance(mContext).mScanResult != null
+                && HomeBiz.getInstance(mContext).mScanResult.level < LOW_LEVEL) {
+            mView.onError(Code.INFO_WIFI_LEVEL, Code.ERR_NONE);
+        } else {
+            onInfo(Code.INFO_WIFI_LEVEL);
+        }
+        if (callback != null) {
+            callback.onCallBack(true);
+        }
     }
 
     public void checkNetworAccess(final Callback callback) {

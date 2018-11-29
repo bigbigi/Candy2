@@ -25,7 +25,6 @@ public class DeviceInfo {
     public String ssid;
 
     public String ap;
-    public String osVertion;
 
     public static void putJson(JSONObject obj, String key, Object value) {
         try {

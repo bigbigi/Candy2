@@ -220,31 +220,31 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                     mRefreshScanList = false;
                     mReScanTimes = 0;
                     rangeList(list);
+                    Iterator<ScanResult> iterator = list.iterator();
+                    ScanResult dstResult = null;
+                    while (iterator.hasNext()) {
+                        ScanResult temp = iterator.next();
+                        has5G = has5G || NetworkUtils.is5GHz(temp.frequency);
+                        if (DEFAULT_SSID.equals(temp.SSID.replaceAll("\"", ""))) {
+                            dstResult = temp;
+                            HomeBiz.getInstance(context).mScanResult = dstResult;
+                        }
+                    }
+                    HomeBiz.getInstance(context).mHas5G = has5G;
+                    Log.d(TAG, "has5G:" + has5G);
                     if (mWifiInfo == null || mWifiInfo.getSSID() == null
                             || !DEFAULT_SSID.equals(mWifiInfo.getSSID().replaceAll("\"", ""))) {
-                        Iterator<ScanResult> iterator = list.iterator();
-                        ScanResult dstResult = null;
-                        while (iterator.hasNext()) {
-                            ScanResult temp = iterator.next();
-                            has5G = has5G || NetworkUtils.is5GHz(temp.frequency);
-                            if (DEFAULT_SSID.equals(temp.SSID.replaceAll("\"", ""))) {
-                                dstResult = temp;
-                                HomeBiz.getInstance(context).setFrequence(temp.frequency);
-                            }
-                        }
-                        Log.d(TAG, "has5G:" + has5G);
                         if (dstResult == null) {
                             mView.onError(Code.INFO_SCAN_WIFI, Code.ERR_NO_WIFI);
                         } else {
                             onInfo(Code.INFO_SCAN_WIFI);
                             connect(dstResult);
                         }
-
                     } else {
                         onInfo(Code.INFO_SCAN_WIFI);
                         onConnected();
                     }
-                    HomeBiz.getInstance(context).mHas5G = has5G;
+
                 } else if (mReScanTimes < MAX_SCAN_TIMES) {
                     mReScanTimes++;
                     scanWifi();

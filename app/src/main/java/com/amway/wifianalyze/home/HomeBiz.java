@@ -1,6 +1,7 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
@@ -16,10 +17,12 @@ import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.Server;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -65,6 +68,8 @@ public class HomeBiz {
     public float mUploadSpeed;
     public boolean mHas5G;
     public DeviceInfo mDevicesInfo;
+    public ScanResult mScanResult;
+    public ArrayList<Integer> mErrors = new ArrayList<>();
 
 
     public HomeBiz(Context context) {
@@ -228,6 +233,11 @@ public class HomeBiz {
                 try {
                     json.put("downSpeed", mDownloadSpeed);
                     json.put("uploadSpeed", mUploadSpeed);
+                    JSONArray errorArray = new JSONArray();
+                    for (Integer code : mErrors) {
+                        errorArray.put(code);
+                    }
+                    json.put("nfCode", errorArray);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -357,13 +367,6 @@ public class HomeBiz {
         });
     }
 
-    public int getFrequence() {
-        return mFrequence;
-    }
-
-    public void setFrequence(int frequence) {
-        this.mFrequence = frequence;
-    }
 
     public DeviceInfo getDeviceInfo() {
         DeviceInfo info = new DeviceInfo();
@@ -380,6 +383,7 @@ public class HomeBiz {
         info.dns = NetworkUtils.getDns1();
         info.phoneType = Build.MODEL;
         info.system = "Android_" + Build.VERSION.SDK_INT;
+        info.shop = mShopName;
         return info;
     }
 

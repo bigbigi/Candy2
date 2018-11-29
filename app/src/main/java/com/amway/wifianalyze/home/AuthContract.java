@@ -6,6 +6,8 @@ import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BasePresenterImpl;
 import com.amway.wifianalyze.lib.listener.Callback;
 
+import java.util.ArrayList;
+
 /**
  * Created by big on 2018/10/22.
  */
@@ -31,18 +33,6 @@ public interface AuthContract extends BaseContract {
         }
 
         public abstract void startCheck(Context context);
-
-//        public abstract void checkDhcp(final Callback callback);
-//
-//        public abstract void checkPort(final Callback callback);
-//
-//        public abstract void checkServer(final Callback callback);
-//
-//        public abstract void checkLocalnetLoad(final Callback callback);
-//
-//        public abstract void checkInternetLoad(final Callback callback);
-//
-//        public abstract void checkDns(final Callback callback);
 
     }
 }

@@ -30,6 +30,7 @@ import com.hjq.permissions.XXPermissions;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -197,6 +198,7 @@ public class HomeFrag extends BaseFragment implements
         HomeBiz.getInstance(getContext()).submitDetectResult(null);
     }
 
+
     @Override
     public void onInfo(final int code, int loss, int delay) {
         final String message = Code.getMessage(code, loss, delay);
@@ -223,10 +225,12 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
+
     @Override
     public void onError(final int code, final int reason) {
         Log.e(TAG, "onError:" + code + ",reason:" + reason);
         final String message = Code.getErrorMessage(code, reason);
+        HomeBiz.getInstance(getContext()).mErrors.add(code);
         Activity activity = getActivity();
         if (activity != null) {
             activity.runOnUiThread(new Runnable() {

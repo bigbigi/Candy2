@@ -1,6 +1,7 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -34,6 +35,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
+
         HomeBiz.getInstance(mContext).reset();
 
         //信道利用率-静态ip-5g-获取ap人数--ping认证服务器-认证服务器端口-ping114-dns-认证-防火墙- 内网满载-外网满载
@@ -41,9 +43,9 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         HomeBiz.getInstance(mContext).getSysconfig(new Callback() {
             @Override
             public void onCallBack(boolean success, Object[] t) {
-                checkUtilization(new Callback<Integer>() {
+                checkUtilization(new Callback() {
                     @Override
-                    public void onCallBack(boolean success, Integer... t) {
+                    public void onCallBack(boolean success, Object[] t) {
                         checkDhcp(new Callback() {
                             @Override
                             public void onCallBack(boolean success, Object[] t) {
@@ -156,7 +158,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     }
 
 
-    public void checkUtilization(final Callback<Integer> callback) {
+    public void checkUtilization(final Callback callback) {
         mView.onChecking(Code.INFO_UTILIZATION);
         HomeBiz.getInstance(mContext).getUtilization(new Callback<Integer>() {
             @Override

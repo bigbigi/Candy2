@@ -84,13 +84,13 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                 WifiManager wm = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wm.getConnectionInfo();
                 if (!TextUtils.isEmpty(shopName) && wifiInfo != null) {
-                    post(shopName, content, list, context, callback);
+                    post(t[0], shopName, content, list, context, callback);
                 }
             }
         });
     }
 
-    private void post(final String shopName, final String content, final List<String> list, final Context context, final Callback callback) {
+    private void post(final String apName, final String shopName, final String content, final List<String> list, final Context context, final Callback callback) {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
@@ -134,7 +134,7 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
                         int channel = NetworkUtils.isSupport5G(context) || HomeBiz.getInstance(context).mHas5G ? 2 : 1;
                         json.put("wifiChannel", channel);
                         json.put("shop", shopName);
-                        json.put("ap", HomeBiz.getInstance(context).mApName);
+                        json.put("ap", apName);
                         json.put("processor", "处理人");//todo
                     }
                 } catch (Exception e) {

@@ -20,6 +20,7 @@ import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.base.Code;
+import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.home.DetectResult.Status;
 import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
@@ -29,6 +30,9 @@ import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -300,6 +304,12 @@ public class HomeFrag extends BaseFragment implements
                 }
                 if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    try {
+                        HomeBiz.getInstance(getContext()).setDeviceInfo(new DeviceInfo(new JSONObject(result)));
+//                        mWifiPresenter.stop(WifiContract.WifiPresenter.Status.CONNECTED);//todo
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     Log.d(TAG, "code result:" + result);
                 } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
                     Toast.makeText(getContext(), "解析二维码失败", Toast.LENGTH_LONG).show();

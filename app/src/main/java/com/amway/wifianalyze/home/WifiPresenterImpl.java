@@ -268,11 +268,8 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
                             Log.d(TAG, "NETWORK-->" + "CONNECTING");
                             break;
                         case CONNECTED:
-//                            onConnected();
                             Log.d(TAG, "NETWORK-->" + "----Connected--------");
                             WifiInfo info = mWm.getConnectionInfo();
-//                            ConnectivityManager manager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-//                            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
                             if (info != null && info.getSSID() != null
                                     && networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                                 scanWifi();

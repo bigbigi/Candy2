@@ -23,8 +23,23 @@ public class DeviceInfo {
     public int wifiChannel;//5G=2,2.4G=1;
     public String shop;
     public String ssid;
-
     public String ap;
+
+    public DeviceInfo() {
+    }
+
+    public DeviceInfo(JSONObject object) {
+        this.ip = object.optString("ip");
+        this.mac = object.optString("mac");
+        this.dns = object.optString("dns");
+        this.phoneType = object.optString("phoneType");
+        this.system = object.optString("system");
+        this.browser = object.optString("browser");
+        this.wifiChannel = object.optInt("wifiChannel");
+        this.shop = object.optString("shop");
+        this.ssid = object.optString("ssid");
+        this.ap = object.optString("ap");
+    }
 
     public static void putJson(JSONObject obj, String key, Object value) {
         try {

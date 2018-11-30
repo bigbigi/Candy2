@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.amway.wifianalyze.R;
-import com.amway.wifianalyze.lib.util.NetworkUtils;
-import com.autofit.widget.EditText;
+import com.amway.wifianalyze.bean.DeviceInfo;
 import com.autofit.widget.ScreenParameter;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -38,8 +38,9 @@ public class BarcodeDialog extends Dialog {
 
         WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wm.getConnectionInfo();
-        if (wifiInfo != null) {
-            String content = HomeBiz.getInstance(getContext()).getDeviceInfo().toJson().toString();
+        DeviceInfo deviceInfo = HomeBiz.getInstance(getContext()).getDeviceInfo();
+        if (wifiInfo != null && deviceInfo != null && !TextUtils.isEmpty(deviceInfo.ap)) {
+            String content = deviceInfo.toJson().toString();
             int size = ScreenParameter.getFitSize(getContext(), 600);
             Bitmap bitmap = CodeUtils.createImage(content, size, size, null);
             mWarn.setVisibility(View.GONE);

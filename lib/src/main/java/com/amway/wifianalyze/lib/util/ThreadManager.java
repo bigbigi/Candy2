@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ThreadManager {
     private static final int MAX_SIZE = 5;
     private static ExecutorService mExecutor; // 会自动回收的无界限线程池
+    private static ExecutorService mSingleExecutor; // 单线程
+    private static LinkedBlockingQueue mSingleQueue = new LinkedBlockingQueue();
 
     /**
      * @param @param run 设定文件
@@ -31,6 +33,17 @@ public class ThreadManager {
         getExecutor().execute(task);
     }
 
+    public static void single(Runnable task) {
+        if (task == null) {
+            return;
+        }
+        getSingleExecutor().execute(task);
+    }
+
+    public static void clearSinglTask() {
+        mSingleQueue.clear();
+    }
+
     /**
      * 获取一个单例会自动回收的无界线程池
      */
@@ -41,6 +54,18 @@ public class ThreadManager {
         }
         return mExecutor;
     }
+
+    /**
+     * 获取一个单例会自动回收的无界线程池
+     */
+    private static synchronized ExecutorService getSingleExecutor() {
+        if (mSingleExecutor == null) {
+            mSingleExecutor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+                    mSingleQueue, createThreadFactory(10, "SingleThread-"));
+        }
+        return mSingleExecutor;
+    }
+
 
     private static ThreadFactory createThreadFactory(int threadPriority, String threadNamePrefix) {
         return new DefaultThreadFactory(threadPriority, threadNamePrefix);

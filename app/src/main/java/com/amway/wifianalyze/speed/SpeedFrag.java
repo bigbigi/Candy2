@@ -62,7 +62,6 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mState = (TextView) content.findViewById(R.id.speed_state);
         mApName = (TextView) content.findViewById(R.id.wifi_ap);
-        mApName.setText(HomeBiz.getInstance(getContext()).mApName);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new SpeedAdapter(getContext());
@@ -72,6 +71,9 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mWifiName.setText("");
         mWifiFrequence.setText("");
         mWifiPresenter.init(getContext());
+        if (HomeBiz.getInstance(getContext()).getDeviceInfo() != null) {
+            mApName.setText(HomeBiz.getInstance(getContext()).getDeviceInfo().ap);
+        }
         start();
     }
 

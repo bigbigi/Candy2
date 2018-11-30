@@ -175,9 +175,15 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onStartCheck() {
-        startAni();
-        mAdapter.getData().clear();
-        mAdapter.notifyDataSetChanged();
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                startAni();
+                mAdapter.getData().clear();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override
@@ -306,7 +312,7 @@ public class HomeFrag extends BaseFragment implements
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
                     try {
                         HomeBiz.getInstance(getContext()).setDeviceInfo(new DeviceInfo(new JSONObject(result)));
-//                        mWifiPresenter.stop(WifiContract.WifiPresenter.Status.CONNECTED);//todo
+                        restart();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -335,5 +341,10 @@ public class HomeFrag extends BaseFragment implements
         } else if (v.getId() == R.id.scan_barcode) {
             go2Capture();
         }
+    }
+
+    private void restart() {
+        ThreadManager.clearSinglTask();
+        mWifiPresenter.start();
     }
 }

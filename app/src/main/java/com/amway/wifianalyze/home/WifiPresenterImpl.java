@@ -18,8 +18,10 @@ import android.util.Log;
 
 
 import com.amway.wifianalyze.base.Code;
+import com.amway.wifianalyze.lib.listener.BlockCall;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.WifiConnector;
 
 import java.util.HashMap;
@@ -158,17 +160,20 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
 
 
     public void checkConnect() {
+        mStatus = Status.CONNECTING;
         mView.onChecking(Code.INFO_CONNECTED);
         HomeBiz.getInstance(mContext).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
-                if (success) {
-                    mStatus = Status.CONNECTED;
-                    onInfo(Code.INFO_CONNECTED);
-                    mView.onConnected(mWm.getConnectionInfo());
-                } else {
-                    mView.onError(Code.INFO_CONNECTED, Code.ERR_WIFI_CONNECT);
-                    mView.onStopCheck();
+                if (mStatus == Status.CONNECTING) {
+                    if (success) {
+                        mStatus = Status.CONNECTED;
+                        onInfo(Code.INFO_CONNECTED);
+                        mView.onConnected(mWm.getConnectionInfo());
+                    } else {
+                        mView.onError(Code.INFO_CONNECTED, Code.ERR_WIFI_CONNECT);
+                        mView.onStopCheck();
+                    }
                 }
             }
         });

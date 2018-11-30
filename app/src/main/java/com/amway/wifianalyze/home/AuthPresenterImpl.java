@@ -6,8 +6,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.amway.wifianalyze.base.Code;
+import com.amway.wifianalyze.lib.listener.BlockCall;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.utils.Server;
 import com.amway.wifianalyze.utils.TracerouteWithPing;
@@ -35,123 +37,191 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
-
         HomeBiz.getInstance(mContext).reset();
 
         //信道利用率-静态ip-5g-获取ap人数--ping认证服务器-认证服务器端口-ping114-dns-认证-防火墙- 内网满载-外网满载
         //信号弱-ping Interner丢包-运营商检测-ping支付网站--下单网站 -下单网站端口--店铺自提
-        HomeBiz.getInstance(mContext).getSysconfig(new Callback() {
+        ThreadManager.single(new BlockCall() {
             @Override
-            public void onCallBack(boolean success, Object[] t) {
-                checkUtilization(new Callback() {
-                    @Override
-                    public void onCallBack(boolean success, Object[] t) {
-                        checkDhcp(new Callback() {
-                            @Override
-                            public void onCallBack(boolean success, Object[] t) {
-                                checkSupport5G(new Callback() {
-                                    @Override
-                                    public void onCallBack(boolean success, Object[] t) {
-                                        checkAp(new Callback() {
-                                            @Override
-                                            public void onCallBack(boolean success, Object[] t) {
-                                                checkAuthServer(new Callback() {
-                                                    @Override
-                                                    public void onCallBack(boolean success, Object[] t) {
-                                                        checkAuthPort(new Callback() {
-                                                            @Override
-                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                pingIp114(new Callback() {
-                                                                    @Override
-                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                        checkDns(new Callback() {
-                                                                            @Override
-                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                checkAuth(new Callback() {
-                                                                                    @Override
-                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                        checkFilewall(new Callback() {
-                                                                                            @Override
-                                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                                checkLocalnetLoad(new Callback() {
-                                                                                                    @Override
-                                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                                        checkInternetLoad(new Callback() {
-                                                                                                            @Override
-                                                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                                                checkWifiLevel(new Callback() {
-                                                                                                                    @Override
-                                                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                                                        pingInternet(new Callback() {
-                                                                                                                            @Override
-                                                                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                checkIsp(new Callback() {
-                                                                                                                                    @Override
-                                                                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                        pingPayWX(new Callback() {
-                                                                                                                                            @Override
-                                                                                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                pingPayZhifubao(new Callback() {
-                                                                                                                                                    @Override
-                                                                                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                        pingOrder(new Callback() {
-                                                                                                                                                            @Override
-                                                                                                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                checkOrderPort(new Callback() {
-                                                                                                                                                                    @Override
-                                                                                                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                        checkCustomPick(new Callback() {
-                                                                                                                                                                            @Override
-                                                                                                                                                                            public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                                checkNetworAccess(new Callback() {
-                                                                                                                                                                                    @Override
-                                                                                                                                                                                    public void onCallBack(boolean success, Object[] t) {
-                                                                                                                                                                                        mView.onStopCheck();
-                                                                                                                                                                                    }
-                                                                                                                                                                                });
+            public void run() {
+                HomeBiz.getInstance(mContext).getSysconfig(this);
+                super.run();
+            }
 
-                                                                                                                                                                            }
-                                                                                                                                                                        });
-                                                                                                                                                                    }
-                                                                                                                                                                });
-                                                                                                                                                            }
-                                                                                                                                                        });
-                                                                                                                                                    }
-                                                                                                                                                });
-                                                                                                                                            }
-                                                                                                                                        });
-                                                                                                                                    }
-                                                                                                                                });
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkUtilization(this);
+                super.run();
+            }
 
-                                                                                                                            }
-                                                                                                                        });
-                                                                                                                    }
-                                                                                                                });
-                                                                                                            }
-                                                                                                        });
-                                                                                                    }
-                                                                                                });
-                                                                                            }
-                                                                                        });
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkDhcp(this);
+                super.run();
+            }
 
-                            }
-                        });
-                    }
-                });
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                Log.d("big","checkSupport5G");
+                checkSupport5G(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkAp(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkAuthServer(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkAuthPort(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                pingIp114(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkDns(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkAuth(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkFilewall(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkLocalnetLoad(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkInternetLoad(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkWifiLevel(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                pingInternet(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkIsp(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                pingPayWX(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                pingPayZhifubao(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                pingOrder(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkOrderPort(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkCustomPick(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                checkNetworAccess(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new Runnable() {
+            @Override
+            public void run() {
+                mView.onStopCheck();
             }
         });
 

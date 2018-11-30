@@ -394,12 +394,10 @@ public class HomeBiz {
             info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
         }
         info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
-        info.mac = /*NetworkUtils.getMac(mContext)*/"ac:cf:5c:18:ff:d5";//todo test mac
+        info.mac = /*NetworkUtils.getMac(mContext)*/"54:33:cb:66:b4:1f";//todo test mac
         info.dns = NetworkUtils.getDns1();
         info.phoneType = Build.MODEL;
         info.system = "Android_" + Build.VERSION.SDK_INT;
-//        info.ap = mApName;
-//        info.shop = mShopName;
         return info;
     }
 

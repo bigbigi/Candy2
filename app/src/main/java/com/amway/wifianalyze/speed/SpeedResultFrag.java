@@ -19,6 +19,7 @@ import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
 
 import java.util.ArrayList;
@@ -85,10 +86,6 @@ public class SpeedResultFrag extends BaseFragment {
         mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mDownloadSpeed)));
         mSpeedView.setLevel(NetworkUtils.getLevel(mDownloadSpeed));
         mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(mDownloadSpeed)));
-        DeviceInfo info=HomeBiz.getInstance(getContext()).getDeviceInfo();
-        if (info != null&&!TextUtils.isEmpty(info.ap)) {
-            mApName.setText(String.format(getString(R.string.ap_users),info.ap,HomeBiz.getInstance(getContext()).mCount));
-        }
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo.getSSID() != null) {
@@ -102,6 +99,20 @@ public class SpeedResultFrag extends BaseFragment {
         list.add(new SpeedResult(getString(R.string.speed_MAC), NetworkUtils.getMac(getContext())));
         list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
         mAdapter.setData(list);
+        HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
+            @Override
+            public void onCallBack(boolean success, String... t) {
+                if(success){
+                    ThreadManager.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DeviceInfo info=HomeBiz.getInstance(getContext()).getDeviceInfo();
+                            mApName.setText(String.format(getString(R.string.ap_users),info.ap,HomeBiz.getInstance(getContext()).mCount));
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override

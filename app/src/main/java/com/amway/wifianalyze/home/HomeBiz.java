@@ -168,7 +168,7 @@ public class HomeBiz {
                     }
                     boolean success = false;
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST, mDeviceInfo.mac));//todo
-                    /*if (!TextUtils.isEmpty(result)) {
+                    if (!TextUtils.isEmpty(result)) {
                         try {
                             JSONObject obj = new JSONObject(result);
                             JSONObject data = obj.getJSONObject("data");
@@ -180,13 +180,7 @@ public class HomeBiz {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }*/
-                    //todo test
-                    mCount=5+"";
-                    mDeviceInfo.ap="sdfasd";
-                    mDeviceInfo.shop="sdfasd";
-                    success=true;
-                    //todo test
+                    }
                     if (callback != null) {
                         callback.onCallBack(success, mDeviceInfo.ap, mDeviceInfo.shop, mCount);
                     }

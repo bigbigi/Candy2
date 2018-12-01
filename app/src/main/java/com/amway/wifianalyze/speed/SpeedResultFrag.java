@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
@@ -83,8 +85,9 @@ public class SpeedResultFrag extends BaseFragment {
         mBandwidth.setText(String.format(getString(R.string.speed_bandwidth), NetworkUtils.getBandwidth(mDownloadSpeed)));
         mSpeedView.setLevel(NetworkUtils.getLevel(mDownloadSpeed));
         mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(mDownloadSpeed)));
-        if (HomeBiz.getInstance(getContext()).getDeviceInfo() != null) {
-            mApName.setText(HomeBiz.getInstance(getContext()).getDeviceInfo().ap);
+        DeviceInfo info=HomeBiz.getInstance(getContext()).getDeviceInfo();
+        if (info != null&&!TextUtils.isEmpty(info.ap)) {
+            mApName.setText(String.format(getString(R.string.ap_users),info.ap,HomeBiz.getInstance(getContext()).mCount));
         }
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();

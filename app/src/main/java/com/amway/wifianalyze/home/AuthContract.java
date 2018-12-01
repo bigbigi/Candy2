@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public interface AuthContract extends BaseContract {
 
     interface AuthView extends BaseView {
-        void onGetAp(String apName);
+        void onGetAp(String apName,String count);
 
         void onError(int code, int reason);
 

@@ -11,6 +11,7 @@
     <string name="detect_24G">2.4G</string>
     <string name="detect_5G">5G</string>
     <string name="barcode_warn">您还未连接WIFI</string>
+    <string name="ap_users">%1$s&#160;&#160;&#160;&#160;在线%2$s人</string>
 
     <!--测速-->
     <string name="speed_downloading">正在测试下载速度...</string>

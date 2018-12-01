@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
+import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.home.WifiContract;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
@@ -71,8 +74,10 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mWifiName.setText("");
         mWifiFrequence.setText("");
         mWifiPresenter.init(getContext());
-        if (HomeBiz.getInstance(getContext()).getDeviceInfo() != null) {
-            mApName.setText(HomeBiz.getInstance(getContext()).getDeviceInfo().ap);
+        DeviceInfo info=HomeBiz.getInstance(getContext()).getDeviceInfo();
+        Log.d("big","info:"+info+","+HomeBiz.getInstance(getContext()).mCount);
+        if (info != null&&!TextUtils.isEmpty(info.ap)) {
+          mApName.setText(String.format(getString(R.string.ap_users),info.ap,HomeBiz.getInstance(getContext()).mCount));
         }
         start();
     }

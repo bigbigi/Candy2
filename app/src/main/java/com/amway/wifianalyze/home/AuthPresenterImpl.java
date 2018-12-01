@@ -37,7 +37,6 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
         }
-        HomeBiz.getInstance(mContext).reset();
 
         //信道利用率-静态ip-5g-获取ap人数--ping认证服务器-认证服务器端口-ping114-dns-认证-防火墙- 内网满载-外网满载
         //信号弱-ping Interner丢包-运营商检测-ping支付网站--下单网站 -下单网站端口--店铺自提
@@ -282,7 +281,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             @Override
             public void onCallBack(boolean success, final String... t) {
                 if (success) {
-                    mView.onGetAp(t[0]);
+                    mView.onGetAp(t[0],t[2]);
                     int count = Utils.parseInt(t[2]);
                     if (count > 50) {
                         mView.onError(Code.INFO_GET_AP, Code.ERR_AP_USER);
@@ -290,7 +289,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                         mView.onInfo(Code.INFO_GET_AP, count, 0);
                     }
                 } else {
-                    mView.onGetAp("");
+                    mView.onGetAp("","");
                     mView.onError(Code.INFO_GET_AP, Code.ERR_QUEST);
                 }
                 if (callback != null) {

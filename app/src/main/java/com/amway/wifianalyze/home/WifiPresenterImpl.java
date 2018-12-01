@@ -103,6 +103,7 @@ public class WifiPresenterImpl extends WifiContract.WifiPresenter {
 
     @Override
     public void start() {
+        HomeBiz.getInstance(mContext).reset();
         mHandler.removeCallbacksAndMessages(null);
         mReScanTimes = 0;
         mStatus = Status.PREPARED;

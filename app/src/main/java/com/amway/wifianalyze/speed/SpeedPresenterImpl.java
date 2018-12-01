@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
 import com.amway.wifianalyze.R;
+import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 
@@ -82,6 +83,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                         transaction.show(resultFrag);
                     }
                     transaction.commitAllowingStateLoss();
+                    HomeBiz.getInstance(((Fragment)mView).getContext()).mCurrentFrag=resultFrag;
                 }
             }
         });

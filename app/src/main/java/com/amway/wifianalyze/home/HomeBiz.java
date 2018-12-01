@@ -5,10 +5,13 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.bean.DeviceInfo;
+import com.amway.wifianalyze.bean.FaqInfo;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
@@ -22,6 +25,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -42,6 +46,7 @@ public class HomeBiz {
 
     private static final String AUTH_URL = "%s/checkwifi-api/auth/checkLogin/mac_%s.dat";
     private static final String NETWORK_ACCESS_URL = "%s/checkwifi-api/auth/disconnect/mac_%s.dat";
+    private static final String FAQ_URL = "%s/checkwifi-api/getFaqByCode/code_%s.dat";
 
 
     private static volatile HomeBiz mInstance;
@@ -59,15 +64,14 @@ public class HomeBiz {
     }
 
     private DeviceInfo mDeviceInfo;
-    //    public String mShopName;
-//    public String mApName;
-//    public String mUserCount;
     public String mRouterIp;
     public String mTaobaoIp;
     public float mDownloadSpeed;
     public float mUploadSpeed;
     public boolean mHas5G;
+    public String mCount;
     public ScanResult mScanResult;
+    public Fragment mCurrentFrag;
     public ArrayList<Integer> mErrors = new ArrayList<>();
 
 
@@ -146,14 +150,14 @@ public class HomeBiz {
             }
         });
     }
-
+    private Object mLock=new Object();
     //获取门店信息
     public void getShopName(final Callback<String> callback) {
         Log.d("big", "getShopName:");
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                synchronized (HomeBiz.class) {
+                synchronized (mLock) {
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
@@ -164,22 +168,27 @@ public class HomeBiz {
                     }
                     boolean success = false;
                     String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST, mDeviceInfo.mac));//todo
-                    String count = "";
-                    if (!TextUtils.isEmpty(result)) {
+                    /*if (!TextUtils.isEmpty(result)) {
                         try {
                             JSONObject obj = new JSONObject(result);
                             JSONObject data = obj.getJSONObject("data");
                             success = 100 == obj.getInt("code");
-                            count = data.optString("users");
+                            mCount = data.optString("users");
                             mDeviceInfo.ap = data.optString("apName");
                             mDeviceInfo.shop = data.optString("shopName");
                             mRouterIp = data.optString("sangfor_outer");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
+                    //todo test
+                    mCount=5+"";
+                    mDeviceInfo.ap="sdfasd";
+                    mDeviceInfo.shop="sdfasd";
+                    success=true;
+                    //todo test
                     if (callback != null) {
-                        callback.onCallBack(success, mDeviceInfo.ap, mDeviceInfo.shop, count);
+                        callback.onCallBack(success, mDeviceInfo.ap, mDeviceInfo.shop, mCount);
                     }
                 }
 
@@ -383,7 +392,51 @@ public class HomeBiz {
             }
         });
     }
-//54:33:cb:66:b4:1f
+
+    public void getFaq(final Callback<List<FaqInfo>> callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mErrors.size() > 0) {
+                    String value = "";
+                    for (Integer code : mErrors) {
+                        value = value + code + "_";
+                    }
+                    String ret = HttpHelper.getInstance().get(String.format(FAQ_URL, Server.HOST, value));
+                    if (!TextUtils.isEmpty(ret)) {
+                        try {
+                            JSONObject obj = new JSONObject(ret);
+                            if (100 == obj.getInt("code")) {
+                                List<FaqInfo> list = new ArrayList<>();
+                                list.add(new FaqInfo());
+                                JSONArray data = obj.getJSONArray("data");
+                                for (int i = 0; i < data.length(); i++) {
+                                    try {
+                                        JSONObject json = data.getJSONObject(i);
+                                        FaqInfo faqInfo = new FaqInfo();
+                                        faqInfo.question = "故障：" + Code.getMessage(Utils.parseInt(json.optString("code")), -1, 0);
+                                        faqInfo.answer = "方法：" + json.optString("content");
+                                        list.add(faqInfo);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                if (callback != null) {
+                                    callback.onCallBack(true, list);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+            }
+        });
+    }
+
+    //54:33:cb:66:b4:1f
 //    ac:cf:5c:18:ff:d5
     public DeviceInfo createDeviceInfo() {
         DeviceInfo info = new DeviceInfo();
@@ -394,7 +447,7 @@ public class HomeBiz {
             info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
         }
         info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
-        info.mac = /*NetworkUtils.getMac(mContext)*/"54:33:cb:66:b4:1f";//todo test mac
+        info.mac = NetworkUtils.getMac(mContext);//todo test mac
         info.dns = NetworkUtils.getDns1();
         info.phoneType = Build.MODEL;
         info.system = "Android_" + Build.VERSION.SDK_INT;

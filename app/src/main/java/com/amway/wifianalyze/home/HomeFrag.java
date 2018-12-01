@@ -21,8 +21,10 @@ import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.bean.DeviceInfo;
+import com.amway.wifianalyze.bean.FaqInfo;
 import com.amway.wifianalyze.home.DetectResult.Status;
 import com.amway.wifianalyze.lib.ToastOnPermission;
+import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
@@ -34,6 +36,7 @@ import com.uuzuche.lib_zxing.activity.CodeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -187,11 +190,11 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
-    public void onGetAp(final String apName) {
+    public void onGetAp(final String apName,final String count) {
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mApName.setText(apName);
+                mApName.setText(String.format(getString(R.string.ap_users),apName,count));
             }
         });
     }
@@ -216,15 +219,48 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
+
     @Override
     public void onStopCheck() {
         stopAni();
         HomeBiz.getInstance(getContext()).submitDetectResult(null);
         if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {
             mWifiPresenter.stop(WifiContract.WifiPresenter.Status.FAILED);
+            HomeBiz.getInstance(getContext()).getFaq(new Callback<List<FaqInfo>>() {
+                @Override
+                public void onCallBack(boolean success, final List<FaqInfo>[] t) {
+                    if (success) {
+                        ThreadManager.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                showFaq(t[0]);
+                            }
+                        });
+                    }
+                }
+            });
         } else {
             mWifiPresenter.stop(WifiContract.WifiPresenter.Status.PASS);
         }
+    }
+
+    private FAQDialog mFaqDialog;
+
+    private void showFaq(List<FaqInfo> list) {
+        if (mFaqDialog == null) {
+            mFaqDialog = new FAQDialog(getContext());
+        }
+        //TODO TEST
+       /* List<FaqInfo> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            FaqInfo info = new FaqInfo();
+            info.question = "test";
+            info.answer = "test";
+            list.add(info);
+        }*/
+        //TODO TEST
+        mFaqDialog.showData(list);
+
     }
 
 

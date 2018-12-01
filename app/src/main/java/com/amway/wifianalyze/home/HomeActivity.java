@@ -76,7 +76,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showFragment(Fragment fragment, String tag) {
-        Fragment currentFragment = getVisibleFragment();
+        Fragment currentFragment = HomeBiz.getInstance(this).mCurrentFrag;
         Log.e("big", "currentFragment:" + currentFragment);
         if (currentFragment == fragment)
             return;
@@ -91,8 +91,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             transaction.show(fragment).commit();
         }
         fragment.setUserVisibleHint(true);
+        HomeBiz.getInstance(this).mCurrentFrag=fragment;
     }
-
+/*
     public Fragment getVisibleFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         List<Fragment> fragments = fragmentManager.getFragments();
@@ -103,5 +104,5 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             }
         }
         return null;
-    }
+    }*/
 }

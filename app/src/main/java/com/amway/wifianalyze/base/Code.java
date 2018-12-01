@@ -78,7 +78,11 @@ public class Code {
                 message = "检查认证服务器端口";
                 break;
             case Code.INFO_INTERNET_LOAD:
-                message = "检查外网专线带宽";
+                if(loss==CHECKING){
+                    message = "检查外网专线带宽";
+                }else{
+                    message = "外网专线带宽利用率，入口："   + loss + "%，出口："+delay+"%";
+                }
                 break;
             case Code.INFO_DNS:
                 message = "检查DNS配置";
@@ -87,7 +91,11 @@ public class Code {
                 message = "是否已认证";
                 break;
             case Code.INFO_LOCALNET_LOAD:
-                message = "检查内网专线带宽";
+                if(loss==CHECKING){
+                    message = "检查内网专线带宽";
+                }else{
+                    message = "内网专线带宽利用率，入口："   + loss + "%，出口："+delay+"%";
+                }
                 break;
             case Code.INFO_PING_INTERNET:
                 if (loss == CHECKING) {

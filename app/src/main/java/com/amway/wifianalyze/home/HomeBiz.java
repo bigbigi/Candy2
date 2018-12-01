@@ -72,6 +72,8 @@ public class HomeBiz {
     public String mCount;
     public ScanResult mScanResult;
     public Fragment mCurrentFrag;
+    public String mTempInputUse;
+    public String mTempoutputUse;
     public ArrayList<Integer> mErrors = new ArrayList<>();
 
 
@@ -206,6 +208,8 @@ public class HomeBiz {
                         JSONObject data = obj.getJSONObject("data");
                         input = data.optBoolean("input");
                         output = data.optBoolean("output");
+                        mTempInputUse=data.optString("input_use");
+                        mTempoutputUse=data.optString("output_use");
                         success = true;
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -208,8 +208,8 @@ public class HomeBiz {
                         JSONObject data = obj.getJSONObject("data");
                         input = data.optBoolean("input");
                         output = data.optBoolean("output");
-                        mTempInputUse=data.optString("input_use");
-                        mTempoutputUse=data.optString("output_use");
+                        mTempInputUse=float2Int(data.optString("input_use"));
+                        mTempoutputUse=float2Int(data.optString("output_use"));
                         success = true;
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -223,6 +223,14 @@ public class HomeBiz {
         });
     }
 
+    private String float2Int(String f){
+        float temp=Utils.parseFloat(f);
+        if(temp==-1){
+          return "-1";
+        }else{
+            return temp*100+"";
+        }
+    }
     public void checkLocalnetLoad(final Callback<Boolean> callback) {
         checkNetLoad(LOCALNET_URL, callback);
     }

@@ -228,7 +228,7 @@ public class HomeBiz {
         if(temp==-1){
           return "-1";
         }else{
-            return temp*100+"";
+            return (int)(temp*100)+"";
         }
     }
     public void checkLocalnetLoad(final Callback<Boolean> callback) {

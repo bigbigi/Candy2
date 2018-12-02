@@ -412,7 +412,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     if (!input && !output) {
                         final String inputUse=HomeBiz.getInstance(mContext).mTempInputUse;
                         final String outputUse=HomeBiz.getInstance(mContext).mTempoutputUse;
-                        mView.onInfo(Code.INFO_LOCALNET_LOAD, Utils.parseInt(inputUse), Utils.parseInt(outputUse));
+                        mView.onInfo(Code.INFO_LOCALNET_LOAD, (int)(Utils.parseFloat(inputUse)*100), (int)(Utils.parseFloat(outputUse)*100));
                     } else {
                         mView.onError(Code.INFO_LOCALNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }
@@ -438,7 +438,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     if (!input && !output) {
                         final String inputUse=HomeBiz.getInstance(mContext).mTempInputUse;
                         final String outputUse=HomeBiz.getInstance(mContext).mTempoutputUse;
-                        mView.onInfo(Code.INFO_INTERNET_LOAD,Utils.parseInt(inputUse), Utils.parseInt(outputUse));
+                        mView.onInfo(Code.INFO_INTERNET_LOAD,  (int)(Utils.parseFloat(inputUse)*100), (int)(Utils.parseFloat(outputUse)*100));
                     } else {
                         mView.onError(Code.INFO_INTERNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }

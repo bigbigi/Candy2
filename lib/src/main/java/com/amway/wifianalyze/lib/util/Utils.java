@@ -42,6 +42,22 @@ public class Utils {
         return parseInt(str, -1);
     }
 
+    public static float parseFloat(String str) {
+        return parseFloat(str, -1);
+    }
+
+    public static float parseFloat(String str, float def) {
+        float i = def;
+        if (!TextUtils.isEmpty(str)) {
+            try {
+                i = Float.parseFloat(str.trim());
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+        return i;
+    }
+
     public static int parseInt(String str, int def) {
         int i = def;
         if (!TextUtils.isEmpty(str)) {

@@ -91,8 +91,10 @@ public class SpeedResultFrag extends BaseFragment {
         if (wifiInfo.getSSID() != null) {
             mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
+        if(NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G){
+            mWifiFrequence.setText(R.string.detect_5G);
+        }else{
+            mWifiFrequence.setText(R.string.detect_24G);
         }
         List<SpeedResult> list = new ArrayList();
         list.add(new SpeedResult(getString(R.string.speed_IP), NetworkUtils.intToIp(wifiInfo.getIpAddress())));

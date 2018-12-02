@@ -140,8 +140,10 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
+                if(NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G){
+                    mWifiFrequence.setText(R.string.detect_5G);
+                }else{
+                    mWifiFrequence.setText(R.string.detect_24G);
                 }
                 WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                 List<SpeedResult> list = new ArrayList();

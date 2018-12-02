@@ -166,9 +166,10 @@ public class HomeFrag extends BaseFragment implements
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Log.e(TAG, "frequence:" + wifiInfo.getFrequency());
-                    mWifiFrequence.setText(NetworkUtils.is24GHz(wifiInfo.getFrequency()) ? R.string.detect_24G : R.string.detect_5G);
+                if(NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G){
+                    mWifiFrequence.setText(R.string.detect_5G);
+                }else{
+                    mWifiFrequence.setText(R.string.detect_24G);
                 }
                 mAuthPresenter.startCheck(getContext());
             }

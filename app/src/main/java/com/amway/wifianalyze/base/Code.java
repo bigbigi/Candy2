@@ -81,7 +81,7 @@ public class Code {
                 if(loss==CHECKING){
                     message = "检查外网专线带宽";
                 }else{
-                    message = "外网专线带宽利用率，入口："   + loss + "%，出口："+delay+"%";
+                    message = "外网带宽利用率：入口"   + loss + "%/出口"+delay+"%";
                 }
                 break;
             case Code.INFO_DNS:
@@ -94,7 +94,7 @@ public class Code {
                 if(loss==CHECKING){
                     message = "检查内网专线带宽";
                 }else{
-                    message = "内网专线带宽利用率，入口："   + loss + "%，出口："+delay+"%";
+                    message = "内网带宽利用率：入口"   + loss + "%/出口"+delay+"%";
                 }
                 break;
             case Code.INFO_PING_INTERNET:

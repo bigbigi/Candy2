@@ -37,7 +37,11 @@ public class BarcodeDialog extends Dialog {
         getWindow().setLayout(-1, -1);
         mBarcodeImageView = (ImageView) findViewById(R.id.barcode_img);
         mWarn = findViewById(R.id.barcode_text);
+    }
 
+    @Override
+    public void show() {
+        super.show();
         final DeviceInfo deviceInfo = HomeBiz.getInstance(getContext()).createDeviceInfo();
         HomeBiz.getInstance(getContext()).getAp(deviceInfo.mac, new Callback<String>() {
             @Override
@@ -53,6 +57,7 @@ public class BarcodeDialog extends Dialog {
                             Bitmap bitmap = CodeUtils.createImage(content, size, size, null);
                             mWarn.setVisibility(View.GONE);
                             mBarcodeImageView.setImageBitmap(bitmap);
+                            mBarcodeImageView.setVisibility(View.VISIBLE);
                         } else {
                             mWarn.setVisibility(View.VISIBLE);
                             mBarcodeImageView.setVisibility(View.GONE);

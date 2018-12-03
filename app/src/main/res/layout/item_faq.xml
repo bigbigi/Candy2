@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="20px"
+    android:paddingBottom="20px"
+    android:paddingLeft="5px"
+    android:paddingRight="5px">
+
+    <com.autofit.widget.TextView
+        android:id="@+id/item_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25px"
+        android:text="问题："
+        android:textColor="#000"
+        android:textSize="30px" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/item_answer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="25px"
+        android:text="方法："
+        android:textColor="#000"
+        android:textSize="30px" />
+
+</com.autofit.widget.LinearLayout>
+
+
+

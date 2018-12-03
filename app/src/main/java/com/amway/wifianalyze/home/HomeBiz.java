@@ -152,7 +152,9 @@ public class HomeBiz {
             }
         });
     }
-    private Object mLock=new Object();
+
+    private Object mLock = new Object();
+
     //获取门店信息
     public void getShopName(final Callback<String> callback) {
         Log.d("big", "getShopName:");
@@ -208,8 +210,8 @@ public class HomeBiz {
                         JSONObject data = obj.getJSONObject("data");
                         input = data.optBoolean("input");
                         output = data.optBoolean("output");
-                        mTempInputUse=float2Int(data.optString("input_use"));
-                        mTempoutputUse=float2Int(data.optString("output_use"));
+                        mTempInputUse = float2Int(data.optString("input_use"));
+                        mTempoutputUse = float2Int(data.optString("output_use"));
                         success = true;
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -223,14 +225,15 @@ public class HomeBiz {
         });
     }
 
-    private String float2Int(String f){
-        float temp=Utils.parseFloat(f);
-        if(temp==-1){
-          return "-1";
-        }else{
-            return (int)(temp*100)+"";
+    private String float2Int(String f) {
+        float temp = Utils.parseFloat(f);
+        if (temp == -1) {
+            return "-1";
+        } else {
+            return (int) (temp * 100) + "";
         }
     }
+
     public void checkLocalnetLoad(final Callback<Boolean> callback) {
         checkNetLoad(LOCALNET_URL, callback);
     }

@@ -13,6 +13,8 @@ import android.widget.ImageView;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.bean.DeviceInfo;
+import com.amway.wifianalyze.lib.listener.Callback;
+import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.ScreenParameter;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -36,19 +38,30 @@ public class BarcodeDialog extends Dialog {
         mBarcodeImageView = (ImageView) findViewById(R.id.barcode_img);
         mWarn = findViewById(R.id.barcode_text);
 
-        WifiManager wm = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wm.getConnectionInfo();
-        DeviceInfo deviceInfo = HomeBiz.getInstance(getContext()).getDeviceInfo();
-        if (wifiInfo != null && deviceInfo != null && !TextUtils.isEmpty(deviceInfo.ap)) {
-            String content = deviceInfo.toJson().toString();
-            int size = ScreenParameter.getFitSize(getContext(), 600);
-            Bitmap bitmap = CodeUtils.createImage(content, size, size, null);
-            mWarn.setVisibility(View.GONE);
-            mBarcodeImageView.setImageBitmap(bitmap);
-        } else {
-            mWarn.setVisibility(View.VISIBLE);
-            mBarcodeImageView.setVisibility(View.GONE);
-        }
+        final DeviceInfo deviceInfo = HomeBiz.getInstance(getContext()).createDeviceInfo();
+        HomeBiz.getInstance(getContext()).getAp(deviceInfo.mac, new Callback<String>() {
+            @Override
+            public void onCallBack(final boolean success, final String... t) {
+                ThreadManager.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (success) {
+                            deviceInfo.ap = t[0];
+                            deviceInfo.shop = t[1];
+                            String content = deviceInfo.toJson().toString();
+                            int size = ScreenParameter.getFitSize(getContext(), 600);
+                            Bitmap bitmap = CodeUtils.createImage(content, size, size, null);
+                            mWarn.setVisibility(View.GONE);
+                            mBarcodeImageView.setImageBitmap(bitmap);
+                        } else {
+                            mWarn.setVisibility(View.VISIBLE);
+                            mBarcodeImageView.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
+            }
+        });
     }
 
     @Override

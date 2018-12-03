@@ -463,6 +463,34 @@ public class HomeBiz {
         return info;
     }
 
+    //获取门店信息
+    public void getAp(final String mac, final Callback<String> callback) {
+        Log.d("big", "getAp:");
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean success = false;
+                String ap = "";
+                String shop = "";
+                String result = HttpHelper.getInstance().get(String.format(SHOP_URL, Server.HOST, mac));
+                if (!TextUtils.isEmpty(result)) {
+                    try {
+                        JSONObject obj = new JSONObject(result);
+                        JSONObject data = obj.getJSONObject("data");
+                        success = 100 == obj.getInt("code");
+                        ap = data.optString("apName");
+                        shop = data.optString("shopName");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (callback != null) {
+                    callback.onCallBack(success, ap, shop);
+                }
+            }
+        });
+    }
+
     public void setDeviceInfo(DeviceInfo mDeviceInfo) {
         this.mDeviceInfo = mDeviceInfo;
     }

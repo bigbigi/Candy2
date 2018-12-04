@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="600px"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="30px"
+    android:paddingTop="10px">
+
+    <com.autofit.widget.TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10px"
+        android:text="发现新版本，是否升级？"
+        android:textSize="30px" />
+
+    <LinearLayout
+        android:id="@+id/confirm_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50px"
+        android:orientation="horizontal">
+
+        <com.autofit.widget.TextView
+            android:id="@+id/confirm"
+            android:layout_width="200px"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_update_sel"
+            android:clickable="true"
+            android:gravity="center"
+            android:padding="5px"
+            android:text="是"
+            android:textColor="#fff"
+            android:textSize="30px" />
+
+        <com.autofit.widget.TextView
+            android:id="@+id/cancel"
+            android:layout_width="200px"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100px"
+            android:background="@drawable/bg_update_sel"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="5px"
+            android:text="否"
+            android:textColor="#fff"
+            android:textSize="30px" />
+    </LinearLayout>
+
+    <com.autofit.widget.ProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="500px"
+        android:layout_height="30px"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50px"
+        android:max="100"
+        android:orientation="horizontal"
+        android:visibility="gone" />
+
+</com.autofit.widget.LinearLayout>
+

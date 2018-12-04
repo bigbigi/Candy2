@@ -27,6 +27,18 @@ public class Utils {
         return false;
     }
 
+    public static int getVersion(Context context) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo pi;
+        try {
+            pi = pm.getPackageInfo(context.getPackageName(), 0);
+            return pi.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public static boolean startPackage(Context context, String packageName) {
         try {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);

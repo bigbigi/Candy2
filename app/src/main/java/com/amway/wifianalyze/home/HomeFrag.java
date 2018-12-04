@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.utils.UpdateBiz;
 import com.autofit.widget.TextView;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
@@ -93,17 +95,6 @@ public class HomeFrag extends BaseFragment implements
                         super.hasPermission(list, b);
                         mWifiPresenter.init(getContext());
                         mWifiPresenter.start();
-                        //todo test
-                      /*  mDialog = new TestDialog(getContext());
-                        mDialog.setOnStartListener(new TestDialog.OnStartListener() {
-                            @Override
-                            public void onStart() {
-                                mAdapter.getData().clear();
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        });
-                        mDialog.setPresenter((WifiPresenterImpl) mWifiPresenter);
-                        mDialog.show();*/
                     }
                 });
     }
@@ -166,12 +157,13 @@ public class HomeFrag extends BaseFragment implements
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
                 }
-                if(NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G){
+                if (NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G) {
                     mWifiFrequence.setText(R.string.detect_5G);
-                }else{
+                } else {
                     mWifiFrequence.setText(R.string.detect_24G);
                 }
                 mAuthPresenter.startCheck(getContext());
+                checkUpdate();
             }
         });
 
@@ -191,11 +183,11 @@ public class HomeFrag extends BaseFragment implements
     }
 
     @Override
-    public void onGetAp(final String apName,final String count) {
+    public void onGetAp(final String apName, final String count) {
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mApName.setText(String.format(getString(R.string.ap_users),apName,count));
+                mApName.setText(String.format(getString(R.string.ap_users), apName, count));
             }
         });
     }
@@ -383,5 +375,29 @@ public class HomeFrag extends BaseFragment implements
     private void restart() {
         ThreadManager.clearSinglTask();
         mWifiPresenter.start();
+    }
+
+    private UpdateDialog mUpdateDialog;
+
+    private void checkUpdate() {
+        UpdateBiz.getInstance().request(getContext(), new Callback<String>() {
+            @Override
+            public void onCallBack(final boolean success, String... t) {
+                if (!TextUtils.isEmpty(t[0])) {
+                    ThreadManager.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mUpdateDialog == null) {
+                                mUpdateDialog = new UpdateDialog(getContext());
+                            }
+                            if (success) {
+                                mUpdateDialog.setMust();
+                            }
+                            mUpdateDialog.show();
+                        }
+                    });
+                }
+            }
+        });
     }
 }

@@ -6,7 +6,7 @@ package com.amway.wifianalyze.utils;
 
 public class Server {
     //192.168.101.207
-   // public static final String HOST = "http://10.0.0.12:8096";//todo 更改地址
+//     public static final String HOST = "http://10.0.0.12:8096";//todo 更改地址
     public static final String HOST = "http://192.168.101.207";//todo 更改地址
     //认证服务器
     public static String AUTH_SERVER = "www.baidu.com";//todo 认证服务器地址
@@ -29,4 +29,6 @@ public class Server {
     public static String PAY_ZHIFUBAO = "alipay.com";
     //获取公网IP
     public static String MY_IP = "http://ip.taobao.com/service/getIpInfo.php?ip=myip";
+    //升级
+    public static String UPDATE = "%s/checkwifi-api/appUpdate/name_Amwayapk/apkType_2.dat";
 }

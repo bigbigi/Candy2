@@ -95,12 +95,12 @@ public class HomeBiz {
                             if (!TextUtils.isEmpty(data.optString("order_domain"))) {
                                 Server.ORDER_SERVER = data.optString("order_domain");
                             }
-                          /*  if (!TextUtils.isEmpty(data.optString("upload_domain"))) {
+                            if (!TextUtils.isEmpty(data.optString("upload_domain"))) {
                                 Server.UPLOAD_SERVER = data.optString("upload_domain");
                             }
                             if (!TextUtils.isEmpty(data.optString("download_domain"))) {
                                 Server.DOWNLOAD_SERVER = data.optString("download_domain");
-                            }*/
+                            }
                             if (!TextUtils.isEmpty(data.optString("auth_domain"))) {
                                 Server.AUTH_SERVER = data.optString("auth_domain");
                             }

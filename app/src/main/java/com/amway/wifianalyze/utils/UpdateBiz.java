@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.amway.wifianalyze.lib.listener.Callback;
@@ -119,8 +120,9 @@ public class UpdateBiz {
                     }
                     progressBar.setProgress(100);
                     progressBar.getContext().startActivity(getInstallIntent(progressBar.getContext(), path));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                    Log.d("UpdateBiz", "exception:" + e);
                 } finally {
                     FileUtils.closeIO(input);
                     FileUtils.closeIO(output);

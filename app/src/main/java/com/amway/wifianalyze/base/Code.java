@@ -34,6 +34,8 @@ public class Code {
     public static final int INFO_CUSTOMER_PICK = 1023;//检测店铺自提;
     public static final int INFO_NETWORK_ACCESS = 1024;//5分钟断网;
     public static final int INFO_ISP = 1025;//检测运营商;
+    public static final int INFO_GATEWAY = 1026;//ping网关;
+    public static final int INFO_ROUTER = 1027;//ping路由器;
 
 
     public static final int CHECKING = -1;
@@ -71,7 +73,7 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检查认证服务器延迟";
                 } else {
-                    message = "认证服务器延迟，丢包：" + loss + "%，延迟:" + delay + "毫秒";
+                    message = "认证服务器，丢包：" + loss + "%，延迟：" + delay + "毫秒";
                 }
                 break;
             case Code.INFO_AUTH_SERVER_PORT:
@@ -101,7 +103,7 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检查互联网延迟";
                 } else {
-                    message = "互联网延迟，丢包：" + loss + "%，延迟:" + delay + "毫秒";
+                    message = "互联网延迟，丢包：" + loss + "%，延迟：" + delay + "毫秒";
                 }
                 break;
             case Code.INFO_GET_AP:
@@ -128,14 +130,14 @@ public class Code {
                 if (loss == CHECKING) {
                     message = "检测微信支付";
                 } else {
-                    message = "检测微信支付，丢包：" + loss + "%，延迟:" + delay + "毫秒";
+                    message = "检测微信支付，丢包：" + loss + "%，延迟：" + delay + "毫秒";
                 }
                 break;
             case INFO_PAY_ZHIFUBAO:
                 if (loss == CHECKING) {
                     message = "检测支付宝";
                 } else {
-                    message = "检测支付宝，丢包：" + loss + "%，延迟:" + delay + "毫秒";
+                    message = "检测支付宝，丢包：" + loss + "%，延迟：" + delay + "毫秒";
                 }
                 break;
             case INFO_PING_ORDER:
@@ -155,6 +157,20 @@ public class Code {
                     message = "检测运营商";
                 } else {
                     message = "检测运营商，耗时：" + delay + "毫秒";
+                }
+                break;
+            case INFO_GATEWAY:
+                if (loss == CHECKING) {
+                    message = "检测网关延迟";
+                } else {
+                    message = "检测网关，丢包：" + loss + "%，延迟：" + delay + "毫秒";
+                }
+                break;
+            case INFO_ROUTER:
+                if (loss == CHECKING) {
+                    message = "检测路由器延迟";
+                } else {
+                    message = "检测路由器，丢包：" + loss + "%，延迟：" + delay + "毫秒";
                 }
                 break;
             default:

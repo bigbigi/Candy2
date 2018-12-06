@@ -1,6 +1,7 @@
 package com.amway.wifianalyze.home;
 
 import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -67,7 +68,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         ThreadManager.single(new BlockCall() {
             @Override
             public void run() {
-                Log.d("big","checkSupport5G");
+                Log.d("big", "checkSupport5G");
                 checkSupport5G(this);
                 super.run();
             }
@@ -77,6 +78,14 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             @Override
             public void run() {
                 checkAp(this);
+                super.run();
+            }
+
+        });
+        ThreadManager.single(new BlockCall() {
+            @Override
+            public void run() {
+                pingGateway(this);
                 super.run();
             }
 
@@ -281,7 +290,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             @Override
             public void onCallBack(boolean success, final String... t) {
                 if (success) {
-                    mView.onGetAp(t[0],t[2]);
+                    mView.onGetAp(t[0], t[2]);
                     int count = Utils.parseInt(t[2]);
                     if (count > 50) {
                         mView.onError(Code.INFO_GET_AP, Code.ERR_AP_USER);
@@ -289,7 +298,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                         mView.onInfo(Code.INFO_GET_AP, count, 0);
                     }
                 } else {
-                    mView.onGetAp("","");
+                    mView.onGetAp("", "");
                     mView.onError(Code.INFO_GET_AP, Code.ERR_QUEST);
                 }
                 if (callback != null) {
@@ -341,6 +350,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
     public void pingOrder(Callback callback) {
         mView.onChecking(Code.INFO_PING_ORDER);
         mTraceroute.executeTraceroute(Server.ORDER_SERVER, Code.INFO_PING_ORDER, callback);
+    }
+
+    public void pingGateway(Callback callback) {
+        WifiManager wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        mView.onChecking(Code.INFO_GATEWAY);
+        mTraceroute.executeTraceroute(NetworkUtils.intToIp(wifiManager.getDhcpInfo().gateway), Code.INFO_GATEWAY, callback);
     }
 
     public void checkOrderPort(Callback callback) {
@@ -410,8 +425,8 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean input = t[0];
                     boolean output = t[1];
                     if (!input && !output) {
-                        final String inputUse=HomeBiz.getInstance(mContext).mTempInputUse;
-                        final String outputUse=HomeBiz.getInstance(mContext).mTempoutputUse;
+                        final String inputUse = HomeBiz.getInstance(mContext).mTempInputUse;
+                        final String outputUse = HomeBiz.getInstance(mContext).mTempoutputUse;
                         mView.onInfo(Code.INFO_LOCALNET_LOAD, Utils.parseInt(inputUse), Utils.parseInt(outputUse));
                     } else {
                         mView.onError(Code.INFO_LOCALNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
@@ -436,9 +451,9 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                     boolean input = t[0];
                     boolean output = t[1];
                     if (!input && !output) {
-                        final String inputUse=HomeBiz.getInstance(mContext).mTempInputUse;
-                        final String outputUse=HomeBiz.getInstance(mContext).mTempoutputUse;
-                        mView.onInfo(Code.INFO_INTERNET_LOAD,  Utils.parseInt(inputUse), Utils.parseInt(outputUse));
+                        final String inputUse = HomeBiz.getInstance(mContext).mTempInputUse;
+                        final String outputUse = HomeBiz.getInstance(mContext).mTempoutputUse;
+                        mView.onInfo(Code.INFO_INTERNET_LOAD, Utils.parseInt(inputUse), Utils.parseInt(outputUse));
                     } else {
                         mView.onError(Code.INFO_INTERNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
                     }

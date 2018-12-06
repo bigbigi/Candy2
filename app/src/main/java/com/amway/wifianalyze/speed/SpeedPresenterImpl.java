@@ -38,7 +38,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
             @Override
             public void run() {
                 synchronized (mLock) {
-                    Log.d("SpeedChecker", "inshow:"+mView.isShow());
+                    Log.d("SpeedChecker", "inshow:" + mView.isShow());
                     if (mView.isShow()) {
                         float download = mSpeedChecker.checkDownload(new Callback<Float>() {
                             @Override
@@ -72,7 +72,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
             @Override
             public void run() {
                 Log.e("big", "go2Result");
-                if (mView.isShow()) {
+                if (mView.isShow() && HomeBiz.getInstance(((Fragment) mView).getContext()).mCurrentFrag instanceof SpeedFrag) {
                     FragmentTransaction transaction = mFragmentManager.beginTransaction();
                     transaction.hide(mFragmentManager.findFragmentByTag(SpeedFrag.TAG));
 

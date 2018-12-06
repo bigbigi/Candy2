@@ -17,6 +17,7 @@ import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.speed.SpeedFrag;
 import com.amway.wifianalyze.speed.SpeedPresenterImpl;
+import com.amway.wifianalyze.speed.SpeedResultFrag;
 import com.amway.wifianalyze.utils.PermissionUtil;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         init();
         findViewById(R.id.tab_detect).performClick();
         Log.d("big", "wifi:" + NetworkUtils.getWifiSetting(this));
-        Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this)+","+System.currentTimeMillis());
+        Log.d("big", "DevicesUtils:" + DevicesUtils.getDeviceId(this) + "," + System.currentTimeMillis());
     }
 
     private ViewGroup mTabLayout;
@@ -81,9 +82,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         if (currentFragment == fragment)
             return;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //hide currentFrag
         if (currentFragment != null) {
             transaction.hide(currentFragment);
             currentFragment.setUserVisibleHint(false);
+        }
+        //hide resultFrag
+        Fragment resultFrag = getSupportFragmentManager().findFragmentByTag(SpeedResultFrag.TAG);
+        if (resultFrag != null) {
+            transaction.hide(resultFrag);
+            resultFrag.setUserVisibleHint(false);
         }
         if (!fragment.isAdded()) {
             transaction.add(R.id.container, fragment, tag).commit();
@@ -91,7 +99,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
             transaction.show(fragment).commit();
         }
         fragment.setUserVisibleHint(true);
-        HomeBiz.getInstance(this).mCurrentFrag=fragment;
+        HomeBiz.getInstance(this).mCurrentFrag = fragment;
     }
 /*
     public Fragment getVisibleFragment() {

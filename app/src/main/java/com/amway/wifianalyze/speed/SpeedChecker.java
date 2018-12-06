@@ -115,7 +115,7 @@ public class SpeedChecker {
 
 
     public float checkUpload(final Callback<Float> callback) {
-        final int buffSize = 10 * 1024 * 1;
+        final int buffSize = 1024 * 1024 * 1;
         final String test = new String(new byte[buffSize]);
         final long startTime = System.currentTimeMillis();
         if (callback != null) {
@@ -174,7 +174,7 @@ public class SpeedChecker {
             URL url = new URL(requestUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             // 10秒超时
-            conn.setReadTimeout(10000);
+            conn.setReadTimeout(30000);
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("POST");
             conn.setUseCaches(false);

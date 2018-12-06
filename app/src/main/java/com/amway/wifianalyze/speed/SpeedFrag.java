@@ -75,7 +75,6 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         mWifiName.setText("");
         mWifiFrequence.setText("");
         mWifiPresenter.init(getContext());
-        start();
         HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
@@ -90,6 +89,12 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        start();
     }
 
     @Override

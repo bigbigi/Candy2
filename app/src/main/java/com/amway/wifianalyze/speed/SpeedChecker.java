@@ -37,6 +37,7 @@ public class SpeedChecker {
     private float mSpeedDownload = 0;
 
     private void init() {
+        Log.d(TAG, "init");
         mSpeedDownload = 0;
         mCountDownload.set(0);
         mLengthDownload.set(0);
@@ -82,15 +83,13 @@ public class SpeedChecker {
                         }
                         response.close();
                     }
-                    if (!mStopTagDownload.get()) {
-                        try {
-                            synchronized (mStopTagDownload) {
-                                mStopTagDownload.set(true);
-                                mStopTagDownload.notifyAll();
-                            }
-                        } catch (Exception e) {
-                            Log.i(TAG, "Exception:" + e.getMessage());
+                    try {
+                        synchronized (mStopTagDownload) {
+                            mStopTagDownload.set(true);
+                            mStopTagDownload.notifyAll();
                         }
+                    } catch (Exception e) {
+                        Log.i(TAG, "Exception:" + e.getMessage());
                     }
                 }
             });
@@ -116,7 +115,7 @@ public class SpeedChecker {
 
 
     public float checkUpload(final Callback<Float> callback) {
-        final int buffSize = 1024 * 1024 * 1;
+        final int buffSize = 10 * 1024 * 1;
         final String test = new String(new byte[buffSize]);
         final long startTime = System.currentTimeMillis();
         if (callback != null) {
@@ -142,15 +141,13 @@ public class SpeedChecker {
                         }
                         Log.d(TAG, "upload time:" + time + ",length:" + mLengthUpload.get() + ",mSpeedUpload:" + mSpeedUpload);
                     }
-                    if (!mStopTagUpload.get()) {
-                        try {
-                            synchronized (mStopTagUpload) {
-                                mStopTagUpload.set(true);
-                                mStopTagUpload.notifyAll();
-                            }
-                        } catch (Exception e) {
-                            Log.i(TAG, "Exception:" + e.getMessage());
+                    try {
+                        synchronized (mStopTagUpload) {
+                            mStopTagUpload.set(true);
+                            mStopTagUpload.notifyAll();
                         }
+                    } catch (Exception e) {
+                        Log.i(TAG, "Exception:" + e.getMessage());
                     }
 
                 }
@@ -177,7 +174,8 @@ public class SpeedChecker {
             URL url = new URL(requestUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             // 10秒超时
-            conn.setReadTimeout(30000);
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(5000);
             conn.setRequestMethod("POST");
             conn.setUseCaches(false);
             conn.setDoInput(true);

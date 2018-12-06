@@ -29,26 +29,33 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
         mFragmentManager = fragmentManager;
     }
 
+    private Object mLock = new Object();
 
     @Override
     public void getSpeed() {
+        Log.d("SpeedChecker", "getSpeed");
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
-                float download = mSpeedChecker.checkDownload(new Callback<Float>() {
-                    @Override
-                    public void onCallBack(boolean success, Float... o) {
-                        mView.updateSpeed(o[0], true);
-                    }
-                });
-                float upload = mSpeedChecker.checkUpload(new Callback<Float>() {
-                    @Override
-                    public void onCallBack(boolean success, Float... o) {
-                        mView.updateSpeed(o[0], false);
-                    }
+                synchronized (mLock) {
+                    Log.d("SpeedChecker", "inshow:"+mView.isShow());
+                    if (mView.isShow()) {
+                        float download = mSpeedChecker.checkDownload(new Callback<Float>() {
+                            @Override
+                            public void onCallBack(boolean success, Float... o) {
+                                mView.updateSpeed(o[0], true);
+                            }
+                        });
+                        float upload = mSpeedChecker.checkUpload(new Callback<Float>() {
+                            @Override
+                            public void onCallBack(boolean success, Float... o) {
+                                mView.updateSpeed(o[0], false);
+                            }
 
-                });
-                go2Result(download, upload);
+                        });
+                        go2Result(download, upload);
+                    }
+                }
             }
         });
 
@@ -83,7 +90,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                         transaction.show(resultFrag);
                     }
                     transaction.commitAllowingStateLoss();
-                    HomeBiz.getInstance(((Fragment)mView).getContext()).mCurrentFrag=resultFrag;
+                    HomeBiz.getInstance(((Fragment) mView).getContext()).mCurrentFrag = resultFrag;
                 }
             }
         });

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="600px"
     android:layout_height="wrap_content"
+    android:background="#eee"
     android:orientation="vertical"
     android:paddingBottom="30px"
     android:paddingTop="10px">
@@ -14,6 +15,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10px"
         android:text="发现新版本，是否升级？"
+        android:textColor="#222"
         android:textSize="30px" />
 
     <LinearLayout

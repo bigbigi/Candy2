@@ -16,7 +16,7 @@ import com.autofit.widget.ProgressBar;
 
 public class UpdateDialog extends Dialog implements View.OnClickListener {
     public UpdateDialog(@NonNull Context context) {
-        super(context);
+        super(context, R.style.notittle_dialog);
         init();
     }
 

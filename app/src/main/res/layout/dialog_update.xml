@@ -57,11 +57,12 @@
         android:id="@+id/progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="500px"
-        android:layout_height="30px"
+        android:layout_height="10px"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50px"
         android:max="100"
         android:orientation="horizontal"
+        android:progressDrawable="@drawable/update_progress"
         android:visibility="gone" />
 
 </com.autofit.widget.LinearLayout>

@@ -42,7 +42,7 @@ public class HomeBiz {
     private static final String LOCALNET_URL = "%s/checkwifi-api/shop/getCisco2901Load_mac_%s_ip_.dat";
     private static final String INTERNET_URL = "%s/checkwifi-api/shop/getSangforLoad_mac_%s_ip_.dat";
     private static final String UTILIZE_URL = "%s/checkwifi-api/shop/getApInfo_mac_%s_ip_.dat";
-    private static final String SYS_URL = "%s/checkwifi-api/shop/getSysConfig_ping_domain,auth_domain,download_domain,firewall_domain,order_domain,upload_domain,auth_port,order_port.dat";
+    private static final String SYS_URL = "%s/checkwifi-api/shop/getSysConfig_ping_domain,auth_domain,download_domain,firewall_domain,order_domain,upload_domain,auth_port,order_port,access_token.dat";
 
     private static final String AUTH_URL = "%s/checkwifi-api/auth/checkLogin/mac_%s.dat";
     private static final String NETWORK_ACCESS_URL = "%s/checkwifi-api/auth/disconnect/mac_%s.dat";
@@ -112,6 +112,9 @@ public class HomeBiz {
                             }
                             if (!TextUtils.isEmpty(data.optString("order_port"))) {
                                 Server.ORDER_PORT = Utils.parseInt(data.optString("order_port"));
+                            }
+                            if (!TextUtils.isEmpty(data.optString("access_token"))) {
+                                Server.TOKEN = data.optString("access_token");
                             }
                         }
 

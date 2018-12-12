@@ -81,25 +81,18 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
-                if(success){
+                if (success) {
                     ThreadManager.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            DeviceInfo info=HomeBiz.getInstance(getContext()).getDeviceInfo();
-                            mApName.setText(String.format(getString(R.string.ap_users),info.ap,HomeBiz.getInstance(getContext()).mCount));
+                            DeviceInfo info = HomeBiz.getInstance(getContext()).getDeviceInfo();
+                            mApName.setText(String.format(getString(R.string.ap_users), info.ap, HomeBiz.getInstance(getContext()).mCount));
                         }
                     });
                 }
             }
         });
-        XXPermissions.with(getActivity()).constantRequest()
-                .permission(Permission.Group.STORAGE)
-                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_storage)) {
-                    @Override
-                    public void hasPermission(List<String> list, boolean b) {
-                        super.hasPermission(list, b);
-                    }
-                });
+
     }
 
     @Override
@@ -156,9 +149,9 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
                 }
-                if(NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G){
+                if (NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G) {
                     mWifiFrequence.setText(R.string.detect_5G);
-                }else{
+                } else {
                     mWifiFrequence.setText(R.string.detect_24G);
                 }
                 WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -168,7 +161,19 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
                 mAdapter.setData(list);
                 if (!isHidden()) {
-                    mSpeedPresenter.getSpeed();
+                    if (XXPermissions.isHasPermission(getActivity(), Permission.Group.STORAGE)) {
+                        mSpeedPresenter.getSpeed();
+                    } else {
+                        XXPermissions.with(getActivity()).constantRequest()
+                                .permission(Permission.Group.STORAGE)
+                                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_storage)) {
+                                    @Override
+                                    public void hasPermission(List<String> list, boolean b) {
+                                        super.hasPermission(list, b);
+                                        mSpeedPresenter.getSpeed();
+                                    }
+                                });
+                    }
                 }
             }
         });

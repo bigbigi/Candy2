@@ -3,6 +3,7 @@ package com.amway.wifianalyze.speed;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.FileUtils;
@@ -52,7 +53,7 @@ public class SpeedChecker {
 
     public SpeedChecker(Context context) {
         mContext = context;
-        FileUploader.setUploadUrl("https://testupload.0bgs.com/file/upload");
+        FileUploader.setUploadUrl(Server.UPLOAD_SERVER);
         ClientConfig config = new ClientConfig();
         config.setMaxConcurrentRequest(10);
         FileUploader.setClientConfig(config);
@@ -63,7 +64,7 @@ public class SpeedChecker {
         // 通过表单参数设置文件保存到云存储的名称
         conf.keyName = "";
         // 通过表单参数设置文件的mimeType
-//        conf.mimeType = "";
+        conf.mimeType = "application/octet-stream";
         FileUploader.setParams(conf);
         FileUploader.setBlockConfigs(8, 512); //设置块大小为8M，片大小为512KB
 
@@ -149,7 +150,6 @@ public class SpeedChecker {
 
     public float checkUpload(final Callback<Float> callback) {
         final int buffSize = 1024 * 1024 * 5;
-//        final String test = new String(new byte[buffSize]);
         if (callback != null) {
             callback.onCallBack(true, 0f);
         }

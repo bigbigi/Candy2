@@ -16,7 +16,7 @@ public class Server {
     public static int ORDER_PORT = 80;
     //上传、下载
     public static String DOWNLOAD_SERVER = "http://pubstatic.b0.upaiyun.com/check2.jpg";
-    public static String UPLOAD_SERVER = "http://health-test.b0.upaiyun.com/check2.jpg?t=1543397663809";
+    public static String UPLOAD_SERVER = "https://testupload.0bgs.com";
     //外网
     public static String INTERNET = "www.baidu.com";
     //外网IP
@@ -32,5 +32,5 @@ public class Server {
     //升级
     public static String UPDATE = "%s/checkwifi-api/appUpdate/name_Amwayapk/apkType_2.dat";
     //token
-    public static String TOKEN = "b653ff3cb345326b5fbc8b5a4b752c67a326c6e6:vgvznGlAbsf0bEQkn2vAbE6MoglYv3xznEbMo3zknyvYvAoYoAotvB==:TkF2ns4iom6R6Cl0rNl8rgjhnGBtadFkoHl8rAPdqslP6y7toAPYqGL4FdYAqAfJomzASHFuwmB7SHFu9m6u6Al0nGlupGP06y7jvEBMvEVibyb8b3zjadFhSA1kSNFDSgLtWyf4";
+    public static String TOKEN = "b653ff3cb345326b5fbc8b5a4b752c67a326c6e6:YTczZTVjNjExNzNjZjVjOGNlMTdiYjJjYTk0NzUzNzAxOGRjMWVkNQ==:eyJzY29wZSI6ImFtd2F5My10ZXN0MDAxIiwicmV0dXJuQm9keSI6ImZuYW1lPSQoZm5hbWUpJnVybD0kKHVybCkiLCJkZWFkbGluZSI6MTU3NjEzNjUyODgwNSwib3ZlcndyaXRlIjoxfQ==";
 }

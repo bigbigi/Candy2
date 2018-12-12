@@ -1,5 +1,7 @@
 package com.amway.wifianalyze.speed;
 
+import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.amway.wifianalyze.lib.listener.Callback;
@@ -7,9 +9,20 @@ import com.amway.wifianalyze.lib.util.FileUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.Server;
+import com.chinanetcenter.wcs.android.ClientConfig;
+import com.chinanetcenter.wcs.android.api.FileUploader;
+import com.chinanetcenter.wcs.android.api.ParamsConf;
+import com.chinanetcenter.wcs.android.entity.OperationMessage;
+import com.chinanetcenter.wcs.android.internal.UploadFileRequest;
+import com.chinanetcenter.wcs.android.listener.FileUploaderListener;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -35,6 +48,26 @@ public class SpeedChecker {
     private AtomicLong mLengthDownload = new AtomicLong(0);
     private AtomicBoolean mStopTagDownload = new AtomicBoolean();
     private float mSpeedDownload = 0;
+    private Context mContext;
+
+    public SpeedChecker(Context context) {
+        mContext = context;
+        FileUploader.setUploadUrl("https://testupload.0bgs.com/file/upload");
+        ClientConfig config = new ClientConfig();
+        config.setMaxConcurrentRequest(10);
+        FileUploader.setClientConfig(config);
+
+        ParamsConf conf = new ParamsConf();
+        // 原始文件名称
+        conf.fileName = "test.txt";
+        // 通过表单参数设置文件保存到云存储的名称
+        conf.keyName = "";
+        // 通过表单参数设置文件的mimeType
+//        conf.mimeType = "";
+        FileUploader.setParams(conf);
+        FileUploader.setBlockConfigs(8, 512); //设置块大小为8M，片大小为512KB
+
+    }
 
     private void init() {
         Log.d(TAG, "init");
@@ -115,32 +148,52 @@ public class SpeedChecker {
 
 
     public float checkUpload(final Callback<Float> callback) {
-        final int buffSize = 1024 * 1024 * 1;
-        final String test = new String(new byte[buffSize]);
-        final long startTime = System.currentTimeMillis();
+        final int buffSize = 1024 * 1024 * 5;
+//        final String test = new String(new byte[buffSize]);
         if (callback != null) {
             callback.onCallBack(true, 0f);
         }
-        for (int i = 0; i < THREAD_NUM; i++) {
-            ThreadManager.execute(new Runnable() {
-                @Override
-                public void run() {
-                    while (!mStopTagUpload.get() && mCountUpload.get() < MAX_COUNT * (100 / THREAD_NUM)) {
-                        int code = httpPost(Server.UPLOAD_SERVER, null, test);
-                        if (code == 404) {
-                            mLengthUpload.set(mLengthUpload.get() + buffSize);
-                        }
-                        mCountUpload.set(mCountUpload.get() + 1);
-                        long time = (System.currentTimeMillis() - startTime);
-                        if (time > DURATION) {
-                            mCountUpload.set(MAX_COUNT * (100 / THREAD_NUM));
-                        }
-                        mSpeedUpload = mLengthUpload.get() / time;
-                        if (callback != null) {
-                            callback.onCallBack(true, mSpeedUpload);
-                        }
-                        Log.d(TAG, "upload time:" + time + ",length:" + mLengthUpload.get() + ",mSpeedUpload:" + mSpeedUpload);
-                    }
+        String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/amway/";
+        String path = dir + "upload.txt";
+        FileUtils.mkdirs(dir);
+        File testFile = new File(path);
+        if (!testFile.exists() || testFile.length() == 0) {
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(path);
+                fos.write(new byte[buffSize]);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                FileUtils.closeIO(fos);
+            }
+        }
+        Log.d(TAG, "FILE:" + testFile.length());
+        final long startTime = System.currentTimeMillis();
+        FileUploader.upload(mContext, Server.TOKEN, testFile, null, new FileUploaderListener() {
+
+            @Override
+            public void onFailure(OperationMessage operationMessage) {
+                Log.d(TAG, "onFailure:" + operationMessage.getMessage());
+            }
+
+            @Override
+            public void onSuccess(int i, JSONObject jsonObject) {
+                Log.d(TAG, "onSuccess:");
+            }
+
+            @Override
+            public void onProgress(UploadFileRequest request, long currentSize, long totalSize) {
+                Log.d(TAG, "uploatd:" + currentSize + ",total:" + totalSize);
+                long time = System.currentTimeMillis() - startTime;
+                mSpeedUpload = currentSize * 1000 / (System.currentTimeMillis() - startTime) / 1024;
+                if (callback != null) {
+                    callback.onCallBack(true, mSpeedUpload);
+                }
+                if (currentSize == totalSize || time > DURATION) {
                     try {
                         synchronized (mStopTagUpload) {
                             mStopTagUpload.set(true);
@@ -149,10 +202,11 @@ public class SpeedChecker {
                     } catch (Exception e) {
                         Log.i(TAG, "Exception:" + e.getMessage());
                     }
-
                 }
-            });
-        }
+                super.onProgress(request, currentSize, totalSize);
+            }
+        });
+
         if (!mStopTagUpload.get()) {
             try {
                 synchronized (mStopTagUpload) {

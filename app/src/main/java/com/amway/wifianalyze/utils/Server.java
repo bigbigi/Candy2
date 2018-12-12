@@ -31,4 +31,6 @@ public class Server {
     public static String MY_IP = "http://ip.taobao.com/service/getIpInfo.php?ip=myip";
     //升级
     public static String UPDATE = "%s/checkwifi-api/appUpdate/name_Amwayapk/apkType_2.dat";
+    //token
+    public static String TOKEN = "b653ff3cb345326b5fbc8b5a4b752c67a326c6e6:vgvznGlAbsf0bEQkn2vAbE6MoglYv3xznEbMo3zknyvYvAoYoAotvB==:TkF2ns4iom6R6Cl0rNl8rgjhnGBtadFkoHl8rAPdqslP6y7toAPYqGL4FdYAqAfJomzASHFuwmB7SHFu9m6u6Al0nGlupGP06y7jvEBMvEVibyb8b3zjadFhSA1kSNFDSgLtWyf4";
 }

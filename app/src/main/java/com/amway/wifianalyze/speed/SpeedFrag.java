@@ -20,10 +20,13 @@ import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.home.WifiContract;
+import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +92,14 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 }
             }
         });
+        XXPermissions.with(getActivity()).constantRequest()
+                .permission(Permission.Group.STORAGE)
+                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_storage)) {
+                    @Override
+                    public void hasPermission(List<String> list, boolean b) {
+                        super.hasPermission(list, b);
+                    }
+                });
     }
 
     @Override

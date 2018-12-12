@@ -22,11 +22,12 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
     }
 
     private FragmentManager mFragmentManager;
-    private SpeedChecker mSpeedChecker = new SpeedChecker();
+    private SpeedChecker mSpeedChecker;
 
     @Override
     public void init(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
+        mSpeedChecker = new SpeedChecker(((Fragment)mView).getContext());
     }
 
     private Object mLock = new Object();

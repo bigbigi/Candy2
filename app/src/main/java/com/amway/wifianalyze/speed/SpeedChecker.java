@@ -60,7 +60,7 @@ public class SpeedChecker {
 
         ParamsConf conf = new ParamsConf();
         // 原始文件名称
-        conf.fileName = "test.txt";
+        conf.fileName = "androiTest.txt";
         // 通过表单参数设置文件保存到云存储的名称
         conf.keyName = "";
         // 通过表单参数设置文件的mimeType

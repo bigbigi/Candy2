@@ -108,7 +108,7 @@ public class SpeedChecker {
                                             callback.onCallBack(true, mSpeedDownload);
                                         }
                                         mCountDownload.set(mCountDownload.get() + 1);
-                                        Log.e("big", "download length：" + mLengthDownload + ",speed:" + mSpeedDownload);
+                                        Log.e(TAG, "download length：" + mLengthDownload + ",speed:" + mSpeedDownload);
                                     }
                                 }
                             } catch (IOException e) {

@@ -218,14 +218,6 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             }
 
         });
-        ThreadManager.single(new BlockCall() {
-            @Override
-            public void run() {
-                checkNetworAccess(this);
-                super.run();
-            }
-
-        });
         ThreadManager.single(new Runnable() {
             @Override
             public void run() {

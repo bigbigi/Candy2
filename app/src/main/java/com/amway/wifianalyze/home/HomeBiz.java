@@ -91,6 +91,7 @@ public class HomeBiz {
                     try {
                         JSONObject json = new JSONObject(ret);
                         if (100 == json.optInt("code")) {
+                            success = true;
                             JSONObject data = json.getJSONObject("data");
                             if (!TextUtils.isEmpty(data.optString("order_domain"))) {
                                 Server.ORDER_SERVER = data.optString("order_domain");

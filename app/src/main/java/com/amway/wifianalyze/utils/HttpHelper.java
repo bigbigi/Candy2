@@ -127,6 +127,7 @@ public class HttpHelper {
     }
 
     public Response getResponse(String url) {
+        Log.d(TAG, "getResponse:" + url);
         Request request = new Request.Builder()
                 .url(url)
                 .build();

@@ -53,11 +53,9 @@ public class SpeedChecker {
 
     public SpeedChecker(Context context) {
         mContext = context;
-        FileUploader.setUploadUrl(Server.UPLOAD_SERVER);
         ClientConfig config = new ClientConfig();
         config.setMaxConcurrentRequest(10);
         FileUploader.setClientConfig(config);
-
         ParamsConf conf = new ParamsConf();
         // 原始文件名称
         conf.fileName = "androiTest.txt";
@@ -171,8 +169,9 @@ public class SpeedChecker {
                 FileUtils.closeIO(fos);
             }
         }
-        Log.d(TAG, "FILE:" + testFile.length());
+        Log.d(TAG, "FILE:" + testFile.length()+",url:"+Server.UPLOAD_SERVER);
         final long startTime = System.currentTimeMillis();
+        FileUploader.setUploadUrl(Server.UPLOAD_SERVER);
         FileUploader.upload(mContext, Server.TOKEN, testFile, null, new FileUploaderListener() {
 
             @Override

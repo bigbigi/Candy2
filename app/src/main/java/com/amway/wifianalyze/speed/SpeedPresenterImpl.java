@@ -27,14 +27,29 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
     @Override
     public void init(FragmentManager fragmentManager) {
         mFragmentManager = fragmentManager;
-        mSpeedChecker = new SpeedChecker(((Fragment)mView).getContext());
+        mSpeedChecker = new SpeedChecker(((Fragment) mView).getContext());
     }
 
     private Object mLock = new Object();
+    private boolean mHasGetUrl;
 
     @Override
     public void getSpeed() {
-        Log.d("SpeedChecker", "getSpeed");
+        Log.d("SpeedChecker", "getSpeed：" + mHasGetUrl);
+        if (mHasGetUrl) {
+            checkSpeed();
+        } else {
+            HomeBiz.getInstance(((Fragment) mView).getContext()).getSysconfig(new Callback() {
+                @Override
+                public void onCallBack(boolean success, Object[] t) {
+                    mHasGetUrl = success;
+                    checkSpeed();
+                }
+            });
+        }
+    }
+
+    private void checkSpeed() {
         ThreadManager.execute(new Runnable() {
             @Override
             public void run() {
@@ -59,7 +74,6 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                 }
             }
         });
-
     }
 
     @Override

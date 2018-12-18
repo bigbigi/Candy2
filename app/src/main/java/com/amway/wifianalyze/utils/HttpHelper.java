@@ -17,6 +17,17 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSink;
 
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 /**
  * Created by big on 2018/10/22.
  */
@@ -28,7 +39,47 @@ public class HttpHelper {
     private static volatile HttpHelper mInstance;
 
     public HttpHelper() {
-        mClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS).build();
+        mClient = new OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+                .sslSocketFactory(createSSLSocketFactory(), new TrustAllCerts())
+                .hostnameVerifier(new TrustAllHostnameVerifier()).build();
+    }
+
+    private static SSLSocketFactory createSSLSocketFactory() {
+        SSLSocketFactory ssfFactory = null;
+
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{new TrustAllCerts()}, new SecureRandom());
+
+            ssfFactory = sc.getSocketFactory();
+        } catch (Exception e) {
+        }
+
+        return ssfFactory;
+    }
+
+    private static class TrustAllCerts implements X509TrustManager {
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }hggggg  
+
+    //信任所有的服务器,返回true
+    private static class TrustAllHostnameVerifier implements HostnameVerifier {
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
     }
 
     public synchronized static HttpHelper getInstance() {
@@ -61,7 +112,7 @@ public class HttpHelper {
     public String getChome(String url) {
         Request request = new Request.Builder()
                 .url(url).removeHeader("User-Agent")
-                .addHeader("User-Agent","Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11")
+                .addHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11")
                 .build();
         try {
             Response response = mClient.newCall(request).execute();

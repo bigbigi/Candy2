@@ -72,7 +72,7 @@ public class HttpHelper {
         public X509Certificate[] getAcceptedIssuers() {
             return new X509Certificate[0];
         }
-    }hggggg  
+    }
 
     //信任所有的服务器,返回true
     private static class TrustAllHostnameVerifier implements HostnameVerifier {

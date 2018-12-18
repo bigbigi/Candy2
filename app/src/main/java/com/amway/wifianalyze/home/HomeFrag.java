@@ -102,7 +102,9 @@ public class HomeFrag extends BaseFragment implements
     @Override
     public void onHiddenChanged(boolean hidden) {
         Log.e(TAG, "onHiddenChanged:" + hidden);
-        if (!hidden && mWifiPresenter != null && mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.FAILED) {
+        if (!hidden && mWifiPresenter != null
+                && (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.FAILED
+                || mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.PASS)) {
             mWifiPresenter.start();
         }
     }

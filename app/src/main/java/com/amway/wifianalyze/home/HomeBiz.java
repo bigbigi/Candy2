@@ -216,7 +216,7 @@ public class HomeBiz {
                         output = data.optBoolean("output");
                         mTempInputUse = float2Int(data.optString("input_use"));
                         mTempoutputUse = float2Int(data.optString("output_use"));
-                        success = true;
+                        success = 100 == obj.getInt("code");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -307,7 +307,7 @@ public class HomeBiz {
                         } else {
                             utilization = data.optInt("utilization_24g");
                         }
-                        success = true;
+                        success = 100 == json.getInt("code");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

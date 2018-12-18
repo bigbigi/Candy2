@@ -85,6 +85,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                     ThreadManager.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (isFinishing()) return;
                             DeviceInfo info = HomeBiz.getInstance(getContext()).getDeviceInfo();
                             mApName.setText(String.format(getString(R.string.ap_users), info.ap, HomeBiz.getInstance(getContext()).mCount));
                         }
@@ -146,6 +147,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing()) return;
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
                 }
@@ -213,6 +215,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing()) return;
                 mSpeedValue.setText(String.valueOf(speed));
                 if (download) {
                     mState.setText(R.string.speed_downloading);

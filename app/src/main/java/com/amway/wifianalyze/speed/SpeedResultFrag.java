@@ -91,9 +91,9 @@ public class SpeedResultFrag extends BaseFragment {
         if (wifiInfo.getSSID() != null) {
             mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
         }
-        if(NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G){
+        if (NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G) {
             mWifiFrequence.setText(R.string.detect_5G);
-        }else{
+        } else {
             mWifiFrequence.setText(R.string.detect_24G);
         }
         List<SpeedResult> list = new ArrayList();
@@ -104,12 +104,13 @@ public class SpeedResultFrag extends BaseFragment {
         HomeBiz.getInstance(getContext()).getShopName(new Callback<String>() {
             @Override
             public void onCallBack(boolean success, String... t) {
-                if(success){
+                if (success) {
                     ThreadManager.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            DeviceInfo info=HomeBiz.getInstance(getContext()).getDeviceInfo();
-                            mApName.setText(String.format(getString(R.string.ap_users),info.ap,HomeBiz.getInstance(getContext()).mCount));
+                            if (isFinishing()) return;
+                            DeviceInfo info = HomeBiz.getInstance(getContext()).getDeviceInfo();
+                            mApName.setText(String.format(getString(R.string.ap_users), info.ap, HomeBiz.getInstance(getContext()).mCount));
                         }
                     });
                 }

@@ -110,6 +110,7 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
                     ThreadManager.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (isFinishing()) return;
                             if (success) {
                                 Toast.makeText(getContext(), "提交成功", Toast.LENGTH_SHORT).show();
                             } else {

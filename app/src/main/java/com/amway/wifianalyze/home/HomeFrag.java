@@ -130,6 +130,7 @@ public class HomeFrag extends BaseFragment implements
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing()) return;
                 if (mAni != null) {
                     mRadar.setRotation(0);
                     mAni.cancel();
@@ -156,6 +157,7 @@ public class HomeFrag extends BaseFragment implements
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing()) return;
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
                 }
@@ -176,6 +178,7 @@ public class HomeFrag extends BaseFragment implements
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing()) return;
                 startAni();
                 mAdapter.getData().clear();
                 mAdapter.notifyDataSetChanged();
@@ -189,6 +192,7 @@ public class HomeFrag extends BaseFragment implements
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (isFinishing()) return;
                 mApName.setText(String.format(getString(R.string.ap_users), apName, count));
             }
         });
@@ -202,6 +206,7 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (isFinishing()) return;
                     for (DetectResult result : mAdapter.getData()) {
                         if (result.getCode() == code) {
                             return;
@@ -228,6 +233,7 @@ public class HomeFrag extends BaseFragment implements
                         ThreadManager.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                if (isFinishing()) return;
                                 showFaq(t[0]);
                             }
                         });
@@ -267,6 +273,7 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (isFinishing()) return;
                     for (int i = 0; i < mAdapter.getData().size(); i++) {
                         DetectResult result = mAdapter.getData().get(i);
                         if (result.getCode() == code) {
@@ -296,6 +303,7 @@ public class HomeFrag extends BaseFragment implements
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (isFinishing()) return;
                     for (int i = 0; i < mAdapter.getData().size(); i++) {
                         DetectResult result = mAdapter.getData().get(i);
                         if (result.getCode() == code) {
@@ -389,6 +397,7 @@ public class HomeFrag extends BaseFragment implements
                     ThreadManager.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if (isFinishing()) return;
                             if (mUpdateDialog == null) {
                                 mUpdateDialog = new UpdateDialog(getContext());
                             }

@@ -1,5 +1,6 @@
 package com.amway.wifianalyze.base;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 
 /**
@@ -8,5 +9,8 @@ import android.support.v4.app.Fragment;
 
 public abstract class BaseFragment extends Fragment {
 
-
+    public boolean isFinishing() {
+        Activity activity = getActivity();
+        return activity == null || activity.isFinishing();
+    }
 }

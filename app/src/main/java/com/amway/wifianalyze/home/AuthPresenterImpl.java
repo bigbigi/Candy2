@@ -370,7 +370,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             @Override
             public void onCallBack(boolean success, String... t) {
                 if (success) {
-                    if (t[0].equals(HomeBiz.getInstance(mContext).mRouterIp)) {
+                    if (HomeBiz.getInstance(mContext).mRouterIp.contains(t[0])) {
                         onInfo(Code.INFO_ISP);
                         mView.onInfo(Code.INFO_ISP, 0, Utils.parseInt(t[1]));
                     } else {
@@ -393,7 +393,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
             @Override
             public void onCallBack(boolean success, String... t) {
                 if (success) {
-                    if (t[0].equals(HomeBiz.getInstance(mContext).mRouterIp)) {
+                    if (HomeBiz.getInstance(mContext).mRouterIp.contains(t[0])) {
                         onInfo(Code.INFO_CUSTOMER_PICK);
                     } else {
                         mView.onError(Code.INFO_CUSTOMER_PICK, Code.ERR_NONE);

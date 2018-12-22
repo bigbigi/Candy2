@@ -64,7 +64,7 @@ public class HomeBiz {
     }
 
     private DeviceInfo mDeviceInfo;
-    public String mRouterIp;
+    public String mRouterIp = "";
     public String mTaobaoIp;
     public float mDownloadSpeed;
     public float mUploadSpeed;

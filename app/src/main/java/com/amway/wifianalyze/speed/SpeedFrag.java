@@ -200,7 +200,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
 
 
     @Override
-    public void onError(int code, int reason) {
+    public void onError(int code, int reason, String... value) {
 
     }
 

@@ -428,7 +428,7 @@ public class HomeBiz {
                                         JSONObject json = data.getJSONObject(i);
                                         FaqInfo faqInfo = new FaqInfo();
                                         faqInfo.question = "故障：" + Code.getMessage(Utils.parseInt(json.optString("code")), -1, 0);
-                                        faqInfo.answer = "方法：" + json.optString("content");
+                                        faqInfo.answer = (i + 1) + "、" + json.optString("content");
                                         list.add(faqInfo);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -460,7 +460,7 @@ public class HomeBiz {
             info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
         }
         info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
-        info.mac = NetworkUtils.getMac(mContext);//todo test mac
+        info.mac = NetworkUtils.getMac(mContext)/*"54:33:cb:66:b4:1f"*/;//todo test mac
         info.dns = NetworkUtils.getDns1();
         info.phoneType = Build.MODEL;
         info.system = "Android_" + Build.VERSION.SDK_INT;

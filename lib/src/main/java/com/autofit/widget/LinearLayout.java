@@ -71,6 +71,10 @@ public class LinearLayout extends android.widget.LinearLayout implements IAutoFi
         }
     }
 
+    public void setLayoutCount(int layoutCount) {
+        this.layoutCount = layoutCount;
+    }
+
     public void setAutoLayoutParams(ViewGroup.LayoutParams params) {
         layoutCount = 1;
         super.setLayoutParams(ScreenParameter.getRealLayoutParams(this, params));

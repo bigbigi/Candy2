@@ -29,6 +29,8 @@ import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.UpdateBiz;
+import com.autofit.widget.LinearLayout;
+import com.autofit.widget.ScreenParameter;
 import com.autofit.widget.TextView;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
@@ -71,8 +73,14 @@ public class HomeFrag extends BaseFragment implements
     private TextView mWifiName;
     private TextView mWifiFrequence;
     private TextView mApName;
+    private TextView mDetectWifiName;
+    private TextView mDetectWifiFrequence;
+    private TextView mDetectApName;
     private TestDialog mDialog;
     private View mRadar;
+    private LinearLayout mAdviceLayout;
+    private TextView mAdviceText;
+    private View mWifiLayout;
 
     public void init(View content) {
         content.findViewById(R.id.barcode).setOnClickListener(this);
@@ -85,8 +93,18 @@ public class HomeFrag extends BaseFragment implements
         mWifiName = (TextView) content.findViewById(R.id.wifi_name);
         mApName = (TextView) content.findViewById(R.id.wifi_ap);
         mWifiFrequence = (TextView) content.findViewById(R.id.wifi_frequence);
+        mWifiLayout = content.findViewById(R.id.wifi);
+        mDetectWifiName = (TextView) mWifiLayout.findViewById(R.id.wifi_name);
+        mDetectApName = (TextView) mWifiLayout.findViewById(R.id.wifi_ap);
+        mDetectWifiFrequence = (TextView) mWifiLayout.findViewById(R.id.wifi_frequence);
+        mAdviceLayout = (LinearLayout) content.findViewById(R.id.advice_layout);
+        mAdviceText = (TextView) content.findViewById(R.id.advice);
+//        mAdviceText.setL
         mWifiName.setText("");
         mWifiFrequence.setText("");
+        mDetectWifiName.setText("");
+        mWifiFrequence.setText("");
+        mDetectApName.setText("");
         XXPermissions.with(getActivity()).constantRequest()
                 .permission(Permission.Group.LOCATION)
                 .request(new ToastOnPermission(getContext(), getString(R.string.permisson_wifi)) {
@@ -105,6 +123,10 @@ public class HomeFrag extends BaseFragment implements
         if (!hidden && mWifiPresenter != null
                 && (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.FAILED
                 || mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.PASS)) {
+            mWifiLayout.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams params = mAdviceLayout.getLayoutParams();
+            params.height = 0;
+            mAdviceLayout.setLayoutParams(params);
             mWifiPresenter.start();
         }
     }
@@ -160,12 +182,14 @@ public class HomeFrag extends BaseFragment implements
                 if (isFinishing()) return;
                 if (wifiInfo.getSSID() != null) {
                     mWifiName.setText(wifiInfo.getSSID().replaceAll("\"", ""));
+                    mDetectWifiName.setText(mWifiName.getText());
                 }
                 if (NetworkUtils.isSupport5G(getContext()) || HomeBiz.getInstance(getContext()).mHas5G) {
                     mWifiFrequence.setText(R.string.detect_5G);
                 } else {
                     mWifiFrequence.setText(R.string.detect_24G);
                 }
+                mDetectWifiFrequence.setText(mWifiFrequence.getText());
                 mAuthPresenter.startCheck(getContext());
                 checkUpdate();
             }
@@ -194,6 +218,7 @@ public class HomeFrag extends BaseFragment implements
             public void run() {
                 if (isFinishing()) return;
                 mApName.setText(String.format(getString(R.string.ap_users), apName, count));
+                mDetectApName.setText(mApName.getText());
             }
         });
     }
@@ -248,19 +273,16 @@ public class HomeFrag extends BaseFragment implements
     private FAQDialog mFaqDialog;
 
     private void showFaq(List<FaqInfo> list) {
-        if (mFaqDialog == null) {
-            mFaqDialog = new FAQDialog(getContext());
+        StringBuffer sb = new StringBuffer();
+        for (FaqInfo info : list) {
+            sb.append(info.answer).append("\n");
         }
-        //TODO TEST
-       /* List<FaqInfo> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            FaqInfo info = new FaqInfo();
-            info.question = "test";
-            info.answer = "test";
-            list.add(info);
-        }*/
-        //TODO TEST
-        mFaqDialog.showData(list);
+        mWifiLayout.setVisibility(View.GONE);
+        mAdviceText.setText(sb.toString());
+        mAdviceLayout.setLayoutCount(10);
+        ViewGroup.LayoutParams params = mAdviceLayout.getLayoutParams();
+        params.height = -2;
+        mAdviceLayout.setLayoutParams(params);
 
     }
 

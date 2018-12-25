@@ -204,10 +204,11 @@ public class NetworkUtils {
     }
 
     public static String getSpeed(float speed) {
+        speed = speed * 8;
         if (speed > 1000) {
-            return String.format("%.1fMB/S", speed / 1000);
+            return String.format("%.1fMb/S", speed / 1000);
         } else {
-            return String.format("%.1fKB/S", speed);
+            return String.format("%.1fKb/S", speed);
         }
     }
 

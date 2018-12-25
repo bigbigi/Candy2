@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/speed_value"
             android:layout_centerHorizontal="true"
-            android:text="KB/S"
+            android:text="Kb/S"
             android:textColor="#e70241"
             android:textSize="18px" />
     </com.autofit.widget.RelativeLayout>

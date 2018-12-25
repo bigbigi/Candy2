@@ -421,7 +421,7 @@ public class HomeBiz {
                             JSONObject obj = new JSONObject(ret);
                             if (100 == obj.getInt("code")) {
                                 List<FaqInfo> list = new ArrayList<>();
-                                list.add(new FaqInfo());
+//                                list.add(new FaqInfo());
                                 JSONArray data = obj.getJSONArray("data");
                                 for (int i = 0; i < data.length(); i++) {
                                     try {

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseAdapter;
+import com.amway.wifianalyze.lib.ColorPhrase;
 
 /**
  * Created by big on 2018/10/19.
@@ -32,7 +33,8 @@ public class DetectAdapter extends BaseAdapter<DetectResult, DetectAdapter.TextH
     @Override
     public void onBindViewHolder(TextHolder holder, int position) {
         DetectResult result = mList.get(position);
-        holder.text.setText(result.getContent());
+        holder.text.setText(ColorPhrase.from(result.getContent()).withSeparator("{}").
+                innerColor(0xfff5000c).outerColor(0xff2b2b2b).format());
         changeStutus(holder, result.getStatus());
         if (result.getStatus() == DetectResult.Status.LOADING) {
             holder.loading.setVisibility(View.VISIBLE);

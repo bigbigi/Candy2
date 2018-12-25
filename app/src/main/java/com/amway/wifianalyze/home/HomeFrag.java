@@ -292,11 +292,10 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
-
     @Override
-    public void onError(final int code, final int reason) {
+    public void onError(final int code, final int reason, String... value) {
         Log.e(TAG, "onError:" + code + ",reason:" + reason);
-        final String message = Code.getErrorMessage(code, reason);
+        final String message = Code.getErrorMessage(code, reason, value);
         HomeBiz.getInstance(getContext()).mErrors.add(code);
         Activity activity = getActivity();
         if (activity != null) {

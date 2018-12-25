@@ -60,7 +60,11 @@ public class Code {
                 }
                 break;
             case Code.INFO_WIFI_LEVEL:
-                message = "检测WIFI信号强度";
+                if (loss == CHECKING) {
+                    message = "检测WIFI信号强度";
+                } else {
+                    message = "检测WIFI信号强度:" + loss + "dm";
+                }
                 break;
             case Code.INFO_STATIC_IP:
                 message = "检查静态IP";
@@ -180,8 +184,10 @@ public class Code {
         return message;
     }
 
+
     //错误
     public static final int ERR_NONE = -1;//无
+    public static final int ERR_MSG = -2;//
     public static final int ERR_QUEST = 0x0000ff00;//请求失败
     public static final int ERR_NO_WIFI = 0x0000ff01;//未连接到店铺WIFI
     public static final int ERROR_PWD = 0x0000ff02;//密码错误
@@ -200,8 +206,8 @@ public class Code {
     public static final int ERR_WIFI_OPEN = 0x0000000d;//未打开WIFI
     public static final int ERR_WIFI_CONNECT = 0x0000000f;//请确认连接的是店铺WIFI
 
-    public static String getErrorMessage(int code, int reason) {
-        if (reason < 0) {
+    public static String getErrorMessage(int code, int reason, String... value) {
+        if (reason == ERR_NONE) {
             return getMessage(code, CHECKING, -1);
         }
         String message = null;
@@ -228,10 +234,10 @@ public class Code {
                 message = "不支持5G";
                 break;
             case ERR_INTERNET_INPUT:
-                message = "入口带宽异常";
+                message = "入口带宽异常,利用率{" + value[0] + "}";
                 break;
             case ERR_INTERNET_OUTPUT:
-                message = "出口带宽异常";
+                message = "出口带宽异常,利用率{" + value[0] + "}";
                 break;
             case ERR_WEIXIN:
                 message = "微信无法认证";
@@ -251,7 +257,12 @@ public class Code {
             case ERR_WIFI_CONNECT:
                 message = "请确认连接的是店铺WIFI";
                 break;
-
+            case Code.INFO_WIFI_LEVEL:
+                message = "检测WIFI信号强度:{" + value[0] + "dm}";
+                break;
+            case INFO_UTILIZATION:
+                message = "信道利用率异常：{" + value[0] + "}";
+                break;
         }
         return message;
     }

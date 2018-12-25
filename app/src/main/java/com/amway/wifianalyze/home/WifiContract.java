@@ -25,7 +25,7 @@ public interface WifiContract extends BaseContract {
 
         void onInfo(int code, int loss, int delay);
 
-        void onError(int code, int reason);
+        void onError(int code, int reason, String... value);
 
         void onStopCheck();
     }

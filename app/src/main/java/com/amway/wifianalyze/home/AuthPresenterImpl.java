@@ -2,7 +2,6 @@ package com.amway.wifianalyze.home;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -421,10 +420,12 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                         final String outputUse = HomeBiz.getInstance(mContext).mTempoutputUse;
                         mView.onInfo(Code.INFO_LOCALNET_LOAD, Utils.parseInt(inputUse), Utils.parseInt(outputUse));
                     } else {
-                        if (input) {
-                            mView.onError(Code.INFO_LOCALNET_LOAD, Code.ERR_INTERNET_INPUT, HomeBiz.getInstance(mContext).mTempInputUse);
+                        if (input && output) {
+                            mView.onError(Code.INFO_LOCALNET_LOAD, Code.ERR_ALLPUT, HomeBiz.getInstance(mContext).mTempInputUse, HomeBiz.getInstance(mContext).mTempoutputUse);
+                        } else if (input) {
+                            mView.onError(Code.INFO_LOCALNET_LOAD, Code.ERR_INPUT, HomeBiz.getInstance(mContext).mTempInputUse, HomeBiz.getInstance(mContext).mTempoutputUse);
                         } else {
-                            mView.onError(Code.INFO_LOCALNET_LOAD, Code.ERR_INTERNET_OUTPUT, HomeBiz.getInstance(mContext).mTempoutputUse);
+                            mView.onError(Code.INFO_LOCALNET_LOAD, Code.ERR_OUTPUT, HomeBiz.getInstance(mContext).mTempInputUse, HomeBiz.getInstance(mContext).mTempoutputUse);
                         }
                     }
                 } else {
@@ -451,7 +452,13 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                         final String outputUse = HomeBiz.getInstance(mContext).mTempoutputUse;
                         mView.onInfo(Code.INFO_INTERNET_LOAD, Utils.parseInt(inputUse), Utils.parseInt(outputUse));
                     } else {
-                        mView.onError(Code.INFO_INTERNET_LOAD, input ? Code.ERR_INTERNET_INPUT : Code.ERR_INTERNET_OUTPUT);
+                        if (input && output) {
+                            mView.onError(Code.INFO_INTERNET_LOAD, Code.ERR_ALLPUT, HomeBiz.getInstance(mContext).mTempInputUse, HomeBiz.getInstance(mContext).mTempoutputUse);
+                        } else if (input) {
+                            mView.onError(Code.INFO_INTERNET_LOAD, Code.ERR_INPUT, HomeBiz.getInstance(mContext).mTempInputUse, HomeBiz.getInstance(mContext).mTempoutputUse);
+                        } else {
+                            mView.onError(Code.INFO_INTERNET_LOAD, Code.ERR_OUTPUT, HomeBiz.getInstance(mContext).mTempInputUse, HomeBiz.getInstance(mContext).mTempoutputUse);
+                        }
                     }
                 } else {
                     mView.onError(Code.INFO_INTERNET_LOAD, Code.ERR_QUEST);
@@ -526,7 +533,7 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
         mView.onChecking(Code.INFO_WIFI_LEVEL);
         if (HomeBiz.getInstance(mContext).mScanResult != null
                 && HomeBiz.getInstance(mContext).mScanResult.level < LOW_LEVEL) {
-            mView.onError(Code.INFO_WIFI_LEVEL, Code.ERR_MSG, HomeBiz.getInstance(mContext).mScanResult.level + "");
+            mView.onError(Code.INFO_WIFI_LEVEL, Code.ERR_MSG, String.valueOf(HomeBiz.getInstance(mContext).mScanResult.level));
         } else {
             mView.onInfo(Code.INFO_WIFI_LEVEL, HomeBiz.getInstance(mContext).mScanResult.level, 0);
         }

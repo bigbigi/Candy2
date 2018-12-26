@@ -2,6 +2,7 @@ package com.amway.wifianalyze.home;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class DetectAdapter extends BaseAdapter<DetectResult, DetectAdapter.TextH
     @Override
     public void onBindViewHolder(TextHolder holder, int position) {
         DetectResult result = mList.get(position);
+        Log.d("big","result code:"+result.getCode()+",title:"+result.getContent()+",status:"+result.getStatus());
         holder.text.setText(ColorPhrase.from(result.getContent()).withSeparator("{}").
                 innerColor(0xfff5000c).outerColor(0xff2b2b2b).format());
         changeStutus(holder, result.getStatus());

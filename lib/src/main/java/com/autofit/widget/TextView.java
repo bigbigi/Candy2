@@ -130,9 +130,6 @@ public class TextView extends android.widget.TextView implements IAutoFit {
         if (!closeFt && ScreenParameter.isFT && text != null && text.length() > 0 && !(text instanceof SpannableString)) {
             super.setText(ChineseUtils.simpToTrad(text.toString()), type);
         } else {
-            if (!TextUtils.isEmpty(text) && text.toString().contains("-")) {
-                text = text.toString().replaceAll("-", "- ");
-            }
             super.setText(text, type);
         }
     }

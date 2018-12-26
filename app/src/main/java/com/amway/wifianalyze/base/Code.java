@@ -186,82 +186,115 @@ public class Code {
 
 
     //错误
-    public static final int ERR_NONE = -1;//无
-    public static final int ERR_MSG = -2;//
-    public static final int ERR_QUEST = 0x0000ff00;//请求失败
-    public static final int ERR_NO_WIFI = 0x0000ff01;//未连接到店铺WIFI
-    public static final int ERROR_PWD = 0x0000ff02;//密码错误
-    public static final int ERROR_BUSY_CHANNEL = 0x0000ff03;//信道拥堵
-    public static final int ERROR_LOW_LEVEL = 0x0000ff04;//信号差
-    public static final int ERROR_ELSE = 0x0000ff05;//其他问题，AP人数过多等，找客服
-    public static final int ERR_ONLY24G = 0x0000ff06;//不支持5G
-    public static final int ERR_NOTFOUND_5G = 0x0000ff06;//未找到5G信号
-    public static final int ERR_INTERNET_INPUT = 0x0000ff07;//入口带宽异常
-    public static final int ERR_INTERNET_OUTPUT = 0x0000ff08;//出口带宽异常
+    public static final int ERR_NONE = 3000;//无
+    public static final int ERR_MSG = 3001;//
+    public static final int ERR_QUEST = 3002;//请求失败
+    public static final int ERR_NO_WIFI = 3003;//未连接到店铺WIFI
+    public static final int ERROR_PWD = 3004;//密码错误
+    public static final int ERROR_BUSY_CHANNEL = 3005;//信道拥堵
+    public static final int ERROR_LOW_LEVEL = 3006;//信号差
+    public static final int ERROR_ELSE = 3007;//其他问题，AP人数过多等，找客服
+    public static final int ERR_ONLY24G = 3008;//不支持5G
+    public static final int ERR_INPUT = 3009;//入口带宽异常
+    public static final int ERR_OUTPUT = 3010;//出口带宽异常
+    public static final int ERR_ALLPUT = 3011;//全部带宽异常
+    public static final int ERR_NOTFOUND_5G = 3012;//未找到5G信号
 
-    public static final int ERR_WEIXIN = 0x00000009;//微信无法认证
-    public static final int ERR_CARD = 0x0000000a;//卡号无法认证
-    public static final int ERR_SMS = 0x0000000b;//短信无法认证
-    public static final int ERR_AP_USER = 0x0000000c;//WIFI连接人数过多
-    public static final int ERR_WIFI_OPEN = 0x0000000d;//未打开WIFI
-    public static final int ERR_WIFI_CONNECT = 0x0000000f;//请确认连接的是店铺WIFI
+    public static final int ERR_WEIXIN = 3013;//微信无法认证
+    public static final int ERR_CARD = 3014;//卡号无法认证
+    public static final int ERR_SMS = 3015;//短信无法认证
+    public static final int ERR_AP_USER = 3016;//WIFI连接人数过多
+    public static final int ERR_WIFI_OPEN = 3017;//未打开WIFI
+    public static final int ERR_WIFI_CONNECT = 3018;//请确认连接的是店铺WIFI
+
 
     public static String getErrorMessage(int code, int reason, String... value) {
         if (reason == ERR_NONE) {
             return getMessage(code, CHECKING, -1);
+        } else if (reason == ERR_QUEST) {
+            return getMessage(code, CHECKING, -1) + "（请求失败）";
         }
         String message = null;
-        switch (reason) {
-            case ERR_QUEST:
-                message = getMessage(code, CHECKING, -1) + "（请求失败）";
+        switch (code) {
+            case Code.INFO_SCAN_WIFI:
+                switch (reason) {
+                    case Code.ERR_WIFI_OPEN:
+                        message = "未打开WIFI";
+                        break;
+                    case ERR_NO_WIFI:
+                        message = "未连接到店铺WIFI";
+                        break;
+                }
                 break;
-            case ERR_NO_WIFI:
-                message = "未连接到店铺WIFI";
+            case Code.INFO_CONNECTING:
+                switch (reason) {
+                    case ERROR_PWD:
+                        message = "WIFI密码错误";
+                        break;
+                    case ERROR_BUSY_CHANNEL:
+                        message = "WIFI信号干扰严重";
+                        break;
+                    case ERROR_LOW_LEVEL:
+                        message = "WIFI信号弱";
+                        break;
+                    case ERROR_ELSE:
+                        message = "AP人数过多等，找客服";
+                        break;
+                }
                 break;
-            case ERROR_PWD:
-                message = "WIFI密码错误";
-                break;
-            case ERROR_BUSY_CHANNEL:
-                message = "WIFI信号干扰严重";
-                break;
-            case ERROR_LOW_LEVEL:
-                message = "WIFI信号弱";
-                break;
-            case ERROR_ELSE:
-                message = "AP人数过多等，找客服";
-                break;
-            case ERR_ONLY24G:
+            case Code.INFO_SUPPORT_5G:
                 message = "不支持5G";
                 break;
-            case ERR_INTERNET_INPUT:
-                message = "入口带宽异常,利用率{" + value[0] + "}";
-                break;
-            case ERR_INTERNET_OUTPUT:
-                message = "出口带宽异常,利用率{" + value[0] + "}";
-                break;
-            case ERR_WEIXIN:
-                message = "微信无法认证";
-                break;
-            case ERR_CARD:
-                message = "卡号无法认证";
-                break;
-            case ERR_SMS:
-                message = "短信无法认证";
-                break;
-            case ERR_AP_USER:
-                message = "WIFI连接人数过多";
-                break;
-            case ERR_WIFI_OPEN:
-                message = "未打开WIFI";
-                break;
-            case ERR_WIFI_CONNECT:
-                message = "请确认连接的是店铺WIFI";
-                break;
-            case Code.INFO_WIFI_LEVEL:
-                message = "检测WIFI信号强度:{" + value[0] + "dm}";
+            case INFO_WIFI_LEVEL:
+                message = "检测WIFI信号强度：{" + value[0] + "dm}";
                 break;
             case INFO_UTILIZATION:
-                message = "信道利用率异常：{" + value[0] + "}";
+                message = "信道利用率异常：{" + value[0] + "%}";
+                break;
+            case Code.INFO_INTERNET_LOAD:
+                switch (reason) {
+                    case ERR_INPUT:
+                        message = "外网带宽利用率：入口{" + value[0] + "%}/出口" + value[1] + "%";
+                        break;
+                    case ERR_OUTPUT:
+                        message = "外网带宽利用率：入口" + value[0] + "%/出口{" + value[1] + "%}";
+                        break;
+                    case ERR_ALLPUT:
+                        message = "外网带宽利用率：入口{" + value[0] + "%}/出口{" + value[1] + "%}";
+                        break;
+                }
+                break;
+            case Code.INFO_LOCALNET_LOAD:
+                switch (reason) {
+                    case ERR_INPUT:
+                        message = "内网带宽利用率：入口{" + value[0] + "%}/出口" + value[1] + "%";
+                        break;
+                    case ERR_OUTPUT:
+                        message = "内网带宽利用率：入口" + value[0] + "%/出口{" + value[1] + "%}";
+                        break;
+                    case ERR_ALLPUT:
+                        message = "内网带宽利用率：入口{" + value[0] + "%}/出口{" + value[1] + "%}";
+                        break;
+                }
+                break;
+            case Code.INFO_GET_AP:
+                message = "WIFI连接人数过多";
+                break;
+            case Code.INFO_CONNECTED:
+                message = "请确认连接的是店铺WIFI";
+                break;
+            case Code.INFO_AUTH:
+                switch (reason) {
+                    case ERR_WEIXIN:
+                        message = "微信无法认证";
+                        break;
+                    case ERR_CARD:
+                        message = "卡号无法认证";
+                        break;
+                    case ERR_SMS:
+                        message = "短信无法认证";
+                        break;
+                }
                 break;
         }
         return message;

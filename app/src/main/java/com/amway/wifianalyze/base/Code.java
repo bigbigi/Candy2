@@ -209,10 +209,8 @@ public class Code {
 
 
     public static String getErrorMessage(int code, int reason, String... value) {
-        if (reason == ERR_NONE) {
+        if (reason == ERR_NONE || reason == ERR_QUEST) {
             return getMessage(code, CHECKING, -1);
-        } else if (reason == ERR_QUEST) {
-            return getMessage(code, CHECKING, -1) + "（请求失败）";
         }
         String message = null;
         switch (code) {

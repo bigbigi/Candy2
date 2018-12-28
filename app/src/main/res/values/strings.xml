@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">WIFI自检工具</string>
 
-    <string name="tab_detect">故障检测</string>
-    <string name="tab_speed">网络检测</string>
+    <string name="tab_detect">网络体验</string>
+    <string name="tab_speed">网速检测</string>
     <string name="tab_feedback">问题反馈</string>
 
     <!--检测-->

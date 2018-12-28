@@ -26,7 +26,7 @@ public class SpeedView extends View {
     private static final int COLOR_BLUE = 0xff002d66;
     private static final int COLOR_RED = 0xffe70241;
     private static final int COLOR_LINE = 0x3ee70241;
-    private String[] tags = new String[]{"标清", "高清", "超清", "蓝光"};
+    private String[] tags = new String[]{"自行车", "汽车", "飞机", "火箭"};
 
     public SpeedView(Context context, AttributeSet attrs) {
         super(context, attrs);

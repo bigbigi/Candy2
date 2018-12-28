@@ -229,7 +229,7 @@ public class NetworkUtils {
         }
     }
 
-    private static String[] tags = new String[]{"标清", "高清", "超清", "蓝光"};
+    private static String[] tags = new String[]{"自行车", "汽车", "飞机", "火箭"};
 
     public static String getDefinition(float speed) {
         return tags[getLevel(speed)];

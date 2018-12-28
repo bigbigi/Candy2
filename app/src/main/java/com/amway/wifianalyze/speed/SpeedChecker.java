@@ -88,7 +88,7 @@ public class SpeedChecker {
             ThreadManager.execute(new Runnable() {
                 @Override
                 public void run() {
-                    byte[] readBuffer = new byte[1024 * 5];
+                    byte[] readBuffer = new byte[1024 * 100];
                     long lastTime = startTime;
                     while (!mStopTagDownload.get() && mCountDownload.get() < MAX_COUNT) {
                         Response response = HttpHelper.getInstance().getResponse(Server.DOWNLOAD_SERVER);
@@ -112,6 +112,7 @@ public class SpeedChecker {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
+                            FileUtils.closeIO(inputStream);
                         }
                         response.close();
                     }
@@ -169,7 +170,7 @@ public class SpeedChecker {
                 FileUtils.closeIO(fos);
             }
         }
-        Log.d(TAG, "FILE:" + testFile.length()+",url:"+Server.UPLOAD_SERVER);
+        Log.d(TAG, "FILE:" + testFile.length() + ",url:" + Server.UPLOAD_SERVER);
         final long startTime = System.currentTimeMillis();
         FileUploader.setUploadUrl(Server.UPLOAD_SERVER);
         FileUploader.upload(mContext, Server.TOKEN, testFile, null, new FileUploaderListener() {

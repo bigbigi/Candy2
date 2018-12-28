@@ -70,6 +70,7 @@ public class SpeedResultFrag extends BaseFragment {
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mBandwidth = (TextView) content.findViewById(R.id.speed_result_bandwidth);
+        mBandwidth.setVisibility(View.GONE);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.speed_Recycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new SpeedAdapter(getContext());

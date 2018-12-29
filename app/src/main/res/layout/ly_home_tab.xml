@@ -35,6 +35,31 @@
     </com.autofit.widget.RelativeLayout>
 
     <com.autofit.widget.RelativeLayout
+        android:id="@+id/tab_deep_detect"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <com.autofit.widget.ImageView
+            android:layout_width="39px"
+            android:layout_height="40px"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="19px"
+            android:src="@drawable/ic_tab_feedback_sel" />
+
+        <com.autofit.widget.TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="63px"
+            android:gravity="center"
+            android:text="@string/tab_deep_detect"
+            android:textColor="@color/cl_home_tab"
+            android:textSize="18px" />
+
+    </com.autofit.widget.RelativeLayout>
+
+    <com.autofit.widget.RelativeLayout
         android:id="@+id/tab_speed"
         android:layout_width="0dp"
         android:layout_height="match_parent"

@@ -12,12 +12,114 @@
         android:layout_marginTop="48px"
         android:background="@drawable/ic_logo" />
 
+    <com.autofit.widget.EditText
+        android:id="@+id/deep_url"
+        android:layout_width="697px"
+        android:layout_height="84px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="181px"
+        android:background="@drawable/bg_web"
+        android:hint="请输入网址"
+        android:paddingLeft="20px"
+        android:textColor="#002e67"
+        android:textColorHint="#002e67"
+        android:textSize="36px" />
 
-    <com.autofit.widget.RecyclerView
-        android:id="@+id/wifiRecycler"
+    <com.autofit.widget.TextView
+        android:id="@+id/deep_check"
         android:layout_width="696px"
+        android:layout_height="66px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="290px"
+        android:background="@drawable/bg_submint_sel"
+        android:gravity="center"
+        android:text="开始检测"
+        android:textColor="#fff"
+        android:textSize="36px" />
+
+    <com.autofit.widget.LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:orientation="vertical"
+        android:layout_marginTop="408px">
+
+        <com.autofit.widget.LinearLayout
+            android:id="@+id/advice_layout"
+            android:layout_width="696px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/bg_detect"
+            android:orientation="vertical"
+            android:paddingBottom="10px"
+            android:visibility="gone">
+
+            <com.autofit.widget.TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25px"
+                android:layout_marginTop="25px"
+                android:text="解决建议"
+                android:textColor="#e70241"
+                android:textSize="24px" />
+
+            <com.autofit.widget.TextView
+                android:id="@+id/advice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25px"
+                android:layout_marginTop="24px"
+                android:lineSpacingExtra="10px"
+                android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
+                android:textColor="#e70241"
+                android:textSize="30px" />
+
+        </com.autofit.widget.LinearLayout>
+
+        <com.autofit.widget.RelativeLayout
+            android:id="@+id/deep_loading_layout"
+            android:layout_width="696px"
+            android:layout_height="205px"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone">
+
+            <com.autofit.widget.TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="110px"
+                android:gravity="left|center_vertical"
+                android:layout_centerVertical="true"
+                android:text="APP"
+                android:textColor="#000"
+                android:textSize="62px" />
+
+            <com.autofit.widget.ProgressBar
+                android:layout_width="134px"
+                android:layout_height="26px"
+                android:layout_centerInParent="true"
+                android:indeterminateDrawable="@drawable/ani_deep_loading"
+                android:indeterminateDuration="1200" />
+
+            <com.autofit.widget.TextView
+                android:id="@+id/deep_destination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="480px"
+                android:gravity="left|center_vertical"
+                android:text="WIFI"
+                android:textColor="#000"
+                android:textSize="62px" />
+        </com.autofit.widget.RelativeLayout>
+
+        <com.autofit.widget.RecyclerView
+            android:id="@+id/wifiRecycler"
+            android:layout_width="696px"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25px"
+            android:background="@drawable/bg_detect" />
+    </com.autofit.widget.LinearLayout>
+
 
 </com.autofit.widget.RelativeLayout>
 

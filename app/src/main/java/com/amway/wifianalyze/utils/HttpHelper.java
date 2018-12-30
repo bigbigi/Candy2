@@ -150,6 +150,25 @@ public class HttpHelper {
         return false;
     }
 
+    public String postResponse(String url, RequestBody requestBody) {
+        String ret = "";
+        try {
+            Request request = new Request.Builder()
+                    .url(url)
+                    .post(requestBody)
+                    .build();
+            Response response = mClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                ret = response.body().string();
+            }
+            Log.i(TAG, response.toString() + ",\nbody:" + ret);
+        } catch (Exception e) {
+            Log.e(TAG, "url:" + url);
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
     public boolean post(String url, RequestBody requestBody) {
         boolean success = false;
         try {

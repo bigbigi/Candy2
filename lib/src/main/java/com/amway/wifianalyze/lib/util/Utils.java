@@ -8,6 +8,8 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by big on 2018/11/26.
@@ -80,5 +82,14 @@ public class Utils {
             }
         }
         return i;
+    }
+
+    public static boolean isUrl(String str) {
+        Pattern pattern = Pattern.compile("(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");
+        Matcher isNum = pattern.matcher(str);
+        if (!isNum.matches()) {
+            return false;
+        }
+        return true;
     }
 }

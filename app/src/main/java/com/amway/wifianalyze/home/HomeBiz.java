@@ -47,6 +47,7 @@ public class HomeBiz {
     private static final String AUTH_URL = "%s/checkwifi-api/auth/checkLogin/mac_%s.dat";
     private static final String NETWORK_ACCESS_URL = "%s/checkwifi-api/auth/disconnect/mac_%s.dat";
     private static final String FAQ_URL = "%s/checkwifi-api/getFaqByCode/code_%s.dat";
+    private static final String DEEP_URL = "%s/checkwifi-api/shop/ipNodes_mac_%s_ip_.dat";
 
 
     private static volatile HomeBiz mInstance;
@@ -449,6 +450,38 @@ public class HomeBiz {
         });
     }
 
+    public String mVideoError = "";
+
+    public void getVideo(final Callback<List<FaqInfo>> callback) {
+        String ret = HttpHelper.getInstance().get(String.format(FAQ_URL, Server.HOST, "" + Code.INFO_FILEWALL));
+        if (!TextUtils.isEmpty(ret)) {
+            try {
+                JSONObject obj = new JSONObject(ret);
+                if (100 == obj.getInt("code")) {
+                    List<FaqInfo> list = new ArrayList<>();
+                    JSONArray data = obj.getJSONArray("data");
+                    for (int i = 0; i < data.length(); i++) {
+                        try {
+                            JSONObject json = data.getJSONObject(i);
+                            FaqInfo faqInfo = new FaqInfo();
+                            faqInfo.question = "故障：" + Code.getMessage(Utils.parseInt(json.optString("code")), -1, 0);
+                            faqInfo.answer = json.optString("content");
+                            mVideoError = faqInfo.answer;
+                            list.add(faqInfo);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (callback != null) {
+                        callback.onCallBack(true, list);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //54:33:cb:66:b4:1f
 //    ac:cf:5c:18:ff:d5
     public DeviceInfo createDeviceInfo() {
@@ -460,7 +493,7 @@ public class HomeBiz {
             info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
         }
         info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
-        info.mac = NetworkUtils.getMac(mContext)/*"54:33:cb:66:b4:1f"*/;//todo test mac
+        info.mac = /*NetworkUtils.getMac(mContext)*/"54:33:cb:66:b4:1f";//todo test mac
         info.dns = NetworkUtils.getDns1();
         info.phoneType = Build.MODEL;
         info.system = "Android_" + Build.VERSION.SDK_INT;
@@ -493,6 +526,44 @@ public class HomeBiz {
                 }
             }
         });
+    }
+
+    public void getDeepData(final Callback callback) {
+        ThreadManager.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mDeviceInfo == null) {
+                    mDeviceInfo = createDeviceInfo();
+                }
+                boolean success = false;
+                String ret = HttpHelper.getInstance().get(String.format(DEEP_URL, Server.HOST, mDeviceInfo.mac));
+                if (!TextUtils.isEmpty(ret)) {
+                    try {
+                        JSONObject obj = new JSONObject(ret);
+                        JSONObject data = obj.getJSONObject("data");
+                        Server.PING_AP = pick(data.optString("wifi_ip"));
+                        Server.PING_ROUTER = pick(data.optString("2901_ip"));
+                        Server.PING_SANGFOR = pick(data.optString("sangfor_ip"));
+                        Server.PING_ISP = pick(data.optString("isp_ip"));
+                        success = true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (callback != null) {
+                    callback.onCallBack(success);
+                }
+            }
+        });
+    }
+
+    public String pick(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            if (text.contains(",")) {
+                return text.split(",")[0];
+            }
+        }
+        return text;
     }
 
     public void setDeviceInfo(DeviceInfo mDeviceInfo) {

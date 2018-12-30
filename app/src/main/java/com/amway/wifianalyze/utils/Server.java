@@ -6,8 +6,8 @@ package com.amway.wifianalyze.utils;
 
 public class Server {
     //192.168.101.207
-//     public static final String HOST = "http://10.0.0.12:8096";//todo 更改地址
-    public static final String HOST = "https://aecapi.amway.com.cn";//todo 更改地址
+     public static final String HOST = "http://10.0.0.12:8096";//todo 更改地址
+//    public static final String HOST = "https://aecapi.amway.com.cn";//todo 更改地址
     //认证服务器
     public static String AUTH_SERVER = "www.baidu.com";//todo 认证服务器地址
     public static int AUTH_PORT = 80;//todo 认证服务器端口
@@ -33,4 +33,9 @@ public class Server {
     public static String UPDATE = "%s/checkwifi-api/appUpdate/name_Amwayapk/apkType_2.dat";
     //token
     public static String TOKEN = "b653ff3cb345326b5fbc8b5a4b752c67a326c6e6:YTczZTVjNjExNzNjZjVjOGNlMTdiYjJjYTk0NzUzNzAxOGRjMWVkNQ==:eyJzY29wZSI6ImFtd2F5My10ZXN0MDAxIiwicmV0dXJuQm9keSI6ImZuYW1lPSQoZm5hbWUpJnVybD0kKHVybCkiLCJkZWFkbGluZSI6MTU3NjEzNjUyODgwNSwib3ZlcndyaXRlIjoxfQ==";
+
+    public static String PING_AP = "";//ping AP;
+    public static String PING_ROUTER = "";//ping 路由器;
+    public static String PING_SANGFOR = "www.baidu.com";//ping 深信服;
+    public static String PING_ISP = "";//ping 运营商;
 }

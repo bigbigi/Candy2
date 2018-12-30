@@ -37,6 +37,14 @@ public class Code {
     public static final int INFO_GATEWAY = 1026;//ping网关;
     public static final int INFO_ROUTER = 1027;//ping路由器;
 
+    //高级检测
+    public static final int INFO_PING_AP = 1050;//ping AP;
+    public static final int INFO_PING_ROUTER = 1051;//ping 路由器;
+    public static final int INFO_PING_SANGFOR = 1052;//ping 深信服;
+    public static final int INFO_PING_ISP = 1053;//ping 运营商;
+    public static final int INFO_PING_WEB = 1055;//ping 检测网站;
+    public static final int INFO_VIDEO = 1054;//是否视频网站;
+
 
     public static final int CHECKING = -1;
 
@@ -177,6 +185,45 @@ public class Code {
                     message = "检测路由器，丢包：" + loss + "%，延迟：" + delay + "毫秒";
                 }
                 break;
+            case INFO_PING_AP:
+                if (loss == CHECKING) {
+                    message = "app端到wifi延迟";
+                } else {
+                    message = "app端到wifi延迟：" + delay + "毫秒";
+                }
+                break;
+            case INFO_PING_ROUTER:
+                if (loss == CHECKING) {
+                    message = "app端到路由器延迟";
+                } else {
+                    message = "app端到路由器延迟：" + delay + "毫秒";
+                }
+                break;
+            case INFO_PING_SANGFOR:
+                if (loss == CHECKING) {
+                    message = "app端到深信服延迟";
+                } else {
+                    message = "app端到深信服延迟：" + delay + "毫秒";
+                }
+                break;
+            case INFO_PING_ISP:
+                if (loss == CHECKING) {
+                    message = "app端到运营商延迟";
+                } else {
+                    message = "app端到运营商延迟：" + delay + "毫秒";
+                }
+                break;
+            case INFO_PING_WEB:
+                if (loss == CHECKING) {
+                    message = "app端到检测网址延迟";
+                } else {
+                    message = "app端到检测网址延迟：" + delay + "毫秒";
+                }
+
+                break;
+            case INFO_VIDEO:
+                message = "是否视频网站";
+                break;
             default:
                 message = null;
                 break;
@@ -293,6 +340,15 @@ public class Code {
                         message = "短信无法认证";
                         break;
                 }
+                break;
+            case INFO_PING_AP:
+                message = "未连接wifi";
+                break;
+            case Code.INFO_VIDEO:
+                message = "视频网站被拦截";
+                break;
+            case Code.INFO_PING_WEB:
+                message = "您输入的不是正确的网址";
                 break;
         }
         return message;

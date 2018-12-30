@@ -2,7 +2,6 @@ package com.amway.wifianalyze.home;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
@@ -11,18 +10,14 @@ import android.view.ViewGroup;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseActivity;
 import com.amway.wifianalyze.deepDetect.DeepDetectFragment;
-import com.amway.wifianalyze.deepDetect.DeepDetectPresenter;
+import com.amway.wifianalyze.deepDetect.DeepDetectPresenterImpl;
 import com.amway.wifianalyze.feedback.FeedbackFrag;
 import com.amway.wifianalyze.feedback.FeedbackPresenterImpl;
 import com.amway.wifianalyze.lib.util.DevicesUtils;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
-import com.amway.wifianalyze.lib.util.Utils;
 import com.amway.wifianalyze.speed.SpeedFrag;
 import com.amway.wifianalyze.speed.SpeedPresenterImpl;
 import com.amway.wifianalyze.speed.SpeedResultFrag;
-import com.amway.wifianalyze.utils.PermissionUtil;
-
-import java.util.List;
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener {
 
@@ -80,7 +75,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
         } else if (v.getId() == R.id.tab_deep_detect) {
             if (mDeepDetectFragment == null) {
                 mDeepDetectFragment = DeepDetectFragment.newInstance(null);
-                new DeepDetectPresenter((DeepDetectFragment) mDeepDetectFragment);
+                new DeepDetectPresenterImpl((DeepDetectFragment) mDeepDetectFragment);
             }
             showFragment(mDeepDetectFragment, DeepDetectFragment.TAG);
         }

@@ -80,7 +80,7 @@ public class DetectAdapter extends BaseAdapter<DetectResult, DetectAdapter.TextH
     }
 
 
-    class TextHolder extends RecyclerView.ViewHolder {
+    public class TextHolder extends RecyclerView.ViewHolder {
         public TextView text;
         public TextView result;
         public ImageView icon;

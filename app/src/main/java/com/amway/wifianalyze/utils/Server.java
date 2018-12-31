@@ -6,8 +6,8 @@ package com.amway.wifianalyze.utils;
 
 public class Server {
     //192.168.101.207
-     public static final String HOST = "http://10.0.0.12:8096";//todo 更改地址
-//    public static final String HOST = "https://aecapi.amway.com.cn";//todo 更改地址
+//     public static final String HOST = "http://10.0.0.12:8096";//todo 更改地址
+    public static final String HOST = "https://aecapi.amway.com.cn";//todo 更改地址
     //认证服务器
     public static String AUTH_SERVER = "www.baidu.com";//todo 认证服务器地址
     public static int AUTH_PORT = 80;//todo 认证服务器端口

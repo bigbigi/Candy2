@@ -141,9 +141,6 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
         mView.onCheckStop(0, 0);
     }
 
-//    private void onStop() {
-//        mView.onCheckStop();
-//    }
 
     @Override
     public void onResult(int what, int loss, int delay) {

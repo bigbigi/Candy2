@@ -3,12 +3,13 @@ package com.amway.wifianalyze.speed;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -230,6 +231,41 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
             }
         });
 
+    }
+
+    private void go2Result(final float download, final float upload) {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("big", "go2Result");
+                if (isShow() && HomeBiz.getInstance(getContext()).mCurrentFrag instanceof SpeedFrag) {
+                    FragmentManager fragmentManager = mSpeedPresenter.getFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.hide(fragmentManager.findFragmentByTag(SpeedFrag.TAG));
+
+                    Fragment resultFrag = fragmentManager.findFragmentByTag(SpeedResultFrag.TAG);
+                    if (resultFrag != null) {
+                        transaction.remove(resultFrag);
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putFloat("download", download);
+                    bundle.putFloat("upload", upload);
+                    resultFrag = SpeedResultFrag.newInstance(bundle);
+                    if (!resultFrag.isAdded()) {
+                        transaction.add(R.id.container, resultFrag, SpeedResultFrag.TAG);
+                    } else {
+                        transaction.show(resultFrag);
+                    }
+                    transaction.commitAllowingStateLoss();
+                    HomeBiz.getInstance(getContext()).mCurrentFrag = resultFrag;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onCheckFinish(float download, float upload) {
+        go2Result(download, upload);
     }
 
     @Override

@@ -14,6 +14,8 @@ public interface SpeedContract extends BaseContract {
         void updateSpeed(float speed, boolean download);
 
         boolean isShow();
+
+        void onCheckFinish(final float download, final float upload);
     }
 
     abstract class SpeedPresenter extends BasePresenterImpl<SpeedView> {
@@ -22,6 +24,8 @@ public interface SpeedContract extends BaseContract {
         }
 
         public abstract void init(FragmentManager fragmentManager);
+
+        public abstract FragmentManager getFragmentManager();
 
         public abstract void getSpeed();
 

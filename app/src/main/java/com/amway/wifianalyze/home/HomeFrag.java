@@ -85,11 +85,11 @@ public class HomeFrag extends BaseFragment implements
     private View mSpeedResultLayout;
     private TextView mAdviceText;
     private View mWifiLayout;
-    private View mSpeedLayout;
     private TextView mDownloadValue;
     private TextView mUploadValue;
     private SpeedView mSpeedView;
     private TextView mDefinition;
+    private View mSpeedLoadingLayout;
 
     public void init(View content) {
         content.findViewById(R.id.barcode).setOnClickListener(this);
@@ -111,9 +111,9 @@ public class HomeFrag extends BaseFragment implements
         mAdviceText = (TextView) content.findViewById(R.id.advice);
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
-        mSpeedLayout = content.findViewById(R.id.speed_layout);
         mDefinition = (TextView) content.findViewById(R.id.speed_definition);
         mSpeedView = (SpeedView) content.findViewById(R.id.speed_level);
+        mSpeedLoadingLayout = content.findViewById(R.id.speed_loading_layout);
 //        mAdviceText.setL
         mWifiName.setText("");
         mWifiFrequence.setText("");
@@ -221,7 +221,8 @@ public class HomeFrag extends BaseFragment implements
                 startAni();
                 mAdviceLayout.setVisibility(View.GONE);
                 mSpeedResultLayout.setVisibility(View.GONE);
-                mSpeedLayout.setVisibility(View.GONE);
+                mSpeedLoadingLayout.setVisibility(View.GONE);
+                mSpeedLoadingLayout.setVisibility(View.GONE);
                 mSpeedPresenter.release();
                 mAdapter.getData().clear();
                 mAdapter.notifyDataSetChanged();
@@ -272,7 +273,7 @@ public class HomeFrag extends BaseFragment implements
             ThreadManager.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mSpeedLayout.setVisibility(View.VISIBLE);
+                    mSpeedLoadingLayout.setVisibility(View.VISIBLE);
                 }
             });
             mSpeedPresenter.getSpeed();
@@ -467,7 +468,7 @@ public class HomeFrag extends BaseFragment implements
             public void run() {
                 mSpeedView.setLevel(NetworkUtils.getLevel(download));
                 mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(download)));
-                mSpeedLayout.setVisibility(View.GONE);
+                mSpeedLoadingLayout.setVisibility(View.GONE);
                 mSpeedResultLayout.setVisibility(View.VISIBLE);
             }
         });

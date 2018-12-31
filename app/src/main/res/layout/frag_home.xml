@@ -69,11 +69,11 @@
             <com.autofit.widget.LinearLayout
                 android:id="@+id/advice_layout"
                 android:layout_width="696px"
-                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/bg_detect"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <include
                     layout="@layout/ly_wifi"
@@ -153,6 +153,19 @@
 
             </com.autofit.widget.RelativeLayout>
 
+            <com.autofit.widget.TextView
+                android:id="@+id/speed_loading_layout"
+                android:layout_width="696px"
+                android:layout_height="150px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25px"
+                android:text="正在测试您的网速..."
+                android:gravity="center"
+                android:textColor="#2b2b2b"
+                android:textSize="40px"
+                android:background="@drawable/bg_detect"
+                android:visibility="gone" />
+
             <com.autofit.widget.RelativeLayout
                 android:id="@+id/speed_result_layout"
                 android:layout_width="696px"
@@ -161,8 +174,8 @@
                 android:layout_marginTop="25px"
                 android:background="@drawable/bg_detect"
                 android:paddingLeft="50px"
-                android:visibility="gone"
-                android:paddingRight="50px">
+                android:paddingRight="50px"
+                android:visibility="gone">
 
                 <com.autofit.widget.TextView
                     android:id="@+id/speed_result_bandwidth"

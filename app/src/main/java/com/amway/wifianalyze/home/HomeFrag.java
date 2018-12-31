@@ -139,9 +139,6 @@ public class HomeFrag extends BaseFragment implements
                 && (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.FAILED
                 || mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.PASS)) {
             mWifiLayout.setVisibility(View.VISIBLE);
-            ViewGroup.LayoutParams params = mAdviceLayout.getLayoutParams();
-            params.height = 0;
-            mAdviceLayout.setLayoutParams(params);
             mWifiPresenter.start();
         }
     }

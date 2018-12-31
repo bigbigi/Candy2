@@ -29,6 +29,7 @@ import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.speed.SpeedContract;
+import com.amway.wifianalyze.speed.SpeedView;
 import com.amway.wifianalyze.utils.UpdateBiz;
 import com.autofit.widget.LinearLayout;
 import com.autofit.widget.ScreenParameter;
@@ -81,10 +82,14 @@ public class HomeFrag extends BaseFragment implements
     private TestDialog mDialog;
     private View mRadar;
     private LinearLayout mAdviceLayout;
+    private View mSpeedResultLayout;
     private TextView mAdviceText;
     private View mWifiLayout;
+    private View mSpeedLayout;
     private TextView mDownloadValue;
     private TextView mUploadValue;
+    private SpeedView mSpeedView;
+    private TextView mDefinition;
 
     public void init(View content) {
         content.findViewById(R.id.barcode).setOnClickListener(this);
@@ -102,9 +107,13 @@ public class HomeFrag extends BaseFragment implements
         mDetectApName = (TextView) mWifiLayout.findViewById(R.id.wifi_ap);
         mDetectWifiFrequence = (TextView) mWifiLayout.findViewById(R.id.wifi_frequence);
         mAdviceLayout = (LinearLayout) content.findViewById(R.id.advice_layout);
+        mSpeedResultLayout = content.findViewById(R.id.speed_result_layout);
         mAdviceText = (TextView) content.findViewById(R.id.advice);
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
+        mSpeedLayout = content.findViewById(R.id.speed_layout);
+        mDefinition = (TextView) content.findViewById(R.id.speed_definition);
+        mSpeedView = (SpeedView) content.findViewById(R.id.speed_level);
 //        mAdviceText.setL
         mWifiName.setText("");
         mWifiFrequence.setText("");
@@ -213,6 +222,9 @@ public class HomeFrag extends BaseFragment implements
             public void run() {
                 if (isFinishing()) return;
                 startAni();
+                mAdviceLayout.setVisibility(View.GONE);
+                mSpeedResultLayout.setVisibility(View.GONE);
+                mSpeedLayout.setVisibility(View.GONE);
                 mSpeedPresenter.release();
                 mAdapter.getData().clear();
                 mAdapter.notifyDataSetChanged();
@@ -257,6 +269,12 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onStopCheck() {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSpeedLayout.setVisibility(View.VISIBLE);
+            }
+        });
         mSpeedPresenter.getSpeed();
     }
 
@@ -269,11 +287,7 @@ public class HomeFrag extends BaseFragment implements
         }
         mWifiLayout.setVisibility(View.GONE);
         mAdviceText.setText(sb.toString());
-        mAdviceLayout.setLayoutCount(10);
-        ViewGroup.LayoutParams params = mAdviceLayout.getLayoutParams();
-        params.height = -2;
-        mAdviceLayout.setLayoutParams(params);
-
+        mAdviceLayout.setVisibility(View.VISIBLE);
     }
 
 
@@ -423,7 +437,7 @@ public class HomeFrag extends BaseFragment implements
         });
     }
 
-    public void updateSpeed(final float speed,final boolean download) {
+    public void updateSpeed(final float speed, final boolean download) {
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -447,6 +461,15 @@ public class HomeFrag extends BaseFragment implements
 
 
     public void onSpeedCheckFinish(final float download, final float upload) {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSpeedView.setLevel(NetworkUtils.getLevel(download));
+                mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(download)));
+                mSpeedLayout.setVisibility(View.GONE);
+                mSpeedResultLayout.setVisibility(View.VISIBLE);
+            }
+        });
         stopAni();
         HomeBiz.getInstance(getContext()).submitDetectResult(null);
         if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {

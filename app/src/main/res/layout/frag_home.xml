@@ -61,112 +61,157 @@
             android:background="@drawable/ic_gz_tb1" />
 
         <com.autofit.widget.LinearLayout
-            android:id="@+id/advice_layout"
-            android:layout_width="696px"
-            android:layout_height="0px"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="492px"
-            android:background="@drawable/bg_detect"
-            android:orientation="vertical">
-
-            <include
-                layout="@layout/ly_wifi"
-                android:layout_width="696px"
-                android:layout_height="109px"
-                android:layout_centerHorizontal="true" />
-
-            <com.autofit.widget.TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25px"
-                android:layout_marginTop="25px"
-                android:text="解决建议"
-                android:textColor="#e70241"
-                android:textSize="24px" />
-
-            <com.autofit.widget.TextView
-                android:id="@+id/advice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25px"
-                android:layout_marginTop="24px"
-                android:lineSpacingExtra="10px"
-                android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
-                android:textColor="#e70241"
-                android:textSize="30px" />
-
-        </com.autofit.widget.LinearLayout>
-
-        <com.autofit.widget.RelativeLayout
-            android:layout_width="696px"
-            android:layout_height="230px"
-            be
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25px"
-            android:background="@drawable/bg_detect"
-            android:gravity="center_vertical">
-
-            <com.autofit.widget.TextView
-                android:id="@+id/speed_download"
-                android:layout_width="348px"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="@string/speed_prepared"
-                android:textColor="#e70241"
-                android:textSize="42px" />
-
-            <com.autofit.widget.TextView
-                android:layout_width="348px"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/speed_download"
-                android:gravity="center_horizontal"
-                android:text="@string/speed_download"
-                android:textColor="#757575"
-                android:textSize="24px" />
-
-            <com.autofit.widget.TextView
-                android:id="@+id/speed_upload"
-                android:layout_width="348px"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:gravity="center_horizontal"
-                android:text="@string/speed_prepared"
-                android:textColor="#e70241"
-                android:textSize="42px" />
-
-            <com.autofit.widget.TextView
-                android:layout_width="348px"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/speed_upload"
-                android:layout_below="@id/speed_upload"
-                android:gravity="center_horizontal"
-                android:text="@string/speed_upload"
-                android:textColor="#757575"
-                android:textSize="24px" />
-
-        </com.autofit.widget.RelativeLayout>
-
-        <com.autofit.widget.LinearLayout
-            android:layout_width="696px"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/advice_layout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="27px"
-            android:background="@drawable/bg_detect"
+            android:layout_marginTop="492px"
             android:orientation="vertical">
 
-            <include
-                android:id="@+id/wifi"
-                layout="@layout/ly_wifi"
+            <com.autofit.widget.LinearLayout
+                android:id="@+id/advice_layout"
                 android:layout_width="696px"
-                android:layout_height="109px"
-                android:layout_gravity="center_horizontal" />
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_detect"
+                android:orientation="vertical">
 
-            <com.autofit.widget.RecyclerView
-                android:id="@+id/wifiRecycler"
+                <include
+                    layout="@layout/ly_wifi"
+                    android:layout_width="696px"
+                    android:layout_height="109px"
+                    android:layout_centerHorizontal="true" />
+
+                <com.autofit.widget.TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25px"
+                    android:layout_marginTop="25px"
+                    android:text="解决建议"
+                    android:textColor="#e70241"
+                    android:textSize="24px" />
+
+                <com.autofit.widget.TextView
+                    android:id="@+id/advice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25px"
+                    android:layout_marginTop="24px"
+                    android:lineSpacingExtra="10px"
+                    android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
+                    android:textColor="#e70241"
+                    android:textSize="30px" />
+
+            </com.autofit.widget.LinearLayout>
+
+            <com.autofit.widget.RelativeLayout
+                android:id="@+id/speed_layout"
+                android:layout_width="696px"
+                android:layout_height="230px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25px"
+                android:background="@drawable/bg_detect"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <com.autofit.widget.TextView
+                    android:id="@+id/speed_download"
+                    android:layout_width="348px"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="@string/speed_prepared"
+                    android:textColor="#e70241"
+                    android:textSize="42px" />
+
+                <com.autofit.widget.TextView
+                    android:layout_width="348px"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/speed_download"
+                    android:gravity="center_horizontal"
+                    android:text="@string/speed_download"
+                    android:textColor="#757575"
+                    android:textSize="24px" />
+
+                <com.autofit.widget.TextView
+                    android:id="@+id/speed_upload"
+                    android:layout_width="348px"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_horizontal"
+                    android:text="@string/speed_prepared"
+                    android:textColor="#e70241"
+                    android:textSize="42px" />
+
+                <com.autofit.widget.TextView
+                    android:layout_width="348px"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@id/speed_upload"
+                    android:layout_below="@id/speed_upload"
+                    android:gravity="center_horizontal"
+                    android:text="@string/speed_upload"
+                    android:textColor="#757575"
+                    android:textSize="24px" />
+
+            </com.autofit.widget.RelativeLayout>
+
+            <com.autofit.widget.RelativeLayout
+                android:id="@+id/speed_result_layout"
+                android:layout_width="696px"
+                android:layout_height="275px"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="25px"
+                android:background="@drawable/bg_detect"
+                android:paddingLeft="50px"
+                android:visibility="gone"
+                android:paddingRight="50px">
+
+                <com.autofit.widget.TextView
+                    android:id="@+id/speed_result_bandwidth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="43px"
+                    android:textColor="#01305f"
+                    android:textSize="24px" />
+
+                <com.autofit.widget.TextView
+                    android:id="@+id/speed_definition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="85px"
+                    android:textColor="#002d66"
+                    android:textSize="30px" />
+
+                <com.amway.wifianalyze.speed.SpeedView
+                    android:id="@+id/speed_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="65px" />
+            </com.autofit.widget.RelativeLayout>
+
+            <com.autofit.widget.LinearLayout
                 android:layout_width="696px"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:layout_below="@id/speed_layout"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="27px"
+                android:background="@drawable/bg_detect"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/wifi"
+                    layout="@layout/ly_wifi"
+                    android:layout_width="696px"
+                    android:layout_height="109px"
+                    android:layout_gravity="center_horizontal" />
+
+                <com.autofit.widget.RecyclerView
+                    android:id="@+id/wifiRecycler"
+                    android:layout_width="696px"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" />
+
+            </com.autofit.widget.LinearLayout>
 
         </com.autofit.widget.LinearLayout>
 

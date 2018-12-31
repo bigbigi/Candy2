@@ -28,6 +28,7 @@ import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.amway.wifianalyze.speed.SpeedContract;
 import com.amway.wifianalyze.utils.UpdateBiz;
 import com.autofit.widget.LinearLayout;
 import com.autofit.widget.ScreenParameter;
@@ -51,6 +52,7 @@ import java.util.List;
 public class HomeFrag extends BaseFragment implements
         WifiContract.WifiView,
         AuthContract.AuthView,
+        SpeedContract.SpeedView,
         View.OnClickListener {
     public static final String TAG = "HomeFrag";
 
@@ -81,6 +83,8 @@ public class HomeFrag extends BaseFragment implements
     private LinearLayout mAdviceLayout;
     private TextView mAdviceText;
     private View mWifiLayout;
+    private TextView mDownloadValue;
+    private TextView mUploadValue;
 
     public void init(View content) {
         content.findViewById(R.id.barcode).setOnClickListener(this);
@@ -99,6 +103,8 @@ public class HomeFrag extends BaseFragment implements
         mDetectWifiFrequence = (TextView) mWifiLayout.findViewById(R.id.wifi_frequence);
         mAdviceLayout = (LinearLayout) content.findViewById(R.id.advice_layout);
         mAdviceText = (TextView) content.findViewById(R.id.advice);
+        mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
+        mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
 //        mAdviceText.setL
         mWifiName.setText("");
         mWifiFrequence.setText("");
@@ -164,6 +170,7 @@ public class HomeFrag extends BaseFragment implements
 
     private WifiContract.WifiPresenter mWifiPresenter;
     private AuthContract.AuthPresenter mAuthPresenter;
+    private SpeedContract.SpeedPresenter mSpeedPresenter;
 
     @Override
     public void setPresenter(BaseContract.BasePresenter presenter) {
@@ -171,6 +178,8 @@ public class HomeFrag extends BaseFragment implements
             mWifiPresenter = (WifiContract.WifiPresenter) presenter;
         } else if (presenter instanceof AuthContract.AuthPresenter) {
             mAuthPresenter = (AuthContract.AuthPresenter) presenter;
+        } else if (presenter instanceof SpeedContract.SpeedPresenter) {
+            mSpeedPresenter = (SpeedContract.SpeedPresenter) presenter;
         }
     }
 
@@ -204,6 +213,7 @@ public class HomeFrag extends BaseFragment implements
             public void run() {
                 if (isFinishing()) return;
                 startAni();
+                mSpeedPresenter.release();
                 mAdapter.getData().clear();
                 mAdapter.notifyDataSetChanged();
             }
@@ -247,27 +257,7 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onStopCheck() {
-        stopAni();
-        HomeBiz.getInstance(getContext()).submitDetectResult(null);
-        if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {
-            mWifiPresenter.stop(WifiContract.WifiPresenter.Status.FAILED);
-            HomeBiz.getInstance(getContext()).getFaq(new Callback<List<FaqInfo>>() {
-                @Override
-                public void onCallBack(boolean success, final List<FaqInfo>[] t) {
-                    if (success) {
-                        ThreadManager.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isFinishing()) return;
-                                showFaq(t[0]);
-                            }
-                        });
-                    }
-                }
-            });
-        } else {
-            mWifiPresenter.stop(WifiContract.WifiPresenter.Status.PASS);
-        }
+        mSpeedPresenter.getSpeed();
     }
 
     private FAQDialog mFaqDialog;
@@ -432,4 +422,52 @@ public class HomeFrag extends BaseFragment implements
             }
         });
     }
+
+    public void updateSpeed(final float speed,final boolean download) {
+        ThreadManager.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishing()) return;
+                if (download) {
+                    mUploadValue.setText(R.string.speed_prepared);
+                    mDownloadValue.setText(NetworkUtils.getSpeed(speed));
+                    HomeBiz.getInstance(getContext()).mDownloadSpeed = speed;
+                } else {
+                    mUploadValue.setText(NetworkUtils.getSpeed(speed));
+                    HomeBiz.getInstance(getContext()).mUploadSpeed = speed;
+                }
+            }
+        });
+    }
+
+
+    public boolean isShow() {
+        return isVisible();
+    }
+
+
+    public void onSpeedCheckFinish(final float download, final float upload) {
+        stopAni();
+        HomeBiz.getInstance(getContext()).submitDetectResult(null);
+        if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {
+            mWifiPresenter.stop(WifiContract.WifiPresenter.Status.FAILED);
+            HomeBiz.getInstance(getContext()).getFaq(new Callback<List<FaqInfo>>() {
+                @Override
+                public void onCallBack(boolean success, final List<FaqInfo>[] t) {
+                    if (success) {
+                        ThreadManager.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isFinishing()) return;
+                                showFaq(t[0]);
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+            mWifiPresenter.stop(WifiContract.WifiPresenter.Status.PASS);
+        }
+    }
+
 }

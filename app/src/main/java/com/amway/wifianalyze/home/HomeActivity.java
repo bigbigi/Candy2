@@ -57,6 +57,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener {
                 mDetectFragment = HomeFrag.newInstance(null);
                 new WifiPresenterImpl((HomeFrag) mDetectFragment);
                 new AuthPresenterImpl((HomeFrag) mDetectFragment);
+                new SpeedPresenterImpl((HomeFrag) mDetectFragment).init(getSupportFragmentManager());
             }
             showFragment(mDetectFragment, HomeFrag.TAG);
         } else if (v.getId() == R.id.tab_speed) {

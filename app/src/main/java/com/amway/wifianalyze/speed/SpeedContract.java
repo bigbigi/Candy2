@@ -15,7 +15,7 @@ public interface SpeedContract extends BaseContract {
 
         boolean isShow();
 
-        void onCheckFinish(final float download, final float upload);
+        void onSpeedCheckFinish(final float download, final float upload);
     }
 
     abstract class SpeedPresenter extends BasePresenterImpl<SpeedView> {

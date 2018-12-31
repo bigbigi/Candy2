@@ -264,7 +264,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
     }
 
     @Override
-    public void onCheckFinish(float download, float upload) {
+    public void onSpeedCheckFinish(float download, float upload) {
         go2Result(download, upload);
     }
 

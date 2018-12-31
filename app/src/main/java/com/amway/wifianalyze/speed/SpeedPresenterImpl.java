@@ -66,7 +66,7 @@ public class SpeedPresenterImpl extends SpeedContract.SpeedPresenter {
                             }
 
                         });
-                        mView.onCheckFinish(download,upload);
+                        mView.onSpeedCheckFinish(download,upload);
                     }
                 }
             }

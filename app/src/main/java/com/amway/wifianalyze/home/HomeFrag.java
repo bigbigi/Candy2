@@ -269,13 +269,17 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onStopCheck() {
-        ThreadManager.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mSpeedLayout.setVisibility(View.VISIBLE);
-            }
-        });
-        mSpeedPresenter.getSpeed();
+        if (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.CONNECTING) {
+            stop();
+        } else {
+            ThreadManager.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mSpeedLayout.setVisibility(View.VISIBLE);
+                }
+            });
+            mSpeedPresenter.getSpeed();
+        }
     }
 
     private FAQDialog mFaqDialog;
@@ -470,6 +474,10 @@ public class HomeFrag extends BaseFragment implements
                 mSpeedResultLayout.setVisibility(View.VISIBLE);
             }
         });
+        stop();
+    }
+
+    private void stop() {
         stopAni();
         HomeBiz.getInstance(getContext()).submitDetectResult(null);
         if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {

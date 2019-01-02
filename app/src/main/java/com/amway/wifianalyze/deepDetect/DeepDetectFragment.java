@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.graphics.drawable.AnimationDrawable;
 
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
@@ -59,7 +60,8 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
         mUrlEditTextView = (EditText) content.findViewById(R.id.deep_url);
         mAdviceText = (TextView) content.findViewById(R.id.advice);
         mDestinationText = (TextView) content.findViewById(R.id.deep_destination);
-
+        AnimationDrawable drawable= (AnimationDrawable)content.findViewById(R.id.deep_loading).getBackground();
+        drawable.start();
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new DetectAdapter(getContext());

@@ -1,11 +1,13 @@
 package com.amway.wifianalyze.deepDetect;
 
 import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.lib.listener.Callback;
+import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.Server;
@@ -68,8 +70,9 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
     }
 
     private void pingRouter() {
+        WifiManager wifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         mView.onChecking(Code.INFO_PING_ROUTER);
-        mTraceroute.executeTraceroute(Server.PING_ROUTER, Code.INFO_PING_ROUTER, null);
+        mTraceroute.executeTraceroute(NetworkUtils.intToIp(wifiManager.getDhcpInfo().gateway), Code.INFO_PING_ROUTER, null);
     }
 
     private void pingSangfor() {

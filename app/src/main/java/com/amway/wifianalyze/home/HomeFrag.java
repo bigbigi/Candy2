@@ -267,7 +267,8 @@ public class HomeFrag extends BaseFragment implements
 
     @Override
     public void onStopCheck() {
-        if (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.CONNECTING) {
+        if (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.CONNECTING
+                ||mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.SCAN) {
             stop();
         } else {
             ThreadManager.runOnUiThread(new Runnable() {

@@ -92,12 +92,12 @@
                 android:textColor="#000"
                 android:textSize="62px" />
 
-            <com.autofit.widget.ProgressBar
+            <com.autofit.widget.View
+                android:id="@+id/deep_loading"
                 android:layout_width="134px"
                 android:layout_height="26px"
-                android:layout_centerInParent="true"
-                android:indeterminateDrawable="@drawable/ani_deep_loading"
-                android:indeterminateDuration="1200" />
+                android:background="@drawable/ani_deep_loading"
+                android:layout_centerInParent="true" />
 
             <com.autofit.widget.TextView
                 android:id="@+id/deep_destination"

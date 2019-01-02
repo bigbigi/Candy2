@@ -114,7 +114,11 @@ public class SpeedChecker {
                             }
                             FileUtils.closeIO(inputStream);
                         }
-                        response.close();
+                        if(response!=null){
+                            response.close();
+                        }else{
+                            break;
+                        }
                     }
                     try {
                         synchronized (mStopTagDownload) {
@@ -178,6 +182,14 @@ public class SpeedChecker {
             @Override
             public void onFailure(OperationMessage operationMessage) {
                 Log.d(TAG, "onFailure:" + operationMessage.getMessage());
+                try {
+                    synchronized (mStopTagUpload) {
+                        mStopTagUpload.set(true);
+                        mStopTagUpload.notifyAll();
+                    }
+                } catch (Exception e) {
+                    Log.i(TAG, "Exception:" + e.getMessage());
+                }
             }
 
             @Override

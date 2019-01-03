@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.autofit.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.autofit.widget.View
+        android:layout_width="12px"
+        android:layout_height="12px"
+        android:layout_marginTop="16px"
+        android:layout_marginLeft="14px"
+        android:background="@drawable/ic_dot" />
+
+    <com.autofit.widget.TextView
+        android:id="@+id/item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14px"
+        android:lineSpacingExtra="10px"
+        android:text="lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
+        android:textColor="#e70241"
+        android:textSize="30px" />
+</com.autofit.widget.LinearLayout>
+
+
+

@@ -83,7 +83,8 @@ public class HomeFrag extends BaseFragment implements
     private View mRadar;
     private LinearLayout mAdviceLayout;
     private View mSpeedResultLayout;
-    private TextView mAdviceText;
+    private RecyclerView mAdviceRecycler;
+    private AdviceAdapter mAdviceAdapter;
     private View mWifiLayout;
     private TextView mDownloadValue;
     private TextView mUploadValue;
@@ -108,13 +109,16 @@ public class HomeFrag extends BaseFragment implements
         mDetectWifiFrequence = (TextView) mWifiLayout.findViewById(R.id.wifi_frequence);
         mAdviceLayout = (LinearLayout) content.findViewById(R.id.advice_layout);
         mSpeedResultLayout = content.findViewById(R.id.speed_result_layout);
-        mAdviceText = (TextView) content.findViewById(R.id.advice);
+        mAdviceRecycler = (RecyclerView) content.findViewById(R.id.advice);
+        mAdviceRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        mAdviceAdapter = new AdviceAdapter();
+        mAdviceRecycler.setAdapter(mAdviceAdapter);
+
         mDownloadValue = (TextView) content.findViewById(R.id.speed_download);
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mDefinition = (TextView) content.findViewById(R.id.speed_definition);
         mSpeedView = (SpeedView) content.findViewById(R.id.speed_level);
         mSpeedLoadingLayout = content.findViewById(R.id.speed_loading_layout);
-//        mAdviceText.setL
         mWifiName.setText("");
         mWifiFrequence.setText("");
         mDetectWifiName.setText("");
@@ -226,6 +230,8 @@ public class HomeFrag extends BaseFragment implements
                 mSpeedPresenter.release();
                 mAdapter.getData().clear();
                 mAdapter.notifyDataSetChanged();
+                mAdviceAdapter.getData().clear();
+                mAdviceAdapter.notifyDataSetChanged();
             }
         });
 
@@ -268,7 +274,7 @@ public class HomeFrag extends BaseFragment implements
     @Override
     public void onStopCheck() {
         if (mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.CONNECTING
-                ||mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.SCAN) {
+                || mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.SCAN) {
             stop();
         } else {
             ThreadManager.runOnUiThread(new Runnable() {
@@ -284,13 +290,9 @@ public class HomeFrag extends BaseFragment implements
     private FAQDialog mFaqDialog;
 
     private void showFaq(List<FaqInfo> list) {
-        StringBuffer sb = new StringBuffer();
-        for (FaqInfo info : list) {
-            sb.append(info.answer).append("\n");
-        }
         mWifiLayout.setVisibility(View.GONE);
-        mAdviceText.setText(sb.toString());
         mAdviceLayout.setVisibility(View.VISIBLE);
+        mAdviceAdapter.setData(list);
     }
 
 

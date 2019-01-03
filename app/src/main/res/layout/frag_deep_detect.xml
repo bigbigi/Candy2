@@ -40,8 +40,8 @@
     <com.autofit.widget.LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="408px">
+        android:layout_marginTop="408px"
+        android:orientation="vertical">
 
         <com.autofit.widget.LinearLayout
             android:id="@+id/advice_layout"
@@ -62,16 +62,17 @@
                 android:textColor="#e70241"
                 android:textSize="24px" />
 
-            <com.autofit.widget.TextView
-                android:id="@+id/advice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25px"
-                android:layout_marginTop="24px"
-                android:lineSpacingExtra="10px"
-                android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
-                android:textColor="#e70241"
-                android:textSize="30px" />
+
+             <com.autofit.widget.TextView
+                 android:id="@+id/advice"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_marginLeft="25px"
+                 android:layout_marginTop="24px"
+                 android:lineSpacingExtra="10px"
+                 android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
+                 android:textColor="#e70241"
+                 android:textSize="30px" />
 
         </com.autofit.widget.LinearLayout>
 
@@ -85,9 +86,9 @@
             <com.autofit.widget.TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="110px"
                 android:gravity="left|center_vertical"
-                android:layout_centerVertical="true"
                 android:text="APP"
                 android:textColor="#000"
                 android:textSize="62px" />
@@ -96,8 +97,8 @@
                 android:id="@+id/deep_loading"
                 android:layout_width="134px"
                 android:layout_height="26px"
-                android:background="@drawable/ani_deep_loading"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:background="@drawable/ani_deep_loading" />
 
             <com.autofit.widget.TextView
                 android:id="@+id/deep_destination"

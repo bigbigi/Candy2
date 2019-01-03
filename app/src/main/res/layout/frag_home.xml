@@ -90,16 +90,12 @@
                     android:textColor="#e70241"
                     android:textSize="24px" />
 
-                <com.autofit.widget.TextView
+                <com.autofit.widget.RecyclerView
                     android:id="@+id/advice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="25px"
                     android:layout_marginTop="24px"
-                    android:lineSpacingExtra="10px"
-                    android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
-                    android:textColor="#e70241"
-                    android:textSize="30px" />
+                    android:paddingBottom="5px"/>
 
             </com.autofit.widget.LinearLayout>
 
@@ -159,11 +155,11 @@
                 android:layout_height="150px"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25px"
-                android:text="正在测试您的网速..."
+                android:background="@drawable/bg_detect"
                 android:gravity="center"
+                android:text="正在测试您的网速..."
                 android:textColor="#2b2b2b"
                 android:textSize="40px"
-                android:background="@drawable/bg_detect"
                 android:visibility="gone" />
 
             <com.autofit.widget.RelativeLayout

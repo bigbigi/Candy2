@@ -422,15 +422,18 @@ public class HomeBiz {
                             JSONObject obj = new JSONObject(ret);
                             if (100 == obj.getInt("code")) {
                                 List<FaqInfo> list = new ArrayList<>();
-//                                list.add(new FaqInfo());
                                 JSONArray data = obj.getJSONArray("data");
+                                ArrayList<String> temp = new ArrayList<>();
                                 for (int i = 0; i < data.length(); i++) {
                                     try {
                                         JSONObject json = data.getJSONObject(i);
                                         FaqInfo faqInfo = new FaqInfo();
                                         faqInfo.question = "故障：" + Code.getMessage(Utils.parseInt(json.optString("code")), -1, 0);
-                                        faqInfo.answer = (i + 1) + "、" + json.optString("content");
-                                        list.add(faqInfo);
+                                        faqInfo.answer = json.optString("content");
+                                        if (!temp.contains(faqInfo.answer)) {
+                                            list.add(faqInfo);
+                                            temp.add(faqInfo.answer);
+                                        }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }

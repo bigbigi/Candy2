@@ -3,6 +3,7 @@ package com.amway.wifianalyze.deepDetect;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.home.HomeBiz;
@@ -47,10 +48,16 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
             mTraceroute.setOnTraceRouteListener(this);
         }
         mView.onCheckStart();
-        if (!TextUtils.isEmpty(url) && !Utils.isUrl(url)) {
-            mView.onCheckStop(Code.INFO_PING_WEB, Code.ERR_MSG);
-            return;
+        if (!TextUtils.isEmpty(url)) {
+            if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                url = "http://" + url;
+            }
+            if (!Utils.isUrl(url)) {
+                mView.onCheckStop(Code.INFO_PING_WEB, Code.ERR_MSG);
+                return;
+            }
         }
+        Log.d("big","url:"+url);
         HomeBiz.getInstance(context).getDeepData(new Callback() {
             @Override
             public void onCallBack(boolean success, Object[] t) {

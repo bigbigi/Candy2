@@ -502,23 +502,24 @@ public class HomeFrag extends BaseFragment implements
         HomeBiz.getInstance(getContext()).submitDetectResult(null);
         if (HomeBiz.getInstance(getContext()).mErrors.size() > 0) {
             mWifiPresenter.stop(WifiContract.WifiPresenter.Status.FAILED);
-            HomeBiz.getInstance(getContext()).getFaq(new Callback<List<FaqInfo>>() {
-                @Override
-                public void onCallBack(boolean success, final List<FaqInfo>[] t) {
-                    if (success) {
-                        ThreadManager.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isFinishing()) return;
-                                showFaq(t[0]);
-                            }
-                        });
-                    }
-                }
-            });
         } else {
             mWifiPresenter.stop(WifiContract.WifiPresenter.Status.PASS);
+            HomeBiz.getInstance(getContext()).mErrors.add(0);
         }
+        HomeBiz.getInstance(getContext()).getFaq(new Callback<List<FaqInfo>>() {
+            @Override
+            public void onCallBack(boolean success, final List<FaqInfo>[] t) {
+                if (success) {
+                    ThreadManager.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isFinishing()) return;
+                            showFaq(t[0]);
+                        }
+                    });
+                }
+            }
+        });
     }
 
 }

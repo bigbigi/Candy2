@@ -31,7 +31,7 @@ import com.amway.wifianalyze.lib.util.Utils;
  */
 
 public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresenter implements TracerouteWithPing.OnTraceRouteListener {
-    private static final String URL = "%s/checkwifi-api/shop/ipNodes_mac_%s.dat";
+    private static final String VIDEO_URL = "%s/checkwifi-api/checkUrl.dat";
     private TracerouteWithPing mTraceroute;
     private Context mContext;
     private String mCheckUrl;
@@ -117,7 +117,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 public void run() {
                     final JSONObject object = new JSONObject();
                     try {
-                        object.put("httpUrl", "www.baofeng.com");
+                        object.put("httpUrl", mCheckUrl);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -132,7 +132,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                             bufferedSink.writeUtf8(object.toString());
                         }
                     };
-                    String ret = HttpHelper.getInstance().postResponse("http://10.0.0.12:8096/checkwifi-api/checkUrl.dat", body);
+                    String ret = HttpHelper.getInstance().postResponse(String.format(VIDEO_URL, Server.HOST), body);
                     if (!TextUtils.isEmpty(ret)) {
                         try {
                             JSONObject obj = new JSONObject(ret);

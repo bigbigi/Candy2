@@ -104,7 +104,7 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
         list.add(new WebInfo("安利易联网", "www.amwaynet.com.cn"));
         list.add(new WebInfo("百度", "www.baidu.com"));
         list.add(new WebInfo("淘宝", "www.taobao.com.cn"));
-//        list.add(new WebInfo("腾讯", "v.qq.com"));
+        list.add(new WebInfo("腾讯", "www.qq.com"));
         mUrlAdapter.setData(list);
     }
 

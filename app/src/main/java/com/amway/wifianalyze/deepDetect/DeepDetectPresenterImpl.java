@@ -32,6 +32,8 @@ import com.amway.wifianalyze.lib.util.Utils;
 
 public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresenter implements TracerouteWithPing.OnTraceRouteListener {
     private static final String VIDEO_URL = "%s/checkwifi-api/checkUrl.dat";
+    private static final String FIREWALL_URL = "%s/checkwifi-api/shop/filterFirewall.dat?addr=%s";
+
     private TracerouteWithPing mTraceroute;
     private Context mContext;
     private String mCheckUrl;
@@ -137,7 +139,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                         try {
                             JSONObject obj = new JSONObject(ret);
                             JSONObject data = obj.getJSONObject("data");
-                            if (data.optBoolean("isSPUrl")) {
+                            if (data.optBoolean("isSPUrl") && checkFireWall()) {
                                 onException(Code.INFO_VIDEO);
                                 return;
                             }
@@ -151,6 +153,23 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
         }
         mView.onCheckStop(0, 0);
 
+    }
+
+    private boolean checkFireWall() {
+        boolean block = false;
+        String ret = HttpHelper.getInstance().get(String.format(FIREWALL_URL, Server.HOST, mCheckUrl));
+        if (!TextUtils.isEmpty(ret)) {
+            try {
+                JSONObject json = new JSONObject(ret);
+                if (json.optInt("code") == 100) {
+                    JSONObject data = json.getJSONObject("data");
+                    block = data.optBoolean(mCheckUrl);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return block;
     }
 
 

@@ -217,7 +217,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
             @Override
             public void run() {
                 if (isFinishing()) return;
-                mSpeedValue.setText(String.valueOf(speed));
+                mSpeedValue.setText(String.valueOf(speed * 8));
                 if (download) {
                     mState.setText(R.string.speed_downloading);
                     mUploadValue.setText(R.string.speed_prepared);

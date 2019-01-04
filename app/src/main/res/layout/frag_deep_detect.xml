@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25px"
                 android:layout_marginTop="25px"
-                android:text="解决建议"
+                android:text="小安提示"
                 android:textColor="#e70241"
                 android:textSize="24px" />
 

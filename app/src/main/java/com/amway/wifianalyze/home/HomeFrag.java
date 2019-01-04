@@ -3,6 +3,7 @@ package com.amway.wifianalyze.home;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,6 +83,7 @@ public class HomeFrag extends BaseFragment implements
     private TestDialog mDialog;
     private View mRadar;
     private LinearLayout mAdviceLayout;
+    private View mAdviceMan;
     private View mSpeedResultLayout;
     private RecyclerView mAdviceRecycler;
     private AdviceAdapter mAdviceAdapter;
@@ -108,6 +110,9 @@ public class HomeFrag extends BaseFragment implements
         mDetectApName = (TextView) mWifiLayout.findViewById(R.id.wifi_ap);
         mDetectWifiFrequence = (TextView) mWifiLayout.findViewById(R.id.wifi_frequence);
         mAdviceLayout = (LinearLayout) content.findViewById(R.id.advice_layout);
+        mAdviceMan = content.findViewById(R.id.advice_man);
+        AnimationDrawable drawable = (AnimationDrawable) mAdviceMan.getBackground();
+        drawable.start();
         mSpeedResultLayout = content.findViewById(R.id.speed_result_layout);
         mAdviceRecycler = (RecyclerView) content.findViewById(R.id.advice);
         mAdviceRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -224,6 +229,7 @@ public class HomeFrag extends BaseFragment implements
                 if (isFinishing()) return;
                 startAni();
                 mAdviceLayout.setVisibility(View.GONE);
+                mAdviceMan.setVisibility(View.GONE);
                 mSpeedResultLayout.setVisibility(View.GONE);
                 mSpeedLoadingLayout.setVisibility(View.GONE);
                 mSpeedLoadingLayout.setVisibility(View.GONE);
@@ -287,11 +293,11 @@ public class HomeFrag extends BaseFragment implements
         }
     }
 
-    private FAQDialog mFaqDialog;
 
     private void showFaq(List<FaqInfo> list) {
         mWifiLayout.setVisibility(View.GONE);
         mAdviceLayout.setVisibility(View.VISIBLE);
+        mAdviceMan.setVisibility(View.VISIBLE);
         mAdviceAdapter.setData(list);
     }
 

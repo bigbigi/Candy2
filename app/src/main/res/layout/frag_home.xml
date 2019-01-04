@@ -66,12 +66,21 @@
             android:layout_marginTop="492px"
             android:orientation="vertical">
 
+            <com.autofit.widget.View
+                android:id="@+id/advice_man"
+                android:layout_width="750px"
+                android:layout_height="160px"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/ani_xiaoan"
+                android:layout_marginBottom="-60px"/>
+
             <com.autofit.widget.LinearLayout
                 android:id="@+id/advice_layout"
                 android:layout_width="696px"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/bg_detect"
+                android:background="@drawable/bg_advice"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -86,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="25px"
                     android:layout_marginTop="25px"
-                    android:text="解决建议"
+                    android:text="小安提示"
                     android:textColor="#e70241"
                     android:textSize="24px" />
 
@@ -95,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24px"
-                    android:paddingBottom="5px"/>
+                    android:paddingBottom="5px" />
 
             </com.autofit.widget.LinearLayout>
 

@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.ScrollView;
+import android.widget.Scroller;
 import android.widget.Toast;
 
 import com.amway.wifianalyze.R;
@@ -93,13 +95,20 @@ public class HomeFrag extends BaseFragment implements
     private SpeedView mSpeedView;
     private TextView mDefinition;
     private View mSpeedLoadingLayout;
+    private ScrollView mScrollView;
 
     public void init(View content) {
         content.findViewById(R.id.barcode).setOnClickListener(this);
         content.findViewById(R.id.scan_barcode).setOnClickListener(this);
+        mScrollView = (ScrollView) content.findViewById(R.id.home_scroll);
         mRadar = content.findViewById(R.id.detect_radar);
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         mAdapter = new DetectAdapter(getContext());
         mRecyclerView.setAdapter(mAdapter);
         mWifiName = (TextView) content.findViewById(R.id.wifi_name);
@@ -149,6 +158,10 @@ public class HomeFrag extends BaseFragment implements
                 || mWifiPresenter.getStatus() == WifiContract.WifiPresenter.Status.PASS)) {
             mWifiLayout.setVisibility(View.VISIBLE);
             mWifiPresenter.start();
+        }
+        if (!hidden && mScrollView != null) {
+            Log.e(TAG, "scrollTo:" + mScrollView.getScrollY());
+            mScrollView.scrollTo(0, 0);
         }
     }
 

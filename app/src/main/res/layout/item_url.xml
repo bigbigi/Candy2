@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.autofit.widget.TextView
+        android:id="@+id/item_text"
+        android:layout_width="194px"
+        android:layout_height="56px"
+        android:layout_gravity="center"
+        android:background="@drawable/bg_url"
+        android:gravity="center"
+        android:textColor="#002e5e"
+        android:textSize="30px" />
+</FrameLayout>
+
+
+
+

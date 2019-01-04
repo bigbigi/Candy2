@@ -25,12 +25,20 @@
         android:textColorHint="#002e67"
         android:textSize="36px" />
 
+    <com.autofit.widget.RecyclerView
+        android:id="@+id/url_recycler"
+        android:layout_width="750px"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="288px" />
+
     <com.autofit.widget.TextView
         android:id="@+id/deep_check"
         android:layout_width="696px"
         android:layout_height="66px"
+        android:layout_below="@id/url_recycler"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="290px"
+        android:layout_marginTop="33px"
         android:background="@drawable/bg_submint_sel"
         android:gravity="center"
         android:text="开始检测"
@@ -40,7 +48,7 @@
     <com.autofit.widget.LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="408px"
+        android:layout_marginTop="580px"
         android:orientation="vertical">
 
         <com.autofit.widget.LinearLayout
@@ -63,16 +71,16 @@
                 android:textSize="24px" />
 
 
-             <com.autofit.widget.TextView
-                 android:id="@+id/advice"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_marginLeft="25px"
-                 android:layout_marginTop="24px"
-                 android:lineSpacingExtra="10px"
-                 android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
-                 android:textColor="#e70241"
-                 android:textSize="30px" />
+            <com.autofit.widget.TextView
+                android:id="@+id/advice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25px"
+                android:layout_marginTop="24px"
+                android:lineSpacingExtra="10px"
+                android:text="1/lksdjflkskldfsd\n2slfklsdjfklasjdfsd"
+                android:textColor="#e70241"
+                android:textSize="30px" />
 
         </com.autofit.widget.LinearLayout>
 

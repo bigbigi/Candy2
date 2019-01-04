@@ -1,8 +1,10 @@
 package com.amway.wifianalyze.deepDetect;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -22,6 +24,10 @@ import com.amway.wifianalyze.home.DetectAdapter;
 import com.amway.wifianalyze.home.DetectResult;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.lib.util.ThreadManager;
+import com.autofit.widget.ScreenParameter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by big on 2018/12/29.
@@ -46,7 +52,9 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
     }
 
     private RecyclerView mRecyclerView;
+    private RecyclerView mUrlRecycler;
     private DetectAdapter mAdapter;
+    private UrlAdapter mUrlAdapter;
     private View mAdviceLayout;
     private View mLoadingLayout;
     private EditText mUrlEditTextView;
@@ -60,7 +68,7 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
         mUrlEditTextView = (EditText) content.findViewById(R.id.deep_url);
         mAdviceText = (TextView) content.findViewById(R.id.advice);
         mDestinationText = (TextView) content.findViewById(R.id.deep_destination);
-        AnimationDrawable drawable= (AnimationDrawable)content.findViewById(R.id.deep_loading).getBackground();
+        AnimationDrawable drawable = (AnimationDrawable) content.findViewById(R.id.deep_loading).getBackground();
         drawable.start();
         mRecyclerView = (RecyclerView) content.findViewById(R.id.wifiRecycler);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -73,6 +81,31 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
                 mPresenter.start(getContext(), String.valueOf(mUrlEditTextView.getText()));
             }
         });
+        mUrlRecycler = (RecyclerView) content.findViewById(R.id.url_recycler);
+        mUrlRecycler.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        mUrlAdapter = new UrlAdapter();
+        mUrlRecycler.setAdapter(mUrlAdapter);
+        mUrlRecycler.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, int itemPosition, RecyclerView parent) {
+                int height = ScreenParameter.getFitWidth(mRecyclerView, 7);
+                outRect.set(0, height, 0, height);
+            }
+        });
+        mUrlAdapter.setOnItemClickListener(new UrlAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(WebInfo info) {
+                mUrlEditTextView.setText(info.url);
+            }
+        });
+        List<WebInfo> list = new ArrayList<>();
+        list.add(new WebInfo("安利官网", "www.amway.com.cn"));
+        list.add(new WebInfo("安利云购", "mall.amway.com.cn"));
+        list.add(new WebInfo("安利易联网", "www.amwaynet.com.cn"));
+        list.add(new WebInfo("百度", "www.baidu.com"));
+        list.add(new WebInfo("淘宝", "www.taobao.com.cn"));
+//        list.add(new WebInfo("腾讯", "v.qq.com"));
+        mUrlAdapter.setData(list);
     }
 
     private DeepDetectPresenterImpl mPresenter;

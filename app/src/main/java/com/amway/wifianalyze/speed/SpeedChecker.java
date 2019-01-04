@@ -82,6 +82,9 @@ public class SpeedChecker {
     }
 
     public float checkDownload(final Callback<Float> callback) {
+        if (callback != null) {
+            callback.onCallBack(true, 0f);
+        }
         init();
         final long startTime = System.currentTimeMillis();
         for (int i = 0; i < 3; i++) {

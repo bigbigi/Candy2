@@ -42,9 +42,8 @@ public class Code {
     public static final int INFO_PING_ROUTER = 1051;//ping 路由器;
     public static final int INFO_PING_SANGFOR = 1052;//ping 深信服;
     public static final int INFO_PING_ISP = 1053;//ping 运营商;
-    public static final int INFO_PING_WEB = 1055;//ping 检测网站;
-    public static final int INFO_VIDEO = 1054;//是否视频网站;
-
+    public static final int INFO_PING_WEB = 1054;//ping 检测网站;
+    public static final int INFO_VIDEO = 1055;//是否视频网站;
 
     public static final int CHECKING = -1;
 
@@ -254,6 +253,9 @@ public class Code {
     public static final int ERR_WIFI_OPEN = 3017;//未打开WIFI
     public static final int ERR_WIFI_CONNECT = 3018;//请确认连接的是店铺WIFI
 
+    public static final int ERR_WEB = 4001;//网页无法连接
+    public static final int ERR_WEB_NORESPONSE = 4002;//网页无法连接
+
 
     public static String getErrorMessage(int code, int reason, String... value) {
         if (reason == ERR_NONE || reason == ERR_QUEST) {
@@ -348,7 +350,15 @@ public class Code {
                 message = "视频网站被拦截";
                 break;
             case Code.INFO_PING_WEB:
-                message = "您输入的不是正确的网址";
+                switch (reason) {
+                    case ERR_WEB_NORESPONSE:
+                        message = "您输入的网页无响应";
+                        break;
+                    default:
+                        message = "您输入的不是正确的网址";
+                        break;
+                }
+
                 break;
         }
         return message;

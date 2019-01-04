@@ -42,7 +42,6 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
 
     public void start(Context context, String url) {
         mContext = context;
-        mCheckUrl = url;
         if (mTraceroute == null) {
             mTraceroute = new TracerouteWithPing(context);
             mTraceroute.setOnTraceRouteListener(this);
@@ -57,7 +56,8 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 return;
             }
         }
-        Log.d("big","url:"+url);
+        mCheckUrl = url;
+        Log.d("big", "url:" + url);
         HomeBiz.getInstance(context).getDeepData(new Callback() {
             @Override
             public void onCallBack(boolean success, Object[] t) {
@@ -102,6 +102,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 onResult(Code.INFO_PING_WEB, 0, delay);
             } else {
                 mView.onError(Code.INFO_PING_WEB, Code.ERR_NONE);
+                mView.onCheckStop(Code.INFO_PING_WEB, Code.ERR_WEB_NORESPONSE);
             }
         } else {
             mView.onCheckStop(0, 0);
@@ -137,7 +138,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                             JSONObject obj = new JSONObject(ret);
                             JSONObject data = obj.getJSONObject("data");
                             if (data.optBoolean("isSPUrl")) {
-                                mView.onError(Code.INFO_VIDEO, Code.ERR_NONE);
+                                onException(Code.INFO_VIDEO);
                                 return;
                             }
                         } catch (JSONException e) {
@@ -149,6 +150,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
             });
         }
         mView.onCheckStop(0, 0);
+
     }
 
 
@@ -183,9 +185,5 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
     public void onException(int what) {
         mView.onError(what, Code.ERR_NONE);
         mView.onCheckStop(what, Code.ERR_MSG);
-        //todo test
-//        onResult(what, 0, 0);
-        //todo test
-
     }
 }

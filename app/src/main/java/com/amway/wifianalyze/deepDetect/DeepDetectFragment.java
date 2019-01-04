@@ -93,7 +93,7 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
     }
 
     @Override
-    public void onCheckStop(int code, int reason) {
+    public void onCheckStop(final int code, int reason) {
         final String message;
         if (code == 0) {
             message = "您的网络正常";
@@ -103,10 +103,10 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
         } else {
             message = Code.getErrorMessage(code, reason);
         }
-        Log.d("big", "code:" + code + ",message:" + message);
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                Log.d("big", "code:" + code + ",message:" + message);
                 mStartTrriger.setEnabled(true);
                 mStartTrriger.setText("开始检测");
                 mAdviceText.setText(message);

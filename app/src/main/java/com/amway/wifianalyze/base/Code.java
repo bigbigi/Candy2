@@ -101,7 +101,7 @@ public class Code {
                 message = "检查DNS配置";
                 break;
             case Code.INFO_AUTH:
-                message = "是否已认证";
+                message = "检查WIFI是否认证";
                 break;
             case Code.INFO_LOCALNET_LOAD:
                 if (loss == CHECKING) {

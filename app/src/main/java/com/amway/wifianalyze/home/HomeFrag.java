@@ -132,7 +132,7 @@ public class HomeFrag extends BaseFragment implements
         mUploadValue = (TextView) content.findViewById(R.id.speed_upload);
         mDefinition = (TextView) content.findViewById(R.id.speed_definition);
         mSpeedView = (SpeedView) content.findViewById(R.id.speed_level);
-        mSpeedLoadingLayout = content.findViewById(R.id.speed_loading_layout);
+        mSpeedLoadingLayout = content.findViewById(R.id.speed_layout);
         mWifiName.setText("");
         mWifiFrequence.setText("");
         mDetectWifiName.setText("");
@@ -490,7 +490,7 @@ public class HomeFrag extends BaseFragment implements
             public void run() {
                 mSpeedView.setLevel(NetworkUtils.getLevel(download));
                 mDefinition.setText(String.format(getString(R.string.speed_level1), NetworkUtils.getDefinition(download)));
-                mSpeedLoadingLayout.setVisibility(View.GONE);
+//                mSpeedLoadingLayout.setVisibility(View.GONE);
                 mSpeedResultLayout.setVisibility(View.VISIBLE);
             }
         });

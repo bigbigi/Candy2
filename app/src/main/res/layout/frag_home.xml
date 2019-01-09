@@ -112,43 +112,39 @@
             <com.autofit.widget.RelativeLayout
                 android:id="@+id/speed_result_layout"
                 android:layout_width="696px"
-                android:layout_height="275px"
+                android:layout_height="190px"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25px"
                 android:background="@drawable/bg_detect"
+                android:gravity="center_vertical"
                 android:paddingLeft="50px"
                 android:paddingRight="50px"
                 android:visibility="gone">
-
-                <com.autofit.widget.TextView
-                    android:id="@+id/speed_result_bandwidth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="43px"
-                    android:textColor="#01305f"
-                    android:textSize="24px" />
 
                 <com.autofit.widget.TextView
                     android:id="@+id/speed_definition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="85px"
                     android:textColor="#002d66"
                     android:textSize="30px" />
 
                 <com.amway.wifianalyze.speed.SpeedView
                     android:id="@+id/speed_level"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="65px" />
+                    android:layout_height="100px"
+                    android:layout_below="@id/speed_definition"
+                    android:layout_marginTop="-20px"
+                    app:dotColor="#002d66"
+                    app:dotColorSelected="#ff9b26"
+                    app:lineColor="#3eff9b26"
+                    app:lineColorSelected="#ff9b26" />
             </com.autofit.widget.RelativeLayout>
 
             <com.autofit.widget.RelativeLayout
                 android:id="@+id/speed_layout"
                 android:layout_width="696px"
-                android:layout_height="210px"
+                android:layout_height="143px"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25px"
                 android:background="@drawable/bg_detect"
@@ -161,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
                     android:text="@string/speed_prepared"
-                    android:textColor="#e70241"
+                    android:textColor="#00336f"
                     android:textSize="42px" />
 
                 <com.autofit.widget.TextView
@@ -180,7 +176,7 @@
                     android:layout_alignParentRight="true"
                     android:gravity="center_horizontal"
                     android:text="@string/speed_prepared"
-                    android:textColor="#e70241"
+                    android:textColor="#00336f"
                     android:textSize="42px" />
 
                 <com.autofit.widget.TextView

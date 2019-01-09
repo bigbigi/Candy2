@@ -486,7 +486,7 @@ public class HomeBiz {
     }
 
     //54:33:cb:66:b4:1f
-//    ac:cf:5c:18:ff:d5
+//    ec:d0:9f:a3:aa:85
     public DeviceInfo createDeviceInfo() {
         DeviceInfo info = new DeviceInfo();
         WifiManager wm = (WifiManager) mContext.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -496,7 +496,7 @@ public class HomeBiz {
             info.ip = NetworkUtils.intToIp(wifiInfo.getIpAddress());
         }
         info.wifiChannel = NetworkUtils.isSupport5G(mContext) || mHas5G ? 2 : 1;
-        info.mac = NetworkUtils.getMac(mContext)/*"54:33:cb:66:b4:1f"*/;//todo test mac
+        info.mac = NetworkUtils.getMac(mContext)/*"ec:d0:9f:a3:aa:85"*/;//todo test mac
         info.dns = NetworkUtils.getDns1();
         info.phoneType = Build.MODEL;
         info.system = "Android_" + Build.VERSION.SDK_INT;

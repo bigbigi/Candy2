@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.lib.listener.BlockCall;
@@ -375,12 +374,6 @@ public class AuthPresenterImpl extends AuthContract.AuthPresenter implements Tra
                         mView.onInfo(Code.INFO_ISP, 0, Utils.parseInt(t[1]));
                     } else {
                         mView.onError(Code.INFO_ISP, Code.ERR_NONE);
-                        ThreadManager.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(mContext, "路由器ip：" + HomeBiz.getInstance(mContext).mRouterIp + "\n搜狐：" + t[0], Toast.LENGTH_LONG).show();
-                            }
-                        });
                     }
                 } else {
                     mView.onError(Code.INFO_ISP, Code.ERR_QUEST);

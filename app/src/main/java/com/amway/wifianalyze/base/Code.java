@@ -33,9 +33,10 @@ public class Code {
     public static final int INFO_ORDER_PORT = 1022;//检测下单网站端口;
     public static final int INFO_CUSTOMER_PICK = 1023;//检测店铺自提;
     public static final int INFO_NETWORK_ACCESS = 1024;//5分钟断网;
-    public static final int INFO_ISP = 1025;//检测运营商;
-    public static final int INFO_GATEWAY = 1026;//ping网关;
-    public static final int INFO_ROUTER = 1027;//ping路由器;
+    public static final int INFO_DEEP_RESULT = 1025;//高级检测结果
+    public static final int INFO_ROUTER = 1026;//ping路由器;
+    public static final int INFO_ISP = 1027;//检测运营商;
+    public static final int INFO_GATEWAY = 1028;//ping网关;
 
     //高级检测
     public static final int INFO_PING_AP = 1050;//ping AP;

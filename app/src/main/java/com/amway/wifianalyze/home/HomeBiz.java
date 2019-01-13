@@ -355,11 +355,12 @@ public class HomeBiz {
                 while (TextUtils.isEmpty(mTaobaoIp) && count++ < 3) {
                     long startTime = System.currentTimeMillis();
                     String result = HttpHelper.getInstance().getChome(Server.MY_IP);
-                    if (!TextUtils.isEmpty(result)) {
+                    if (!TextUtils.isEmpty(result) && result.contains("cip")) {
+                        String content = result.substring(result.indexOf("{"), result.lastIndexOf("}") + 1);
+                        Log.d("big", "content:" + content);
                         try {
-                            JSONObject json = new JSONObject(result);
-                            JSONObject data = json.getJSONObject("data");
-                            mTaobaoIp = data.getString("ip");
+                            JSONObject json = new JSONObject(content);
+                            mTaobaoIp = json.getString("cip");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

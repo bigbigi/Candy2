@@ -66,7 +66,6 @@ public class HomeBiz {
 
     private DeviceInfo mDeviceInfo;
     public String mRouterIp = "";
-    public String mTaobaoIp;
     public float mDownloadSpeed;
     public float mUploadSpeed;
     public boolean mHas5G;
@@ -352,30 +351,23 @@ public class HomeBiz {
             public void run() {
                 int count = 0;
                 int cost = 0;
-                while (TextUtils.isEmpty(mTaobaoIp) && count++ < 3) {
-                    long startTime = System.currentTimeMillis();
-                    String result = HttpHelper.getInstance().getChome(Server.MY_IP);
-                    if (!TextUtils.isEmpty(result) && result.contains("cip")) {
-                        String content = result.substring(result.indexOf("{"), result.lastIndexOf("}") + 1);
-                        Log.d("big", "content:" + content);
-                        try {
-                            JSONObject json = new JSONObject(content);
-                            mTaobaoIp = json.getString("cip");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                String outIp = null;
+                long startTime = System.currentTimeMillis();
+                String result = HttpHelper.getInstance().getChome(Server.MY_IP);
+                if (!TextUtils.isEmpty(result) && result.contains("cip")) {
+                    String content = result.substring(result.indexOf("{"), result.lastIndexOf("}") + 1);
+                    Log.d("big", "content:" + content);
+                    try {
+                        JSONObject json = new JSONObject(content);
+                        outIp = json.getString("cip");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    cost = (int) (System.currentTimeMillis() - startTime);
                 }
+                cost = (int) (System.currentTimeMillis() - startTime);
 
                 if (callback != null) {
-                    callback.onCallBack(!TextUtils.isEmpty(mTaobaoIp), mTaobaoIp, String.valueOf(cost));
+                    callback.onCallBack(!TextUtils.isEmpty(outIp), outIp, String.valueOf(cost));
                 }
             }
         });

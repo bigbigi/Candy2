@@ -28,7 +28,7 @@ public class Server {
     //检测检测支付宝
     public static String PAY_ZHIFUBAO = "alipay.com";
     //获取公网IP
-    public static String MY_IP = "http://ip.taobao.com/service/getIpInfo.php?ip=myip";
+    public static String MY_IP = "https://pv.sohu.com/cityjson?ie=utf-8";
     //升级
     public static String UPDATE = "%s/checkwifi-api/appUpdate/name_Amwayapk/apkType_2.dat";
     //token

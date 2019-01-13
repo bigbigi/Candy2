@@ -2,8 +2,8 @@ package com.amway.wifianalyze.speed;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Message;
 import android.util.Log;
-import android.webkit.MimeTypeMap;
 
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.FileUtils;
@@ -16,6 +16,8 @@ import com.chinanetcenter.wcs.android.api.ParamsConf;
 import com.chinanetcenter.wcs.android.entity.OperationMessage;
 import com.chinanetcenter.wcs.android.internal.UploadFileRequest;
 import com.chinanetcenter.wcs.android.listener.FileUploaderListener;
+
+import android.os.Handler;
 
 import org.json.JSONObject;
 
@@ -68,6 +70,48 @@ public class SpeedChecker {
 
     }
 
+    private final static int TIME_OUT = 10000;
+    private final static int MSG_DOWNLOAD_TIMEOUT = 1;
+    private final static int MSG_UPLOAD_TIMEOUT = 2;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_DOWNLOAD_TIMEOUT:
+                    Log.d(TAG, "DOWNLOAD TIMEOUT");
+                    notifyDownload();
+                    break;
+                case MSG_UPLOAD_TIMEOUT:
+                    Log.d(TAG, "UPLAOD TIMEOUT");
+                    notifyUpload();
+                    break;
+            }
+        }
+    };
+
+    private void notifyDownload() {
+        try {
+            synchronized (mStopTagDownload) {
+                mStopTagDownload.set(true);
+                mStopTagDownload.notifyAll();
+            }
+        } catch (Exception e) {
+            Log.i(TAG, "Exception:" + e.getMessage());
+        }
+    }
+
+    private void notifyUpload() {
+        try {
+            synchronized (mStopTagUpload) {
+                mStopTagUpload.set(true);
+                mStopTagUpload.notifyAll();
+            }
+        } catch (Exception e) {
+            Log.i(TAG, "Exception:" + e.getMessage());
+        }
+    }
+
     private void init() {
         Log.d(TAG, "init");
         mSpeedDownload = 0;
@@ -79,6 +123,7 @@ public class SpeedChecker {
         mCountUpload.set(0);
         mLengthUpload.set(0);
         mStopTagUpload.set(false);
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     public float checkDownload(final Callback<Float> callback) {
@@ -86,6 +131,7 @@ public class SpeedChecker {
             callback.onCallBack(true, 0f);
         }
         init();
+        mHandler.sendEmptyMessageDelayed(MSG_DOWNLOAD_TIMEOUT, TIME_OUT);
         final long startTime = System.currentTimeMillis();
         for (int i = 0; i < 3; i++) {
             ThreadManager.execute(new Runnable() {
@@ -117,20 +163,13 @@ public class SpeedChecker {
                             }
                             FileUtils.closeIO(inputStream);
                         }
-                        if(response!=null){
+                        if (response != null) {
                             response.close();
-                        }else{
+                        } else {
                             break;
                         }
                     }
-                    try {
-                        synchronized (mStopTagDownload) {
-                            mStopTagDownload.set(true);
-                            mStopTagDownload.notifyAll();
-                        }
-                    } catch (Exception e) {
-                        Log.i(TAG, "Exception:" + e.getMessage());
-                    }
+                    notifyDownload();
                 }
             });
         }
@@ -143,6 +182,7 @@ public class SpeedChecker {
                 Log.i(TAG, "InterruptedException:" + e);
             }
         }
+        mHandler.removeMessages(MSG_DOWNLOAD_TIMEOUT);
         return mSpeedDownload;
     }
 
@@ -177,6 +217,7 @@ public class SpeedChecker {
                 FileUtils.closeIO(fos);
             }
         }
+        mHandler.sendEmptyMessageDelayed(MSG_UPLOAD_TIMEOUT, TIME_OUT);
         Log.d(TAG, "FILE:" + testFile.length() + ",url:" + Server.UPLOAD_SERVER);
         final long startTime = System.currentTimeMillis();
         FileUploader.setUploadUrl(Server.UPLOAD_SERVER);
@@ -185,14 +226,7 @@ public class SpeedChecker {
             @Override
             public void onFailure(OperationMessage operationMessage) {
                 Log.d(TAG, "onFailure:" + operationMessage.getMessage());
-                try {
-                    synchronized (mStopTagUpload) {
-                        mStopTagUpload.set(true);
-                        mStopTagUpload.notifyAll();
-                    }
-                } catch (Exception e) {
-                    Log.i(TAG, "Exception:" + e.getMessage());
-                }
+                notifyUpload();
             }
 
             @Override
@@ -203,22 +237,17 @@ public class SpeedChecker {
             @Override
             public void onProgress(UploadFileRequest request, long currentSize, long totalSize) {
                 Log.d(TAG, "uploatd:" + currentSize + ",total:" + totalSize);
-                long time = System.currentTimeMillis() - startTime;
-                mSpeedUpload = currentSize * 1000 / (System.currentTimeMillis() - startTime) / 1024;
-                if (callback != null) {
-                    callback.onCallBack(true, mSpeedUpload);
-                }
-                if (currentSize == totalSize || time > DURATION) {
-                    try {
-                        synchronized (mStopTagUpload) {
-                            mStopTagUpload.set(true);
-                            mStopTagUpload.notifyAll();
-                        }
-                    } catch (Exception e) {
-                        Log.i(TAG, "Exception:" + e.getMessage());
+                if (!mStopTagUpload.get()){
+                    long time = System.currentTimeMillis() - startTime;
+                    mSpeedUpload = currentSize * 1000 / (System.currentTimeMillis() - startTime) / 1024;
+                    if (callback != null) {
+                        callback.onCallBack(true, mSpeedUpload);
                     }
+                    if (currentSize == totalSize || time > DURATION) {
+                        notifyUpload();
+                    }
+                    super.onProgress(request, currentSize, totalSize);
                 }
-                super.onProgress(request, currentSize, totalSize);
             }
         });
 
@@ -231,7 +260,7 @@ public class SpeedChecker {
                 Log.i(TAG, "InterruptedException:" + e);
             }
         }
-
+        mHandler.removeMessages(MSG_UPLOAD_TIMEOUT);
         return mSpeedUpload;
     }
 
@@ -271,6 +300,7 @@ public class SpeedChecker {
     }
 
     public void release() {
+        mHandler.removeCallbacksAndMessages(null);
         mStopTagDownload.set(true);
         mStopTagUpload.set(true);
         Log.e(TAG, "release");

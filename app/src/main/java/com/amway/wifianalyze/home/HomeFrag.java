@@ -480,7 +480,7 @@ public class HomeFrag extends BaseFragment implements
 
 
     public boolean isShow() {
-        return isVisible();
+        return isAdded();
     }
 
 

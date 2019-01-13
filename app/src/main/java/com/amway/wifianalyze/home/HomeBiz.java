@@ -572,6 +572,5 @@ public class HomeBiz {
 
     public void reset() {
         mErrors.clear();
-        mTaobaoIp = "";
     }
 }

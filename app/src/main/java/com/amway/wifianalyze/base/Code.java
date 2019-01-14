@@ -33,7 +33,7 @@ public class Code {
     public static final int INFO_ORDER_PORT = 1022;//检测下单网站端口;
     public static final int INFO_CUSTOMER_PICK = 1023;//检测店铺自提;
     public static final int INFO_NETWORK_ACCESS = 1024;//5分钟断网;
-    public static final int INFO_DEEP_RESULT = 1025;//高级检测结果
+//    public static final int INFO_DEEP_RESULT = 1025;//高级检测结果
     public static final int INFO_ROUTER = 1026;//ping路由器;
     public static final int INFO_ISP = 1027;//检测运营商;
     public static final int INFO_GATEWAY = 1028;//ping网关;
@@ -41,7 +41,7 @@ public class Code {
     //高级检测
     public static final int INFO_PING_AP = 1100;//ping AP;
     public static final int INFO_PING_ROUTER = 1101;//ping 路由器;
-    public static final int INFO_PING_SANGFOR = 1102;//ping 深信服;
+    public static final int INFO_PING_SANGFOR = 1102;//ping 防火墙;
     public static final int INFO_PING_ISP = 1103;//ping 运营商;
     public static final int INFO_PING_WEB = 1104;//ping 检测网站;
     public static final int INFO_LOAD_WEB = 1105;//LOAD 检测网站;
@@ -203,9 +203,9 @@ public class Code {
                 break;
             case INFO_PING_SANGFOR:
                 if (loss == CHECKING) {
-                    message = "app端到深信服延迟";
+                    message = "app端到防火墙延迟";
                 } else {
-                    message = "app端到深信服延迟：" + delay + "毫秒";
+                    message = "app端到防火墙延迟：" + delay + "毫秒";
                 }
                 break;
             case INFO_PING_ISP:
@@ -369,7 +369,7 @@ public class Code {
                 }
 
                 break;
-            case Code.INFO_DEEP_RESULT:
+            case Code.INFO_PING_ROUTER:
                 message = "路由器异常";
                 break;
         }

@@ -100,7 +100,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
             Uri uri = Uri.parse(mCheckUrl);
             mTraceroute.executeTraceroute(uri.getHost(), Code.INFO_PING_WEB, null);
         } else {
-            mView.onCheckStop(Code.INFO_DEEP_RESULT, 0);
+            mView.onCheckStop(Code.INFO_DEEP_SUCCESS, 0);
         }
     }
 
@@ -117,7 +117,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 mView.onCheckStop(Code.INFO_LOAD_WEB, Code.ERR_WEB_NORESPONSE);
             }
         } else {
-            mView.onCheckStop(Code.INFO_DEEP_RESULT, 0);
+            mView.onCheckStop(Code.INFO_DEEP_SUCCESS, 0);
         }
     }
 
@@ -161,7 +161,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 }
             });
         }
-        mView.onCheckStop(Code.INFO_DEEP_RESULT, 0);
+        mView.onCheckStop(Code.INFO_DEEP_SUCCESS, 0);
 
     }
 

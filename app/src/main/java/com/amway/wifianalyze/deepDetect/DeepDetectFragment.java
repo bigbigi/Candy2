@@ -167,7 +167,7 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
                             mDestinationText.setText("路由器");
                             break;
                         case Code.INFO_PING_SANGFOR:
-                            mDestinationText.setText("深信服");
+                            mDestinationText.setText("防火墙");
                             break;
                         case Code.INFO_PING_ISP:
                             mDestinationText.setText("运营商");

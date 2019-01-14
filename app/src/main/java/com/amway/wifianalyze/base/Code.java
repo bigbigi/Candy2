@@ -44,7 +44,8 @@ public class Code {
     public static final int INFO_PING_SANGFOR = 1052;//ping 深信服;
     public static final int INFO_PING_ISP = 1053;//ping 运营商;
     public static final int INFO_PING_WEB = 1054;//ping 检测网站;
-    public static final int INFO_VIDEO = 1055;//是否视频网站;
+    public static final int INFO_LOAD_WEB = 1055;//LOAD 检测网站;
+    public static final int INFO_VIDEO = 1056;//是否视频网站;
 
     public static final int CHECKING = -1;
 
@@ -219,7 +220,13 @@ public class Code {
                 } else {
                     message = "app端到检测网址延迟：" + delay + "毫秒";
                 }
-
+                break;
+            case INFO_LOAD_WEB:
+                if (loss == CHECKING) {
+                    message = "加载网站延迟";
+                } else {
+                    message = "加载网站延迟：" + delay + "毫秒";
+                }
                 break;
             case INFO_VIDEO:
                 message = "是否视频网站";
@@ -350,7 +357,7 @@ public class Code {
             case Code.INFO_VIDEO:
                 message = "视频网站被拦截";
                 break;
-            case Code.INFO_PING_WEB:
+            case Code.INFO_LOAD_WEB:
                 switch (reason) {
                     case ERR_WEB_NORESPONSE:
                         message = "您输入的网页无响应";

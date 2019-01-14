@@ -172,7 +172,7 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
                         case Code.INFO_PING_ISP:
                             mDestinationText.setText("运营商");
                             break;
-                        case Code.INFO_PING_WEB:
+                        case Code.INFO_LOAD_WEB:
                             mDestinationText.setText("网站");
                             break;
                     }

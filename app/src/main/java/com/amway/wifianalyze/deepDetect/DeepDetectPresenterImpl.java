@@ -1,6 +1,7 @@
 package com.amway.wifianalyze.deepDetect;
 
 import android.content.Context;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -54,7 +55,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 url = "http://" + url;
             }
             if (!Utils.isUrl(url)) {
-                mView.onCheckStop(Code.INFO_PING_WEB, Code.ERR_MSG);
+                mView.onCheckStop(Code.INFO_LOAD_WEB, Code.ERR_MSG);
                 return;
             }
         }
@@ -97,14 +98,24 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
     private void pingWeb() {
         if (!TextUtils.isEmpty(mCheckUrl)) {
             mView.onChecking(Code.INFO_PING_WEB);
+            Uri uri = Uri.parse(mCheckUrl);
+            mTraceroute.executeTraceroute(uri.getHost(), Code.INFO_PING_WEB, null);
+        } else {
+            mView.onCheckStop(0, 0);
+        }
+    }
+
+    private void loadWeb() {
+        if (!TextUtils.isEmpty(mCheckUrl)) {
+            mView.onChecking(Code.INFO_LOAD_WEB);
             final long startTime = System.currentTimeMillis();
             Response response = HttpHelper.getInstance().getResponse(mCheckUrl);
             if (response != null && response.isSuccessful()) {
                 int delay = (int) (System.currentTimeMillis() - startTime);
-                onResult(Code.INFO_PING_WEB, 0, delay);
+                onResult(Code.INFO_LOAD_WEB, 0, delay);
             } else {
-                mView.onError(Code.INFO_PING_WEB, Code.ERR_NONE);
-                mView.onCheckStop(Code.INFO_PING_WEB, Code.ERR_WEB_NORESPONSE);
+                mView.onError(Code.INFO_LOAD_WEB, Code.ERR_NONE);
+                mView.onCheckStop(Code.INFO_LOAD_WEB, Code.ERR_WEB_NORESPONSE);
             }
         } else {
             mView.onCheckStop(0, 0);
@@ -190,6 +201,9 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 pingWeb();
                 break;
             case Code.INFO_PING_WEB:
+                loadWeb();
+                break;
+            case Code.INFO_LOAD_WEB:
                 checkVideoWeb();
                 break;
         }

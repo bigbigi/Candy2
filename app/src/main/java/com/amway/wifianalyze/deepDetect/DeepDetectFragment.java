@@ -128,14 +128,14 @@ public class DeepDetectFragment extends BaseFragment implements DeepDetectContra
     @Override
     public void onCheckStop(final int code, int reason) {
         final String message;
-        if (code == 0) {
-            message = "您的网络正常";
-        } else if (code == Code.INFO_VIDEO &&
-                !TextUtils.isEmpty(HomeBiz.getInstance(getContext()).mVideoError)) {
-            message = HomeBiz.getInstance(getContext()).mVideoError;
-        } else {
-            message = Code.getErrorMessage(code, reason);
+        String temp = "";
+        if (code == Code.INFO_DEEP_SUCCESS || code > Code.INFO_PING_ROUTER) {
+            temp = HomeBiz.getInstance(getContext()).getDeepResult(code);
         }
+        if (TextUtils.isEmpty(temp)) {
+            temp = Code.getErrorMessage(code, reason);
+        }
+        message = temp;
         ThreadManager.runOnUiThread(new Runnable() {
             @Override
             public void run() {

@@ -65,7 +65,6 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
             @Override
             public void onCallBack(boolean success, Object[] t) {
                 if (success) {
-                    HomeBiz.getInstance(mContext).getVideo(null);
                     pingAp();
                 } else {
                     mView.onCheckStop(Code.INFO_PING_AP, Code.ERR_MSG);
@@ -101,7 +100,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
             Uri uri = Uri.parse(mCheckUrl);
             mTraceroute.executeTraceroute(uri.getHost(), Code.INFO_PING_WEB, null);
         } else {
-            mView.onCheckStop(0, 0);
+            mView.onCheckStop(Code.INFO_DEEP_RESULT, 0);
         }
     }
 
@@ -118,7 +117,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 mView.onCheckStop(Code.INFO_LOAD_WEB, Code.ERR_WEB_NORESPONSE);
             }
         } else {
-            mView.onCheckStop(0, 0);
+            mView.onCheckStop(Code.INFO_DEEP_RESULT, 0);
         }
     }
 
@@ -162,7 +161,7 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
                 }
             });
         }
-        mView.onCheckStop(0, 0);
+        mView.onCheckStop(Code.INFO_DEEP_RESULT, 0);
 
     }
 

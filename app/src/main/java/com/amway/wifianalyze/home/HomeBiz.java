@@ -446,15 +446,15 @@ public class HomeBiz {
         });
     }
 
-    public String mVideoError = "";
 
-    public void getVideo(final Callback<List<FaqInfo>> callback) {
-        String ret = HttpHelper.getInstance().get(String.format(FAQ_URL, Server.HOST, "" + Code.INFO_FILEWALL));
+    public String getDeepResult(final int code) {
+        String result = null;
+        String ret = HttpHelper.getInstance().get(String.format(FAQ_URL, Server.HOST, "" + code));
         if (!TextUtils.isEmpty(ret)) {
             try {
                 JSONObject obj = new JSONObject(ret);
                 if (100 == obj.getInt("code")) {
-                    List<FaqInfo> list = new ArrayList<>();
+//                    List<FaqInfo> list = new ArrayList<>();
                     JSONArray data = obj.getJSONArray("data");
                     for (int i = 0; i < data.length(); i++) {
                         try {
@@ -462,20 +462,18 @@ public class HomeBiz {
                             FaqInfo faqInfo = new FaqInfo();
                             faqInfo.question = "故障：" + Code.getMessage(Utils.parseInt(json.optString("code")), -1, 0);
                             faqInfo.answer = json.optString("content");
-                            mVideoError = faqInfo.answer;
-                            list.add(faqInfo);
+                            result = faqInfo.answer;
+                            break;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
-                    if (callback != null) {
-                        callback.onCallBack(true, list);
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+        return result;
     }
 
     //54:33:cb:66:b4:1f

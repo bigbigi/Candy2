@@ -39,13 +39,14 @@ public class Code {
     public static final int INFO_GATEWAY = 1028;//ping网关;
 
     //高级检测
-    public static final int INFO_PING_AP = 1050;//ping AP;
-    public static final int INFO_PING_ROUTER = 1051;//ping 路由器;
-    public static final int INFO_PING_SANGFOR = 1052;//ping 深信服;
-    public static final int INFO_PING_ISP = 1053;//ping 运营商;
-    public static final int INFO_PING_WEB = 1054;//ping 检测网站;
-    public static final int INFO_LOAD_WEB = 1055;//LOAD 检测网站;
-    public static final int INFO_VIDEO = 1056;//是否视频网站;
+    public static final int INFO_PING_AP = 1100;//ping AP;
+    public static final int INFO_PING_ROUTER = 1101;//ping 路由器;
+    public static final int INFO_PING_SANGFOR = 1102;//ping 深信服;
+    public static final int INFO_PING_ISP = 1103;//ping 运营商;
+    public static final int INFO_PING_WEB = 1104;//ping 检测网站;
+    public static final int INFO_LOAD_WEB = 1105;//LOAD 检测网站;
+    public static final int INFO_VIDEO = 1106;//是否视频网站;
+    public static final int INFO_DEEP_SUCCESS = 1107;//高级检测结果
 
     public static final int CHECKING = -1;
 
@@ -367,6 +368,9 @@ public class Code {
                         break;
                 }
 
+                break;
+            case Code.INFO_DEEP_RESULT:
+                message = "路由器异常";
                 break;
         }
         return message;

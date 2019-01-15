@@ -185,6 +185,10 @@ public class DeepDetectPresenterImpl extends DeepDetectContract.DeepDetectPresen
 
     @Override
     public void onResult(int what, int loss, int delay) {
+        if (what != Code.INFO_LOAD_WEB && (loss >= 100 || delay > 100)) {
+            onException(what);
+            return;
+        }
         mView.onInfo(what, loss, delay);
         switch (what) {
             case Code.INFO_PING_AP:

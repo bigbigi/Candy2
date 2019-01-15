@@ -36,6 +36,6 @@ public class Server {
 
     public static String PING_AP = "";//ping AP;
     public static String PING_ROUTER = "";//ping 路由器;
-    public static String PING_SANGFOR = "www.baidu.com";//ping 深信服;
+    public static String PING_SANGFOR = "www.baidu.com";//ping 防火墙;
     public static String PING_ISP = "";//ping 运营商;
 }

@@ -22,18 +22,14 @@ import android.widget.Toast;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.BaseContract;
 import com.amway.wifianalyze.base.BaseFragment;
-import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
-import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.listener.OnItemClickListener;
 import com.amway.wifianalyze.lib.util.ThreadManager;
-import com.amway.wifianalyze.utils.HttpHelper;
-import com.amway.wifianalyze.utils.PermissionUtil;
 import com.autofit.widget.RecyclerView;
 import com.autofit.widget.ScreenParameter;
-import com.hjq.permissions.OnPermission;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
+import com.permission.manager.Permission;
+import com.permission.manager.PermissionCallback;
+import com.permission.manager.PermissionManager;
 
 import java.util.List;
 
@@ -206,13 +202,13 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     }
 
     public void checkStoragePermisson() {
-        XXPermissions.with(getActivity()).constantRequest()
-                .permission(Permission.Group.STORAGE)
-                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_storage)) {
+        PermissionManager.check(getActivity(), Permission.Group.STORAGE,
+                new PermissionCallback(getContext(), getString(R.string.permisson_storage)) {
                     @Override
-                    public void hasPermission(List<String> list, boolean b) {
-                        super.hasPermission(list, b);
+                    public void hasPermission() {
+                        super.hasPermission();
                     }
                 });
+
     }
 }

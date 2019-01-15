@@ -21,13 +21,13 @@ import com.amway.wifianalyze.base.BaseFragment;
 import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.home.HomeBiz;
 import com.amway.wifianalyze.home.WifiContract;
-import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
+import com.permission.manager.Permission;
+import com.permission.manager.PermissionCallback;
+import com.permission.manager.PermissionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,19 +164,14 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
                 mAdapter.setData(list);
                 if (!isHidden()) {
-                    if (XXPermissions.isHasPermission(getActivity(), Permission.Group.STORAGE)) {
-                        mSpeedPresenter.getSpeed();
-                    } else {
-                        XXPermissions.with(getActivity()).constantRequest()
-                                .permission(Permission.Group.STORAGE)
-                                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_storage)) {
-                                    @Override
-                                    public void hasPermission(List<String> list, boolean b) {
-                                        super.hasPermission(list, b);
-                                        mSpeedPresenter.getSpeed();
-                                    }
-                                });
-                    }
+                    PermissionManager.check(getActivity(),  Permission.Group.STORAGE,
+                            new PermissionCallback(getContext(),getString(R.string.permisson_storage)){
+                                @Override
+                                public void hasPermission() {
+                                    super.hasPermission();
+                                    mSpeedPresenter.getSpeed();
+                                }
+                            });
                 }
             }
         });

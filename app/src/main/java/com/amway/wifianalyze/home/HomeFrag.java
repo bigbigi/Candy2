@@ -8,6 +8,8 @@ import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,7 +29,6 @@ import com.amway.wifianalyze.base.Code;
 import com.amway.wifianalyze.bean.DeviceInfo;
 import com.amway.wifianalyze.bean.FaqInfo;
 import com.amway.wifianalyze.home.DetectResult.Status;
-import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
@@ -35,10 +36,10 @@ import com.amway.wifianalyze.speed.SpeedContract;
 import com.amway.wifianalyze.speed.SpeedView;
 import com.amway.wifianalyze.utils.UpdateBiz;
 import com.autofit.widget.LinearLayout;
-import com.autofit.widget.ScreenParameter;
 import com.autofit.widget.TextView;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
+import com.permission.manager.Permission;
+import com.permission.manager.PermissionCallback;
+import com.permission.manager.PermissionManager;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -138,16 +139,14 @@ public class HomeFrag extends BaseFragment implements
         mDetectWifiName.setText("");
         mWifiFrequence.setText("");
         mDetectApName.setText("");
-        XXPermissions.with(getActivity()).constantRequest()
-                .permission(Permission.Group.LOCATION)
-                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_wifi)) {
-                    @Override
-                    public void hasPermission(List<String> list, boolean b) {
-                        super.hasPermission(list, b);
-                        mWifiPresenter.init(getContext());
-                        mWifiPresenter.start();
-                    }
-                });
+        PermissionManager.check(getActivity(), Permission.Group.LOCATION, new PermissionCallback(getContext(), getString(R.string.permisson_wifi)) {
+            @Override
+            public void hasPermission() {
+                super.hasPermission();
+                mWifiPresenter.init(getContext());
+                mWifiPresenter.start();
+            }
+        });
     }
 
     @Override
@@ -374,16 +373,16 @@ public class HomeFrag extends BaseFragment implements
     private static final int REQUEST_CODE = 3;
 
     private void go2Capture() {
-        XXPermissions.with(getActivity()).constantRequest()
-                .permission(Permission.CAMERA)
-                .request(new ToastOnPermission(getContext(), getString(R.string.permisson_wifi)) {
+        PermissionManager.check(getActivity(), Permission.CAMERA,
+                new PermissionCallback(getContext(), getString(R.string.permisson_wifi)) {
                     @Override
-                    public void hasPermission(List<String> list, boolean b) {
-                        super.hasPermission(list, b);
+                    public void hasPermission() {
+                        super.hasPermission();
                         Intent intent = new Intent(getActivity(), CaptureActivity.class);
                         startActivityForResult(intent, REQUEST_CODE);
                     }
                 });
+
     }
 
     @Override

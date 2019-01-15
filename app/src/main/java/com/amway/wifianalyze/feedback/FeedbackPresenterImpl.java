@@ -20,17 +20,15 @@ import android.webkit.WebView;
 import com.amway.wifianalyze.R;
 import com.amway.wifianalyze.base.Application;
 import com.amway.wifianalyze.home.HomeBiz;
-import com.amway.wifianalyze.lib.ToastOnPermission;
 import com.amway.wifianalyze.lib.listener.Callback;
 import com.amway.wifianalyze.lib.util.FileUtils;
 import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
-import com.amway.wifianalyze.utils.PermissionUtil;
 import com.amway.wifianalyze.utils.Server;
-import com.hjq.permissions.OnPermission;
-import com.hjq.permissions.Permission;
-import com.hjq.permissions.XXPermissions;
+import com.permission.manager.Permission;
+import com.permission.manager.PermissionCallback;
+import com.permission.manager.PermissionManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -167,23 +165,19 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
 
     @Override
     public void startRecord(final Activity context) {
-        if (XXPermissions.isHasPermission(context, Permission.RECORD_AUDIO)) {
-            mIsRecording = true;
-            mTime = 1;
-            mHandler.sendEmptyMessage(MSG_UPDATE_TIME);
-            mView.onRecordStart();
-            record();
-        } else {
-            XXPermissions.with(context).constantRequest()
-                    .permission(Permission.RECORD_AUDIO)
-                    .request(new ToastOnPermission(context, context.getString(R.string.permisson_storage)) {
-                        @Override
-                        public void hasPermission(List<String> list, boolean b) {
-                            super.hasPermission(list, b);
+        PermissionManager.check(context, Permission.RECORD_AUDIO,
+                new PermissionCallback(context,context.getString(R.string.permisson_audio)){
+                    @Override
+                    public void hasPermission() {
+                        super.hasPermission();
+                        mIsRecording = true;
+                        mTime = 1;
+                        mHandler.sendEmptyMessage(MSG_UPDATE_TIME);
+                        mView.onRecordStart();
+                        record();
+                    }
+                });
 
-                        }
-                    });
-        }
     }
 
     @Override

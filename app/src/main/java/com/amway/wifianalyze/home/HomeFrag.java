@@ -39,14 +39,12 @@ import com.autofit.widget.LinearLayout;
 import com.autofit.widget.TextView;
 import com.permission.manager.Permission;
 import com.permission.manager.PermissionCallback;
-import com.permission.manager.PermissionManager;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -139,14 +137,8 @@ public class HomeFrag extends BaseFragment implements
         mDetectWifiName.setText("");
         mWifiFrequence.setText("");
         mDetectApName.setText("");
-        PermissionManager.check(getActivity(), Permission.Group.LOCATION, new PermissionCallback(getContext(), getString(R.string.permisson_wifi)) {
-            @Override
-            public void hasPermission() {
-                super.hasPermission();
-                mWifiPresenter.init(getContext());
-                mWifiPresenter.start();
-            }
-        });
+        mWifiPresenter.init(getContext());
+        mWifiPresenter.start();
     }
 
     @Override
@@ -373,16 +365,8 @@ public class HomeFrag extends BaseFragment implements
     private static final int REQUEST_CODE = 3;
 
     private void go2Capture() {
-        PermissionManager.check(getActivity(), Permission.CAMERA,
-                new PermissionCallback(getContext(), getString(R.string.permisson_wifi)) {
-                    @Override
-                    public void hasPermission() {
-                        super.hasPermission();
-                        Intent intent = new Intent(getActivity(), CaptureActivity.class);
-                        startActivityForResult(intent, REQUEST_CODE);
-                    }
-                });
-
+        Intent intent = new Intent(getActivity(), CaptureActivity.class);
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     @Override

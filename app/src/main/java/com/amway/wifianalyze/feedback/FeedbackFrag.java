@@ -27,11 +27,7 @@ import com.amway.wifianalyze.lib.listener.OnItemClickListener;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.RecyclerView;
 import com.autofit.widget.ScreenParameter;
-import com.permission.manager.Permission;
-import com.permission.manager.PermissionCallback;
-import com.permission.manager.PermissionManager;
 
-import java.util.List;
 
 /**
  * Created by big on 2018/10/25.
@@ -55,7 +51,6 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View content = inflater.inflate(R.layout.frag_feedback, container, false);
         init(content);
-        checkStoragePermisson();
         return content;
     }
 
@@ -201,14 +196,4 @@ public class FeedbackFrag extends BaseFragment implements FeedbackContract.Feedb
         mVoiceTime.setText(s);
     }
 
-    public void checkStoragePermisson() {
-        PermissionManager.check(getActivity(), Permission.Group.STORAGE,
-                new PermissionCallback(getContext(), getString(R.string.permisson_storage)) {
-                    @Override
-                    public void hasPermission() {
-                        super.hasPermission();
-                    }
-                });
-
-    }
 }

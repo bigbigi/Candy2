@@ -27,7 +27,6 @@ import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.autofit.widget.TextView;
 import com.permission.manager.Permission;
 import com.permission.manager.PermissionCallback;
-import com.permission.manager.PermissionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,14 +163,7 @@ public class SpeedFrag extends BaseFragment implements WifiContract.WifiView
                 list.add(new SpeedResult(getString(R.string.speed_subnet), NetworkUtils.intToIp(wifiManager.getDhcpInfo().netmask)));
                 mAdapter.setData(list);
                 if (!isHidden()) {
-                    PermissionManager.check(getActivity(),  Permission.Group.STORAGE,
-                            new PermissionCallback(getContext(),getString(R.string.permisson_storage)){
-                                @Override
-                                public void hasPermission() {
-                                    super.hasPermission();
-                                    mSpeedPresenter.getSpeed();
-                                }
-                            });
+                    mSpeedPresenter.getSpeed();
                 }
             }
         });

@@ -26,12 +26,8 @@ import com.amway.wifianalyze.lib.util.NetworkUtils;
 import com.amway.wifianalyze.lib.util.ThreadManager;
 import com.amway.wifianalyze.utils.HttpHelper;
 import com.amway.wifianalyze.utils.Server;
-import com.permission.manager.Permission;
-import com.permission.manager.PermissionCallback;
-import com.permission.manager.PermissionManager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -165,19 +161,11 @@ public class FeedbackPresenterImpl extends FeedbackContract.FeedbackPresenter {
 
     @Override
     public void startRecord(final Activity context) {
-        PermissionManager.check(context, Permission.RECORD_AUDIO,
-                new PermissionCallback(context,context.getString(R.string.permisson_audio)){
-                    @Override
-                    public void hasPermission() {
-                        super.hasPermission();
-                        mIsRecording = true;
-                        mTime = 1;
-                        mHandler.sendEmptyMessage(MSG_UPDATE_TIME);
-                        mView.onRecordStart();
-                        record();
-                    }
-                });
-
+        mIsRecording = true;
+        mTime = 1;
+        mHandler.sendEmptyMessage(MSG_UPDATE_TIME);
+        mView.onRecordStart();
+        record();
     }
 
     @Override

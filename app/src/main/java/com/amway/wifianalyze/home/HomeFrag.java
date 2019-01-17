@@ -39,6 +39,7 @@ import com.autofit.widget.LinearLayout;
 import com.autofit.widget.TextView;
 import com.permission.manager.Permission;
 import com.permission.manager.PermissionCallback;
+import com.permission.manager.PermissionManager;
 import com.uuzuche.lib_zxing.activity.CaptureActivity;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
@@ -139,6 +140,8 @@ public class HomeFrag extends BaseFragment implements
         mDetectApName.setText("");
         mWifiPresenter.init(getContext());
         mWifiPresenter.start();
+        PermissionManager.check(getContext(), Permission.Group.LOCATION,
+                new PermissionCallback(getContext(), getString(R.string.permisson_wifi)));
     }
 
     @Override

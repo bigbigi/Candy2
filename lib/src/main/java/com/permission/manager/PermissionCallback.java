@@ -26,17 +26,8 @@ public class PermissionCallback implements OnPermission {
 
     @Override
     public void noPermission(String permission) {
-        SharedPreferences preferences = mContext.getSharedPreferences("permission", 0);
-        String key = mContext.getClass().getSimpleName() + "_" + permission;
-        boolean value = preferences.getBoolean(mContext.getClass().getSimpleName() + permission, false);
-        Log.e("permisson", "has no permisson:" + permission + "\n" + key + ",valuel:" + value);
-        if (!value) {
-            preferences.edit().putBoolean(key, true).commit();
-        } else {
-            PermissionSettingPage.start(mContext, false);
-            Toast.makeText(mContext, mError, Toast.LENGTH_LONG).show();
-        }
+        Log.e("permisson", "has no permisson:" + permission);
+        PermissionSettingPage.start(mContext, false);
+        Toast.makeText(mContext, mError, Toast.LENGTH_LONG).show();
     }
-
-
 }

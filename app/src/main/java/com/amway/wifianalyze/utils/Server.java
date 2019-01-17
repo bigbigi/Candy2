@@ -16,7 +16,7 @@ public class Server {
     public static int ORDER_PORT = 80;
     //上传、下载
     public static String DOWNLOAD_SERVER = "http://pubstatic.b0.upaiyun.com/check2.jpg";
-    public static String UPLOAD_SERVER = "https://testupload.0bgs.com";
+    public static String UPLOAD_SERVER = "https://acetestupload.amway.com.cn";
     //外网
     public static String INTERNET = "www.baidu.com";
     //外网IP

@@ -282,11 +282,11 @@ public class NetworkUtils {
     }
 
     public static int getLevel(float speed) {
-        if (speed > 750) {//800
+        if (speed >= 500) {//800
             return 3;
-        } else if (speed > 450) {//500
+        } else if (speed >= 375) {//500
             return 2;
-        } else if (speed > 220) {//250
+        } else if (speed >=250) {//250
             return 1;
         } else {
             return 0;

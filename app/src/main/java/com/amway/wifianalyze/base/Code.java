@@ -95,9 +95,9 @@ public class Code {
                 break;
             case Code.INFO_INTERNET_LOAD:
                 if (loss == CHECKING) {
-                    message = "检查外网专线带宽";
+                    message = "检查互联网专线带宽";
                 } else {
-                    message = "外网带宽利用率：入口" + loss + "%/出口" + delay + "%";
+                    message = "互联网带宽利用率：入口" + loss + "%/出口" + delay + "%";
                 }
                 break;
             case Code.INFO_DNS:
@@ -108,9 +108,9 @@ public class Code {
                 break;
             case Code.INFO_LOCALNET_LOAD:
                 if (loss == CHECKING) {
-                    message = "检查内网专线带宽";
+                    message = "检查办公网专线带宽";
                 } else {
-                    message = "内网带宽利用率：入口" + loss + "%/出口" + delay + "%";
+                    message = "办公网带宽利用率：入口" + loss + "%/出口" + delay + "%";
                 }
                 break;
             case Code.INFO_PING_INTERNET:
@@ -310,26 +310,26 @@ public class Code {
             case Code.INFO_INTERNET_LOAD:
                 switch (reason) {
                     case ERR_INPUT:
-                        message = "外网带宽利用率：入口{" + value[0] + "%}/出口" + value[1] + "%";
+                        message = "互联网网带宽利用率：入口{" + value[0] + "%}/出口" + value[1] + "%";
                         break;
                     case ERR_OUTPUT:
-                        message = "外网带宽利用率：入口" + value[0] + "%/出口{" + value[1] + "%}";
+                        message = "互联网网带宽利用率：入口" + value[0] + "%/出口{" + value[1] + "%}";
                         break;
                     case ERR_ALLPUT:
-                        message = "外网带宽利用率：入口{" + value[0] + "%}/出口{" + value[1] + "%}";
+                        message = "互联网网带宽利用率：入口{" + value[0] + "%}/出口{" + value[1] + "%}";
                         break;
                 }
                 break;
             case Code.INFO_LOCALNET_LOAD:
                 switch (reason) {
                     case ERR_INPUT:
-                        message = "内网带宽利用率：入口{" + value[0] + "%}/出口" + value[1] + "%";
+                        message = "办公网带宽利用率：入口{" + value[0] + "%}/出口" + value[1] + "%";
                         break;
                     case ERR_OUTPUT:
-                        message = "内网带宽利用率：入口" + value[0] + "%/出口{" + value[1] + "%}";
+                        message = "办公网带宽利用率：入口" + value[0] + "%/出口{" + value[1] + "%}";
                         break;
                     case ERR_ALLPUT:
-                        message = "内网带宽利用率：入口{" + value[0] + "%}/出口{" + value[1] + "%}";
+                        message = "办公网带宽利用率：入口{" + value[0] + "%}/出口{" + value[1] + "%}";
                         break;
                 }
                 break;
